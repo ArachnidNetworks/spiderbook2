@@ -1,18 +1,18 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for
 import os, time
-import api
+import dbi
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
 
 @app.route("/")
 def home():
-    posts = api.get_posts()
+    posts = dbi.get_posts()
     return "<h1>Posts</h1>"
 
 @app.route("/<category>")
 def catpost(category):
-    posts = api.get_posts(category)
+    posts = dbi.get_posts(category)
     return f"<h1>'{category}' posts</h1>"
 
 @app.route("/createpost", methods=['GET', 'POST'])
@@ -23,7 +23,7 @@ def create_post():
 def signin():
     email = 'admin@email.com'
     password = 'securepassword'
-    if api.login(email, password):
+    if dbi.login(email, password):
         return "<h1>Signed in</h1>"
     else:
         return "<h1>No</h1>"
