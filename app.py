@@ -26,18 +26,15 @@ def catpost(category):
 def create_post():
     if request.method == 'POST':
         data = dict(request.form)
-        category = data.get('category')
-        if not category: category = None
+        data['category'] = data.get('category')
         author = 'admin'
-        title = data.get('title')
-        if not title: title = None
-        body = data.get('body')
-        if not body: body = None
+        data['title'] = data.get('title')
+        data['body'] = data.get('body')
         image = request.files.get('img')
         if image:
-            imgbin = get_binary_image(image)
+            data['imgbin'] = get_binary_image(image)
         else:
-            imgbin = None
+            data['imgbin'] = None
         return data
     return "<h1>Create post</h1>"
 
