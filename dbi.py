@@ -5,6 +5,7 @@ import psycopg2
 def hashpass(password):
     return hashlib.sha1(password.encode()).hexdigest()[:24]
 
+# Connect to PostgreSQL
 conn = psycopg2.connect("dbname=spiderbook user=postgres")
 c = conn.cursor()
 

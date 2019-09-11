@@ -15,8 +15,10 @@ def catpost(category):
     posts = dbi.get_posts(category)
     return f"<h1>'{category}' posts</h1>"
 
-@app.route("/createpost", methods=['GET', 'POST'])
+@app.route("/post", methods=['GET', 'POST'])
 def create_post():
+    if request.method == 'POST':
+        return '<h1>POST</h1>'
     return "<h1>Create post</h1>"
 
 @app.route("/user/signin")
@@ -33,7 +35,7 @@ def signup():
     return "<h1>Sign up</h1>"
 
 if __name__ == "__main__":
-    app.run(
+    app.run (
         host="localhost",
         port=8000,
         debug=True
