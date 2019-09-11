@@ -26,9 +26,9 @@ def get_posts(category=None):
 
 # Sign in to a user
 def login(e, p):
-    c.execute("SELECT * FROM users WHERE email = %s AND password = %s", (e, p))
+    c.execute("SELECT * FROM users WHERE email = %s AND pass = %s", (e, p))
     res = c.fetchall()
     if res:
-        True
+        return True
     else:
-        False
+        return False

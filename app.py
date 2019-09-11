@@ -27,8 +27,10 @@ def create_post():
 def signin():
     email = 'admin@email.com'
     password = 'securepassword'
-    api.login(email, password)
-    return "<h1>Sign in</h1>"
+    if api.login(email, password):
+        return "<h1>Signed in</h1>"
+    else:
+        return "<h1>No</h1>"
 
 @app.route("/user/signup")
 def signup():
