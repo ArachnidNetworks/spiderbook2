@@ -6,8 +6,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
 
 @app.route("/")
-def home():
-    return "<h1>Home</h1>"
+def root():
+    return redirect(url_for('posts'))
 
 @app.route("/posts")
 def posts():
@@ -32,7 +32,7 @@ def signin():
     else:
         return "<h1>No</h1>"
 
-@app.route("/user/signup")
+@app.route("/user/signup", methods=['GET', 'POST'])
 def signup():
     return "<h1>Sign up</h1>"
 
