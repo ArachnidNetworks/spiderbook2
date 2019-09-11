@@ -5,6 +5,13 @@ import dbi
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
 
+def get_binary_image(image):
+    name = image.filename
+    image.save(name)
+    with open(name, 'rb') as f:
+        return f.read()
+    os.delete(name)
+
 @app.route("/")
 def home():
     posts = dbi.get_posts()
@@ -18,7 +25,20 @@ def catpost(category):
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
-        return '<h1>POST</h1>'
+        data = dict(request.form)
+        category = data.get('category')
+        if not category: category = None
+        author = 'admin'
+        title = data.get('title')
+        if not title: title = None
+        body = data.get('body')
+        if not body: body = None
+        image = request.files.get('img')
+        if image:
+            imgbin = get_binary_image(image)
+        else:
+            imgbin = None
+        return data
     return "<h1>Create post</h1>"
 
 @app.route("/user/signin")
