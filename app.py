@@ -25,6 +25,9 @@ def create_post():
 
 @app.route("/user/signin")
 def signin():
+    email = 'admin@email.com'
+    password = 'securepassword'
+    api.login(email, password)
     return "<h1>Sign in</h1>"
 
 @app.route("/user/signup")

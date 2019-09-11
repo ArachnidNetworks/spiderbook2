@@ -23,3 +23,12 @@ def get_posts(category=None):
     for row in rows:
             els.append(dict(zip(colnames, list(row))))
     return els
+
+# Sign in to a user
+def login(e, p):
+    c.execute("SELECT * FROM users WHERE email = %s AND password = %s", (e, p))
+    res = c.fetchall()
+    if res:
+        True
+    else:
+        False
