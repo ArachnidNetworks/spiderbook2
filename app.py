@@ -6,20 +6,16 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
 
 @app.route("/")
-def root():
-    return redirect(url_for('posts'))
-
-@app.route("/posts")
-def posts():
+def home():
     posts = api.get_posts()
     return "<h1>Posts</h1>"
 
-@app.route("/posts/<category>")
+@app.route("/<category>")
 def catpost(category):
     posts = api.get_posts(category)
     return f"<h1>'{category}' posts</h1>"
 
-@app.route("/posts/create", methods=['GET', 'POST'])
+@app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     return "<h1>Create post</h1>"
 
