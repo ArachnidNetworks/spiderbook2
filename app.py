@@ -25,11 +25,12 @@ def catpost(category):
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
-        data = dict(request.form)
-        data['category'] = data.get('category')
-        author = 'admin'
-        data['title'] = data.get('title')
-        data['body'] = data.get('body')
+        post_data = dict(request.form)
+        data = {}
+        data['author'] = 'admin'
+        data['category'] = post_data.get('category')
+        data['title'] = post_data.get('title')
+        data['body'] = post_data.get('body')
         image = request.files.get('img')
         if image:
             data['imgbin'] = get_binary_image(image)
