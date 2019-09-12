@@ -83,7 +83,3 @@ def insert_row(data):
     print(vals)
     c.execute(query, vals)
     conn.commit()
-
-insert_row(
-    {'table':'users', 'username':'admin', 'email':'admin@email.org', 'pass':'hello', 'bio':'reee'}
-)
