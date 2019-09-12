@@ -15,12 +15,12 @@ def get_binary_image(image):
 @app.route("/")
 def home():
     posts = dbi.get_posts()
-    return "<h1>Posts</h1>"
+    return "Posts"
 
 @app.route("/<category>")
 def catpost(category):
     posts = dbi.get_posts(category)
-    return f"<h1>'{category}' posts</h1>"
+    return f"'{category}' posts"
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
@@ -37,21 +37,21 @@ def create_post():
         else:
             data['imgbin'] = None
         dbi.create_post(data)
-        return "<h1>Post created!</h1>"
-    return "<h1>Create post</h1>"
+        return "Post created!"
+    return "Create post"
 
 @app.route("/user/signin")
 def signin():
     email = 'admin@email.com'
     password = 'securepassword'
     if dbi.login(email, password):
-        return "<h1>Signed in</h1>"
+        return "Signed in"
     else:
-        return "<h1>No</h1>"
+        return "No"
 
 @app.route("/user/signup", methods=['GET', 'POST'])
 def signup():
-    return "<h1>Sign up</h1>"
+    return "Sign up"
 
 if __name__ == "__main__":
     app.run (
