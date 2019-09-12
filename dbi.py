@@ -3,7 +3,7 @@ import psycopg2
 
 # Password hasher
 def hashpass(password):
-    return hashlib.sha1(password.encode()).hexdigest()[:24]
+    return hashlib.sha1(str(password).encode()).hexdigest()[:24]
 
 # Connect to PostgreSQL
 conn = psycopg2.connect("dbname=spiderbook user=postgres")
@@ -45,16 +45,17 @@ def get_new_pid():
 
 def create_post(data):
     new_pid = get_new_pid()
-    vals = (
-        new_pid,
-        data['title'],
-        data['category'],
-        data['author'],
-        data['body'],
-        data['imgbin']
-    )
     query = """INSERT INTO posts (
         pid, title, category, author, body, imgbin
     )
     VALUES (%s, %s, %s, %s, %s, %s)"""
-    c.execute(query, vals)
+    c.execute(query,
+        (new_pid,
+        data['title'],
+        data['category'],
+        data['author'],
+        data['body'],
+        data['imgbin'])
+    )
+    conn.commit()
+    return True

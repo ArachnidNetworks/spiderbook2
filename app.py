@@ -37,6 +37,7 @@ def create_post():
         else:
             data['imgbin'] = None
         dbi.create_post(data)
+        return "<h1>Post created!</h1>"
     return "<h1>Create post</h1>"
 
 @app.route("/user/signin")
