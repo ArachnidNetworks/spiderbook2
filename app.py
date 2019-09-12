@@ -15,12 +15,12 @@ def get_binary_image(image):
 @app.route("/")
 def home():
     posts = dbi.get_posts()
-    return "Posts"
+    return str(posts)
 
 @app.route("/<category>")
 def catpost(category):
     posts = dbi.get_posts(category)
-    return f"'{category}' posts"
+    return str(posts)
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
