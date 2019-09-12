@@ -19,7 +19,10 @@ def home():
 
 @app.route("/<category>")
 def catpost(category):
-    posts = dbi.get_posts(category)
+    posts = dbi.get_posts("WHERE category = %s", (category,))
+    for post in posts:
+        post.pop('pid')
+        post.pop('category')
     return str(posts)
 
 @app.route("/post", methods=['GET', 'POST'])

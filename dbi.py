@@ -29,11 +29,11 @@ def reset_con():
     c = conn.cursor()
 
 # Get posts with an optional category filter
-def get_posts(category=None):
-    if not category:
+def get_posts(fter=None, values=None):
+    if not fter:
         c.execute("SELECT * FROM posts")
     else:
-        c.execute("SELECT * FROM posts WHERE category = %s", (category,))
+        c.execute("SELECT * FROM posts " + str(fter), values)
 
     # Make a list of dicts with the keys being the rows and each row from c.fetchall() being
     # the values
@@ -89,9 +89,6 @@ def get_hot_cats(limit, fter=None):
             if cats[cat] == ns[x]:
                 hot.append(cat)
     return hot
-
-a = get_hot_cats(50)
-print(a)
 
 # Sign in to a user
 def login(e, p):
