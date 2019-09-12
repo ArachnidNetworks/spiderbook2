@@ -27,7 +27,8 @@ def create_post():
     if request.method == 'POST':
         post_data = dict(request.form)
         data = {}
-        data['author'] = 'admin'
+        data['author'] = post_data.get('author')
+        if not data['author']: data['author'] = 'Anonymous'
         data['category'] = post_data.get('category')
         data['title'] = post_data.get('title')
         data['body'] = post_data.get('body')
@@ -42,7 +43,8 @@ def create_post():
     else:
         return "Create post"
 
-@app.route("/user/signin", methods=['GET', 'POST'])
+# Login and Signup pages.
+""" @app.route("/user/signin", methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
         login_data = dict(request.form)
@@ -69,7 +71,7 @@ def signup():
         dbi.insert_row(data)
         return "User created!"
     else:
-        return "Sign up"
+        return "Sign up" """
 
 if __name__ == "__main__":
     app.run (
