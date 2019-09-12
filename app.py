@@ -42,14 +42,18 @@ def create_post():
     else:
         return "Create post"
 
-@app.route("/user/signin")
+@app.route("/user/signin", methods=['GET', 'POST'])
 def signin():
-    email = 'admin@email.com'
-    password = 'securepassword'
-    if dbi.login(email, password):
-        return "Signed in"
+    if request.method == 'POST':
+        email = dict(request.form).get('email')
+        password = dbi.hashpass(dict(request.form).get('pass'))
+
+        if dbi.login(email, password):
+            return "Signed in"
+        else:
+            return "No"
     else:
-        return "No"
+        return "Login page"
 
 @app.route("/user/signup", methods=['GET', 'POST'])
 def signup():
