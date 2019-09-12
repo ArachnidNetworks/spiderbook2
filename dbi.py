@@ -11,6 +11,11 @@ def del_last(t):
     t.pop()
     return ''.join(t)
 
+# Turn a tuple of values from PostgreSQL into a dictionary with column names as keys
+def row_to_dict(row, c):
+    colnames = [desc.name for desc in c.description]
+    return dict(zip(colnames, list(row)))
+
 # Connect to PostgreSQL
 conn = psycopg2.connect("dbname=spiderbook user=postgres")
 c = conn.cursor()
@@ -31,12 +36,11 @@ def get_posts(category=None):
 
     # Make a list of dicts with the keys being the rows and each row from c.fetchall() being
     # the values
-    els = []
-    rows = c.fetchall()
-    colnames = [desc.name for desc in c.description]
-    for row in rows:
-            els.append(dict(zip(colnames, list(row))))
-    return els
+    frows = c.fetchall()
+    rows = []
+    for row in frows:
+        rows.append(row_to_dict(row, c))
+    return rows
 
 # Sign in to a user
 def login(e, p):
