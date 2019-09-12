@@ -2,8 +2,8 @@ import hashlib, datetime, random
 import psycopg2
 
 # Password hasher
-def hashpass(password):
-    return hashlib.sha1(str(password).encode()).hexdigest()[:24]
+def hash_str(s):
+    return hashlib.sha1(s.encode()).hexdigest()[:24]
 
 # Delete the last element in a string
 def del_last(t):
@@ -14,6 +14,13 @@ def del_last(t):
 # Connect to PostgreSQL
 conn = psycopg2.connect("dbname=spiderbook user=postgres")
 c = conn.cursor()
+
+# Resets connection in case of errors
+def reset_con():
+    global conn
+    global c
+    conn = psycopg2.connect("dbname=spiderbook user=postgres")
+    c = conn.cursor()
 
 # Get posts with an optional category filter
 def get_posts(category=None):
@@ -48,7 +55,7 @@ def get_new_pid():
     uhs_new_pid = last_id + random.randint(1, 9)
     c.execute("INSERT INTO ids (v) VALUES (%s)", (uhs_new_pid,))
     conn.commit()
-    return hashpass(uhs_new_pid)
+    return hash_str(str(uhs_new_pid))
 
 def get_cols(data):
     cols = [str(key) for key in data.keys()]
@@ -80,7 +87,10 @@ def insert_row(data):
     val_placeholders = del_last(del_last(get_val_placeholders(data)))
     query = f"""INSERT INTO {table} (pid, {scols}) VALUES ({val_placeholders})"""
     vals = create_vals(data, new_pid, cols)
-    print(query)
-    print(vals)
-    c.execute(query, vals)
-    conn.commit()
+    try:
+        c.execute(query, vals)
+        conn.commit()
+        return True
+    except Exception as e:
+        reset_con()
+        return False
