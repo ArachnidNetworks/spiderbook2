@@ -43,9 +43,27 @@ def get_posts(category=None):
     return rows
 
 # Get all categories
+def format_cat(rows):
+    cats = {}
+    for row in rows:
+        category = row['category']
+        count = row['count']
+        cats[category] = row['count']
+    return cats
+
+def get_popular_cats(cats):
+    popular = []
+    print(cats)
+
 def get_categories(filter=None):
-    c.execute("SELECT DISTINCT category FROM posts")
-    print(c.fetchall())
+    c.execute("SELECT category, COUNT(category) FROM posts GROUP BY category")
+    frows = c.fetchall()
+    rows = []
+    for row in frows:
+        rows.append(row_to_dict(row, c))
+    f = format_cat(rows)
+    get_popular_cats(f)
+    return rows
 
 get_categories()
 
