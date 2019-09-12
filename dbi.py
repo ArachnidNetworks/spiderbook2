@@ -52,7 +52,7 @@ def format_cat(rows):
         cats[category] = count
     return cats
 
-def cats_query(fter, query, values=None):
+def cats_query(query, values=None):
     if values: c.execute(query, values)
     else: c.execute(query)
     frows = c.fetchall()
@@ -61,9 +61,8 @@ def cats_query(fter, query, values=None):
         rows.append(row_to_dict(row, c))
     return format_cat(rows)
 
-def get_popular_cats(limit, fter=None):
-    cats = cats_query(
-        fter, "SELECT category, COUNT(category) FROM posts GROUP BY category")
+def get_popular_cats(limit):
+    cats = cats_query("SELECT category, COUNT(category) FROM posts GROUP BY category")
     popular = []
     ns = list(cats.values())
     ns.sort(reverse=True)
@@ -74,10 +73,10 @@ def get_popular_cats(limit, fter=None):
             if cats[cat] == ns[x]: popular.append(cat)
     return popular
 
-def get_hot_cats(limit, fter=None):
+def get_hot_cats(limit):
     hot = []
     curdate = datetime.now().date()
-    cats = cats_query(fter, """SELECT category, COUNT(category) FROM posts
+    cats = cats_query("""SELECT category, COUNT(category) FROM posts
         WHERE curdate = %s GROUP BY category""", (curdate,))
     ns = list(cats.values())
     ns.sort(reverse=True)
