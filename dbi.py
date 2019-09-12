@@ -1,4 +1,5 @@
-import hashlib, datetime, random
+import hashlib, random
+from datetime import datetime
 import psycopg2
 
 # Password hasher
@@ -51,27 +52,45 @@ def format_cat(rows):
         cats[category] = count
     return cats
 
-def get_popular_cats(cats):
-    popular = []
-    ns = list(cats.values())
-    ns.sort(reverse=True)
-    amm = len(ns)
-    if amm >= 50: amm = 50
-    for x in range(amm):
-        for cat, count in cats.items():
-            if cats[cat] == ns[x]: popular.append(cat)
-    return popular
-
-def get_categories(filter=None):
-    c.execute("SELECT category, COUNT(category) FROM posts GROUP BY category")
+def cats_query(fter, query, values=None):
+    if values: c.execute(query, values)
+    else: c.execute(query)
     frows = c.fetchall()
     rows = []
     for row in frows:
         rows.append(row_to_dict(row, c))
     return format_cat(rows)
 
-rows = get_categories()
-a = get_popular_cats(rows)
+def get_popular_cats(limit, fter=None):
+    cats = cats_query(
+        fter, "SELECT category, COUNT(category) FROM posts GROUP BY category")
+    popular = []
+    ns = list(cats.values())
+    ns.sort(reverse=True)
+    amm = len(ns)
+    if amm >= limit: amm = limit
+    for x in range(amm):
+        for cat, count in cats.items():
+            if cats[cat] == ns[x]: popular.append(cat)
+    return popular
+
+def get_hot_cats(limit, fter=None):
+    hot = []
+    curdate = datetime.now().date()
+    cats = cats_query(fter, """SELECT category, COUNT(category) FROM posts
+        WHERE curdate = %s GROUP BY category""", (curdate,))
+    ns = list(cats.values())
+    ns.sort(reverse=True)
+    amm = len(ns)
+    if amm >= limit:
+        amm = limit
+    for x in range(amm):
+        for cat, count in cats.items():
+            if cats[cat] == ns[x]:
+                hot.append(cat)
+    return hot
+
+a = get_hot_cats(50)
 print(a)
 
 # Sign in to a user
