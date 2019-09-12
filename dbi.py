@@ -48,12 +48,19 @@ def format_cat(rows):
     for row in rows:
         category = row['category']
         count = row['count']
-        cats[category] = row['count']
+        cats[category] = count
     return cats
 
 def get_popular_cats(cats):
     popular = []
-    print(cats)
+    ns = list(cats.values())
+    ns.sort(reverse=True)
+    amm = len(ns)
+    if amm >= 50: amm = 50
+    for x in range(amm):
+        for cat, count in cats.items():
+            if cats[cat] == ns[x]: popular.append(cat)
+    return popular
 
 def get_categories(filter=None):
     c.execute("SELECT category, COUNT(category) FROM posts GROUP BY category")
@@ -61,11 +68,11 @@ def get_categories(filter=None):
     rows = []
     for row in frows:
         rows.append(row_to_dict(row, c))
-    f = format_cat(rows)
-    get_popular_cats(f)
-    return rows
+    return format_cat(rows)
 
-get_categories()
+rows = get_categories()
+a = get_popular_cats(rows)
+print(a)
 
 # Sign in to a user
 def login(e, p):
