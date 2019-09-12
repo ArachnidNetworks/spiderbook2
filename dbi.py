@@ -1,4 +1,4 @@
-import hashlib, datetime
+import hashlib, datetime, random
 import psycopg2
 
 # Password hasher
@@ -33,3 +33,28 @@ def login(e, p):
         return True
     else:
         return False
+
+# Create a post with the form data harvested at the view function
+def get_new_pid():
+    c.execute("SELECT * FROM ids ORDER BY v DESC LIMIT 1")
+    last_id = c.fetchone()[0]
+    uhs_new_pid = last_id + random.randint(1, 9)
+    c.execute("INSERT INTO ids (v) VALUES (%s)", (uhs_new_pid,))
+    conn.commit()
+    return hashpass(uhs_new_pid)
+
+def create_post(data):
+    new_pid = get_new_pid()
+    vals = (
+        new_pid,
+        data['title'],
+        data['category'],
+        data['author'],
+        data['body'],
+        data['imgbin']
+    )
+    query = """INSERT INTO posts (
+        pid, title, category, author, body, imgbin
+    )
+    VALUES (%s, %s, %s, %s, %s, %s)"""
+    c.execute(query, vals)
