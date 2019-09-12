@@ -42,6 +42,13 @@ def get_posts(category=None):
         rows.append(row_to_dict(row, c))
     return rows
 
+# Get all categories
+def get_categories(filter=None):
+    c.execute("SELECT DISTINCT category FROM posts")
+    print(c.fetchall())
+
+get_categories()
+
 # Sign in to a user
 def login(e, p):
     print(e, p)
