@@ -45,8 +45,9 @@ def create_post():
 @app.route("/user/signin", methods=['GET', 'POST'])
 def signin():
     if request.method == 'POST':
-        email = dict(request.form).get('email')
-        password = dbi.hashpass(dict(request.form).get('pass'))
+        login_data = dict(request.form)
+        email = login_data.get('email')
+        password = dbi.hash_str(str(login_data.get('pass')))
 
         if dbi.login(email, password):
             return "Signed in"
@@ -57,7 +58,18 @@ def signin():
 
 @app.route("/user/signup", methods=['GET', 'POST'])
 def signup():
-    return "Sign up"
+    if request.method == 'POST':
+        user_data = dict(request.form)
+        data = {}
+        data['username'] = user_data.get('username')
+        data['email'] = user_data.get('email')
+        data['pass'] = dbi.hash_str(str(user_data.get('pass')))
+        data['bio'] = user_data.get('bio')
+        data['table'] = 'users'
+        dbi.insert_row(data)
+        return "User created!"
+    else:
+        return "Sign up"
 
 if __name__ == "__main__":
     app.run (
