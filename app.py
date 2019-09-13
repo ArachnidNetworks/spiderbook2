@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify
-import os, time
+import os, time, re
 import dbi
 
 app = Flask(__name__)
@@ -29,11 +29,11 @@ def create_post():
     if request.method == 'POST':
         post_data = dict(request.form)
         data = {}
-        data['author'] = post_data.get('author')
+        data['author'] = re.escape(post_data.get('author'))
         if not data['author']: data['author'] = 'Anonymous'
-        data['category'] = post_data.get('category')
-        data['title'] = post_data.get('title')
-        data['body'] = post_data.get('body')
+        data['category'] = re.escape(post_data.get('category'))
+        data['title'] = re.escape(post_data.get('title'))
+        data['body'] = re.escape(post_data.get('body'))
         image = request.files.get('imgbin')
         print(request.files)
         if image:
