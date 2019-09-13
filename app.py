@@ -6,8 +6,8 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
 
 def get_image_url(image):
-    name = f'images/{image.filename}'
-    image.save(name)
+    name = image.filename
+    image.save(f'images/{name}')
     return name
 
 @app.route("/")
