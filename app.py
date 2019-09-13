@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, make_response, render_template, url_for
+from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify
 import os, time
 import dbi
 
@@ -14,8 +14,9 @@ def get_binary_image(image):
 
 @app.route("/")
 def home():
-    posts = dbi.get_posts()
-    return str(posts)
+    limit = 30
+    posts = dbi.get_posts("ORDER BY curdate DESC LIMIT %s", (limit,))
+    return jsonify(posts)
 
 @app.route("/cat/<category>")
 def catpost(category):
@@ -23,7 +24,7 @@ def catpost(category):
     for post in posts:
         post.pop('pid')
         post.pop('category')
-    return str(posts)
+    return jsonify(posts)
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
@@ -35,7 +36,8 @@ def create_post():
         data['category'] = post_data.get('category')
         data['title'] = post_data.get('title')
         data['body'] = post_data.get('body')
-        image = request.files.get('img')
+        image = request.files.get('imgbin')
+        print(request.files)
         if image:
             data['imgbin'] = get_binary_image(image)
         else:
