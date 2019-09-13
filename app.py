@@ -5,12 +5,10 @@ import dbi
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
 
-def get_binary_image(image):
-    name = image.filename
+def get_image_url(image):
+    name = f'images/{image.filename}'
     image.save(name)
-    with open(name, 'rb') as f:
-        return f.read()
-    os.delete(name)
+    return name
 
 @app.route("/")
 def home():
@@ -39,9 +37,9 @@ def create_post():
         image = request.files.get('imgbin')
         print(request.files)
         if image:
-            data['imgbin'] = get_binary_image(image)
+            data['imgurl'] = get_image_url(image)
         else:
-            data['imgbin'] = None
+            data['imgurl'] = None
         data['table'] = 'posts'
         dbi.insert_row(data)
         return "Post created!"
