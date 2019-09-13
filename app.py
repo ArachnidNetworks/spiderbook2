@@ -10,10 +10,14 @@ def get_image_url(image):
     image.save(f'images/{name}')
     return name
 
-@app.route("/")
-def home():
-    limit = 30
-    posts = dbi.get_posts("ORDER BY curdate DESC LIMIT %s", (limit,))
+@app.route('/')
+def root():
+    return redirect(url_for('home', page=0))
+
+@app.route("/<page>")
+def home(page):
+    limit = 3
+    posts = dbi.get_posts("ORDER BY curdate DESC OFFSET %s LIMIT %s", (page, limit))
     return jsonify(posts)
 
 @app.route("/cat/<category>")
