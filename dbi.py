@@ -129,8 +129,6 @@ def insert_row(data):
     new_pid = get_new_pid()
     table = data['table']
     data.pop('table')
-    if data['imgbin']:
-        data['imgbin'] = base64.b64encode(data['imgbin'])
     # cols is a list of the columns from the data, and scols is that list
     # converted to a formatted string
     cols, scols = get_cols(data)
