@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify
+from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify, abort
 import os, time, re, datetime
 import dbi
 
@@ -15,43 +15,59 @@ def get_curtimestamp():
 
 @app.route('/')
 def root():
-    return redirect(url_for('home', page=0))
+    try:
+        return redirect(url_for('home', page=1))
+    except:
+        return abort(500)
 
 @app.route("/<page>")
 def home(page):
-    limit = 3
-    posts = dbi.get_posts("ORDER BY curdate DESC OFFSET %s LIMIT %s", (page, limit))
-    return jsonify(posts)
+    try:
+        page = int(page)
+        if page < 1: return redirect(url_for('home', page=1))
+        page = page-1
+        limit = 3
+        off = int(page)*limit
+        print(off)
+        posts = dbi.get_posts("ORDER BY postts DESC OFFSET %s LIMIT %s", (off, limit))
+        return jsonify(posts)
+    except:
+        return abort(500)
 
 @app.route("/cat/<category>")
 def catpost(category):
-    posts = dbi.get_posts("WHERE category = %s", (category,))
-    for post in posts:
-        post.pop('pid')
-        post.pop('category')
-    return jsonify(posts)
+    try:
+        posts = dbi.get_posts("WHERE category = %s", (category,))
+        for post in posts:
+            post.pop('pid')
+            post.pop('category')
+        return jsonify(posts)
+    except:
+        return abort(500)
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
-    if request.method == 'POST':
-        post_data = dict(request.form)
-        data = {}
-        data['author'] = re.escape(post_data.get('author'))
-        if not data['author']: data['author'] = 'Anonymous'
-        data['category'] = re.escape(post_data.get('category'))
-        data['title'] = re.escape(post_data.get('title'))
-        data['body'] = re.escape(post_data.get('body'))
-        data['postts'] = get_curtimestamp()
-        image = request.files.get('imgbin')
-        if image:
-            data['imgurl'] = get_image_url(image)
+    try:
+        if request.method == 'POST':
+            post_data = dict(request.form)
+            data = {}
+            data['author'] = re.escape(post_data.get('author'))
+            if not data['author']: data['author'] = 'Anonymous'
+            data['category'] = re.escape(post_data.get('category'))
+            data['title'] = re.escape(post_data.get('title'))
+            data['body'] = re.escape(post_data.get('body'))
+            data['postts'] = get_curtimestamp()
+            image = request.files.get('imgbin')
+            if image:
+                data['imgurl'] = get_image_url(image)
+            else:
+                data['imgurl'] = None
+            data['table'] = 'posts'
+            dbi.insert_row(data)
+            return "Post created!"
         else:
-            data['imgurl'] = None
-        data['table'] = 'posts'
-        dbi.insert_row(data)
-        return "Post created!"
-    else:
-        return "Create post"
+            return "Create post"
+    return abort(500)
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])
