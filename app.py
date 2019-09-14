@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify
-import os, time, re
+import os, time, re, datetime
 import dbi
 
 app = Flask(__name__)
@@ -9,6 +9,9 @@ def get_image_url(image):
     name = image.filename
     image.save(f'images/{name}')
     return name
+
+def get_curtimestamp():
+    return datetime.datetime.utcnow()
 
 @app.route('/')
 def root():
@@ -38,8 +41,8 @@ def create_post():
         data['category'] = re.escape(post_data.get('category'))
         data['title'] = re.escape(post_data.get('title'))
         data['body'] = re.escape(post_data.get('body'))
+        data['postts'] = get_curtimestamp()
         image = request.files.get('imgbin')
-        print(request.files)
         if image:
             data['imgurl'] = get_image_url(image)
         else:
