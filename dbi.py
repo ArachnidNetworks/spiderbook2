@@ -2,9 +2,10 @@ import hashlib, random, base64
 from datetime import datetime
 import psycopg2
 
-# Password hasher
-def hash_str(s):
-    return hashlib.sha1(s.encode()).hexdigest()[:24]
+# Hasher
+def hash_str(s, limit=None):
+    if not limit: limit = 40
+    return hashlib.sha1(s.encode()).hexdigest()[:limit]
 
 # Delete the last element in a string
 def del_last(t):

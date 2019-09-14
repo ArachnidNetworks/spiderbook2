@@ -57,7 +57,7 @@ def create_post():
             data['title'] = re.escape(post_data.get('title'))
             data['body'] = re.escape(post_data.get('body'))
             data['postts'] = get_curtimestamp()
-            #data['poster_ip'] = str(request.environ['REMOTE_ADDR'])
+            data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
             image = request.files.get('imgbin')
             if image:
                 data['imgurl'] = get_image_url(image)
