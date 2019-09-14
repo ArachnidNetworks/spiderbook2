@@ -41,7 +41,7 @@ def home(page):
         limit = 3
         off = int(page)*limit
         posts = dbi.get_posts("ORDER BY postts DESC OFFSET %s LIMIT %s", (off, limit))
-        return jsonify(posts)
+        return render_template("home.html", title="Home", posts=posts)
     except:
         return abort(SERVER)
 
