@@ -20,7 +20,7 @@ def root():
     except:
         return abort(500)
 
-@app.route("/<page>")
+@app.route("/page/<page>")
 def home(page):
     try:
         page = int(page)
@@ -64,10 +64,12 @@ def create_post():
                 data['imgurl'] = None
             data['table'] = 'posts'
             dbi.insert_row(data)
-            return "Post created!"
+            # request.environ['REMOTE_ADDR']
+            return "Post created!" 
         else:
             return "Create post"
-    return abort(500)
+    except:
+        return abort(500)
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])
