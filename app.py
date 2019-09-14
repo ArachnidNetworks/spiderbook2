@@ -1,38 +1,50 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify, abort
-import os, time, re, datetime
+import os
+import time
+import re
+import datetime
 import dbi
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
+
+UNPROC_ENTITY = 422
+SERVER = 500
+NOT_FOUND = 404
+FORBBIDEN = 403
 
 def get_image_url(image):
     name = image.filename
     image.save(f'images/{name}')
     return name
 
+
 def get_curtimestamp():
     return datetime.datetime.utcnow()
+
 
 @app.route('/')
 def root():
     try:
         return redirect(url_for('home', page=1))
     except:
-        return abort(500)
+        return abort(SERVER)
+
 
 @app.route("/page/<page>")
 def home(page):
     try:
         page = int(page)
-        if page < 1: return redirect(url_for('home', page=1))
+        if page < 1:
+            return redirect(url_for('home', page=1))
         page = page-1
         limit = 3
         off = int(page)*limit
-        print(off)
         posts = dbi.get_posts("ORDER BY postts DESC OFFSET %s LIMIT %s", (off, limit))
         return jsonify(posts)
     except:
-        return abort(500)
+        return abort(SERVER)
+
 
 @app.route("/cat/<category>")
 def catpost(category):
@@ -43,20 +55,23 @@ def catpost(category):
             post.pop('category')
         return jsonify(posts)
     except:
-        return abort(500)
+        return abort(SERVER)
+
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
-    try:
-        if request.method == 'POST':
+    if request.method == 'POST':
+        try:
             post_data = dict(request.form)
             data = {}
-            data['author'] = re.escape(post_data.get('author'))
-            if not data['author']: data['author'] = 'Anonymous'
-            data['category'] = re.escape(post_data.get('category'))
-            data['title'] = re.escape(post_data.get('title'))
-            data['body'] = re.escape(post_data.get('body'))
+            data['author'] = re.escape(str(post_data.get('author')))
+            if not data['author']:
+                data['author'] = 'Anonymous'
+            data['category'] = re.escape(str(post_data.get('category')))
+            data['title'] = re.escape(str(post_data.get('title')))
+            data['body'] = re.escape(str(post_data.get('body')))
             data['postts'] = get_curtimestamp()
+            data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
             image = request.files.get('imgbin')
             if image:
                 data['imgurl'] = get_image_url(image)
@@ -64,12 +79,12 @@ def create_post():
                 data['imgurl'] = None
             data['table'] = 'posts'
             dbi.insert_row(data)
-            # request.environ['REMOTE_ADDR']
-            return "Post created!" 
-        else:
-            return "Create post"
-    except:
-        return abort(500)
+            return "Post created!"
+        except:
+            return abort(UNPROC_ENTITY)
+    else:
+        return "Create post"
+
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])
@@ -102,7 +117,7 @@ def signup():
         return "Sign up" """
 
 if __name__ == "__main__":
-    app.run (
+    app.run(
         host="localhost",
         port=8000,
         debug=True
