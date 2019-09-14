@@ -107,7 +107,7 @@ def get_new_pid():
     uhs_new_pid = last_id + random.randint(1, 9)
     c.execute("INSERT INTO ids (v) VALUES (%s)", (uhs_new_pid,))
     conn.commit()
-    return hash_str(str(uhs_new_pid))
+    return hash_str(str(uhs_new_pid), 25)
 
 def get_cols(data):
     cols = [str(key) for key in data.keys()]
@@ -117,6 +117,7 @@ def get_cols(data):
 def create_vals(data, pid, cols):
     vals = (pid,)
     for col in cols:
+        if data[col] == 'None': data[col] = None
         vals += (data[col],)
     return vals
 
@@ -145,4 +146,4 @@ def insert_row(data):
         return True
     except Exception as e:
         reset_con()
-        return False
+        raise e
