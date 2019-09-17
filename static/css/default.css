@@ -115,26 +115,15 @@ html, body {
     #open-aside {
         position: fixed;
         left: -100%;
-        bottom: calc(var(--arrow-width) / 3 - 15px);
-        background-color: var(--main-bg-color);
+        bottom: calc(var(--arrow-width) / 3 - 16px);
+        /* background-color: var(--main-bg-color); */
+        background-color: transparent;
         transition: left 0.05s;
-    }
-
-    .aside-btn img {
-        width: calc(var(--arrow-width) - 12px);
-    }
-
-    .aside-btn img:hover {
-        cursor: pointer;
     }
 
     #close-aside img {
         -webkit-transform: scaleX(-1);
         transform: scaleX(-1);
-    }
-
-    .closed {
-        transform: translateX(-100%);
     }
 
     #close-aside img {
