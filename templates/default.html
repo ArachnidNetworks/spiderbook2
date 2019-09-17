@@ -17,14 +17,12 @@
                 {% endif %}
             {% endfor %}
         </ul>
-        <button id="close-aside">
-            <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="CLOSE"
-            onclick="ctrl_aside(1);">
+        <button id="close-aside" class="aside-btn" onclick="ctrl_aside(1);">
+            <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="CLOSE">
         </button>
     </aside>
-    <button id="open-aside">
-        <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="OPEN"
-        onclick="ctrl_aside(0);">
+    <button id="open-aside" class="aside-btn" onclick="ctrl_aside(0);">
+        <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="OPEN">
     </button>
     <div id="cont">
     {% block category %}

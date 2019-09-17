@@ -72,29 +72,45 @@ html, body {
     }
 }
 
-#close-aside {
+.aside-btn {
+    width: var(--arrow-width);
     margin-top: auto;
     margin-bottom: calc(var(--arrow-width) / 3);
-    width: var(--arrow-width);
     background-color: var(--aside-bg);
     border: 0;
     display: flex;
 }
 
-#close-aside img {
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
+#open-aside {
+    position: fixed;
+    /* left: 2px; */
+    left: 50px;
+    bottom: calc(var(--arrow-width) / 3 - 15px);
+    display: hidden;
+}
+
+.aside-btn img {
     width: calc(var(--arrow-width) - 12px);
 }
 
-#close-aside img:hover {
+.aside-btn img:hover {
     cursor: pointer;
 }
 
-#cont {
-    margin-left: var(--aside-len);
+#close-aside img {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 
 .closed {
     transform: translateX(-100%);
+}
+
+.oa-active {
+    transform: translateX(500%);
+    background-color: red;
+}
+
+#cont {
+    margin-left: var(--aside-len);
 }
