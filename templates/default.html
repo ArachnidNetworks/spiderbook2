@@ -17,7 +17,9 @@
                 {% endif %}
             {% endfor %}
         </ul>
-        <button></button>
+        <button id="left-arrow">
+            <img src="{{ url_for('static', filename='icons/arrow.png') }}"  alt="">
+        </button>
     </aside>
     <div id="cont">
     {% block category %}
