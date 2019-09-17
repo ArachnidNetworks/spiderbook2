@@ -1,11 +1,7 @@
-@font-face {
-    font-family: 'Roboto Thin';
-    src: url('https://ff.static.1001fonts.net/r/o/roboto.light.ttf');
-}
-
 * {
     color: white;
-    font-family: 'Roboto Thin';
+    font-family: Arial, Helvetica;
+    font-weight: normal;
 }
 
 html, body {
@@ -22,6 +18,7 @@ html, body {
 
 #popular-cats-h {
     margin: 0;
+    font-weight: 100;
 }
 
 #popular-cats-l {
