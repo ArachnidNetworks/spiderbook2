@@ -1,7 +1,8 @@
 :root {
-    --main-bg-color: #0d1014;
+    --main-color: #479366;
+    --main-bg-color: #080c0a;
+    --aside-bg: #18241e;
     --aside-len: 16vw;
-    --aside-bg: #232a35;
     --arrow-width: 55px;
 }
 
@@ -52,13 +53,13 @@ html, body {
 }
 
 #popular-cats-l .cat:hover {
-    background-color: #2e8b57;
+    background-color: var(--main-color);
     cursor: pointer;
 }
 
 .touched {
     transition: background 1s;
-    background-color: #2e8b57;
+    background-color: var(--main-color);
 }
 
 #popular-cats-l a {
