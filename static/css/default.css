@@ -57,6 +57,10 @@ html, body {
 }
 
 #popular-cats-l a {
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20ch;
     text-decoration: none;
 }
 
@@ -80,6 +84,7 @@ html, body {
     #popular-cats-l .cat {
         font-size: 12pt;
     }
+
 }
 
 @media screen and (max-width: 770px) {
@@ -169,5 +174,9 @@ html, body {
     #popular-cats-l .cat {
         font-size: 20pt;
         text-align: center;
+    }
+
+    #popular-cats-l a {
+        max-width: none;
     }
 }

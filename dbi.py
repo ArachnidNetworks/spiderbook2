@@ -53,7 +53,11 @@ def format_cat(rows):
         cats[category] = count
     return cats
 
-def cats_query(query, values=None):
+def cats_query(query, limit=None, values=None):
+    if limit:
+        query += " LIMIT %s"
+        if values: values += (limit,)
+        else: values = (limit,)
     if values: c.execute(query, values)
     else: c.execute(query)
     frows = c.fetchall()
@@ -63,7 +67,9 @@ def cats_query(query, values=None):
     return format_cat(rows)
 
 def get_popular_cats(limit):
-    cats = cats_query("SELECT category, COUNT(category) FROM posts GROUP BY category")
+    cats = cats_query("""SELECT category, COUNT(category) FROM posts
+    GROUP BY category ORDER BY COUNT DESC""", limit)
+    print(cats)
     popular = []
     ns = list(cats.values())
     ns.sort(reverse=True)
