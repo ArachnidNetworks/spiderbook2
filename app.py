@@ -42,7 +42,7 @@ def home(page):
         posts = dbi.get_posts("ORDER BY postts DESC OFFSET %s LIMIT %s", (off, limit))
         popular = dbi.get_popular_cats(5)
         print(popular)
-        return render_template("home.html", title="Home", posts=posts, popular=popular)
+        return render_template("home.html", title=" Home", posts=posts, popular=popular)
     except:
         return abort(SERVER)
 

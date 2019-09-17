@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
     {% block styles %}{% endblock styles %}
     
-    <title>{{ title }}</title>
+    <title>Spiderbook{{ title }}</title>
 </head>
 <body>
     <!-- Aside to display the most popular categories -->
@@ -34,6 +34,7 @@
     </button>
     <div id="cont">
     {% block category %}
+    <img id="logo" src="{{ url_for('static', filename='logo.png') }}" alt="LOGO">
     {% endblock category %}
         <main>
             {% block content %}
