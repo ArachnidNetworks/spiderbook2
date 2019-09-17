@@ -57,7 +57,6 @@ def catpost(category):
     except:
         return abort(SERVER)
 
-
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
