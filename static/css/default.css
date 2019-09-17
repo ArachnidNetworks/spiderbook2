@@ -17,16 +17,13 @@ html, body {
     padding: 0;
     height: 100%; width: 100%;
     background-color: var(--main-bg-color);
-}
-
-body {
-    display: flex;
-    flex-direction: row;
+    overflow-x: hidden;
 }
 
 #popular-cats-a {
     margin: 0;
     top: 0; left: 0;
+    position: fixed;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -38,7 +35,7 @@ body {
 
 #popular-cats-h {
     margin: 12px;
-    font-size: 1.7vw;
+    font-size: 2.4vw;
     font-weight: 1;
     text-align: left;
 }
@@ -52,7 +49,7 @@ body {
 
 #popular-cats-l .cat {
     padding: 12px;
-    font-size: 1.4vw;
+    font-size: 1.8vw;
     display: block;
     transition: background 0.2s;
 }
@@ -80,15 +77,26 @@ body {
 }
 
 #cont {
-    margin-left: 30px; margin-right: auto;
-    padding: 1vw;
-    width: 100%;
+    margin-left: var(--aside-len);
 }
 
 #logo {
-    width: 10%;
-    /* margin-left: auto; */
-    float: right;
+    width: 35%;
+    float: left;
+    margin-top: auto;
+    margin-bottom: 5%;
+    margin-right: 5%;
+    margin-left: auto;
+}
+
+@media screen and (min-width: 1250px) and (max-width: 2000px) {
+    #popular-cats-h {
+        font-size: 20pt;
+    }
+
+    #popular-cats-l .cat {
+        font-size: 15pt;
+    }
 }
 
 @media screen and (min-width: 771px) and (max-width: 1000px) {
@@ -97,11 +105,11 @@ body {
     }
 
     #popular-cats-h {
-        font-size: 16pt;
+        font-size: 20pt;
     }
 
     #popular-cats-l .cat {
-        font-size: 12pt;
+        font-size: 16pt;
     }
 
 }
@@ -111,8 +119,12 @@ body {
         --aside-len: 100vw;
     }
 
+    #logo {
+        display: none;
+    }
+
     .aside-btn {
-        display: flex!important;
+        display: flex;
         width: var(--arrow-width);
         margin-top: auto;
         margin-bottom: calc(var(--arrow-width) / 3);
@@ -170,5 +182,9 @@ body {
 
     #popular-cats-l a {
         max-width: none;
+    }
+
+    #logo {
+        width: 35%;
     }
 }

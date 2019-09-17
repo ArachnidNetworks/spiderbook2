@@ -25,6 +25,8 @@
                 ontouchstart="clickpc(this, 1);" ontouchend="clickpc(this, 0);">{{ cat }}</a></li>
             {% endfor %}
         </ul>
+        <!-- Website's logo and closing button -->
+        <img id="logo" src="{{ url_for('static', filename='logo.png') }}" alt="LOGO">
         <button id="close-aside" class="aside-btn" onclick="ctrl_aside(1);">
             <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="CLOSE">
         </button>
@@ -34,7 +36,6 @@
     </button>
     <div id="cont">
     {% block category %}
-    <img id="logo" src="{{ url_for('static', filename='logo.png') }}" alt="LOGO">
     {% endblock category %}
         <main>
             {% block content %}
