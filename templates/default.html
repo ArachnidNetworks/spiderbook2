@@ -12,16 +12,20 @@
         <h2 id="popular-cats-h">Popular categories</h2>
         <ul id="popular-cats-l">
             {% for cat in popular %}
-                <li><a href="{{ url_for('catpost', category=cat) }}" class="cat">{{ cat }}</a></li>
+                {% if cat|length < 16 %}
+                    <li><a href="{{ url_for('catpost', category=cat) }}" class="cat">{{ cat }}</a></li>
+                {% endif %}
             {% endfor %}
         </ul>
+        <button></button>
     </aside>
     <div id="cont">
     {% block category %}
     {% endblock category %}
-    {% block content %}
-    <main></main>
-    {% endblock content %}
+        <main>
+            {% block content %}
+            {% endblock content %}
+        </main>
     </div>
 </body>
 </html>

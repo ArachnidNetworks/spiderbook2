@@ -1,3 +1,7 @@
+:root {
+    --aside-len: 160px;
+}
+
 * {
     color: white;
     font-family: Arial, Helvetica;
@@ -16,8 +20,9 @@ html, body {
     top: 0; left: 0;
     position: fixed;
     height: 100%;
-    width: 12%;
+    width: var(--aside-len);
     background-color: #232a35;
+    overflow-x: hidden;
 }
 
 #popular-cats-h {
@@ -49,5 +54,5 @@ html, body {
 }
 
 #cont {
-    margin-left: 12%;
+    margin-left: var(--aside-len);
 }

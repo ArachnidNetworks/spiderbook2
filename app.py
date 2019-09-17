@@ -41,7 +41,7 @@ def home(page):
         limit = 3
         off = int(page)*limit
         posts = dbi.get_posts("ORDER BY postts DESC OFFSET %s LIMIT %s", (off, limit))
-        popular = dbi.get_popular_cats(5)
+        popular = dbi.get_popular_cats(4)
         return render_template("home.html", title="Home", posts=posts, popular=popular)
     except:
         return abort(SERVER)
