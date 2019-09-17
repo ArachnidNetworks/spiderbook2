@@ -1,5 +1,5 @@
 :root {
-    --aside-len: 160px;
+    --aside-len: 16vw;
     --aside-bg: #232a35;
     --arrow-width: 45px;
 }
@@ -32,6 +32,7 @@ html, body {
 #popular-cats-h {
     margin: 12px;
     font-weight: 100;
+    font-size: calc(2vw * 1.1);
     text-align: left;
 }
 
@@ -44,7 +45,7 @@ html, body {
 
 #popular-cats-l .cat {
     padding: 12px;
-    font-size: 14pt;
+    font-size: calc(2vw / 1.1);
     display: block;
     transition: background 0.2s;
 }
@@ -56,6 +57,18 @@ html, body {
 
 #popular-cats-l a {
     text-decoration: none;
+}
+
+@media screen and (max-width: 770px) {
+    :root {
+        --aside-len: 100vw;
+    }
+    #popular-cats-l .cat {
+        font-size: 11pt;
+    }
+    #popular-cats-h {
+        font-size: 13pt;
+    }
 }
 
 #left-arrow {
