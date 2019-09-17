@@ -149,12 +149,12 @@ html, body {
     }
 
     #popular-cats-h {
-        font-size: 24pt;
+        font-size: 13vw;
         text-align: center;
     }
 
     #popular-cats-l .cat {
-        font-size: 17pt;
+        font-size: 8vw;
         text-align: center;
     }
 }
