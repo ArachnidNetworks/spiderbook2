@@ -68,7 +68,13 @@ html, body {
 }
 
 #left-arrow img {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
     width: calc(var(--arrow-width) - 12px);
+}
+
+#left-arrow img:hover {
+    cursor: pointer;
 }
 
 #cont {
