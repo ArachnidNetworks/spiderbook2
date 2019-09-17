@@ -1,4 +1,5 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify, abort
+from flask import send_from_directory
 import os
 import time
 import re
@@ -18,10 +19,8 @@ def get_image_url(image):
     image.save(f'images/{name}')
     return name
 
-
 def get_curtimestamp():
     return datetime.datetime.utcnow()
-
 
 @app.route('/')
 def root():
