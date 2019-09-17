@@ -81,7 +81,7 @@ def get_hot_cats(limit):
     hot = []
     curdate = datetime.now().date()
     cats = cats_query("""SELECT category, COUNT(category) FROM posts
-        WHERE curdate = %s GROUP BY category""", (curdate,), d=True)
+        WHERE curdate = %s GROUP BY category""", values=(curdate,), d=True)
     ns = list(cats.values())
     ns.sort(reverse=True)
     amm = len(ns)
