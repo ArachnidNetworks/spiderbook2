@@ -7,27 +7,47 @@
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%; width: 100%;
+    background-color: #0d1014;
 }
 
 #popular-cats-a {
     margin: 0;
-    float: left;
-    padding: 10px;
+    top: 0; left: 0;
+    position: fixed;
+    height: 100%;
+    width: 12%;
     background-color: #232a35;
 }
 
 #popular-cats-h {
-    margin: 0;
+    margin: 12px;
     font-weight: 100;
+    text-align: left;
 }
 
 #popular-cats-l {
     margin: 0;
     display: block;
-    padding: 5px;
+    padding: 0;
     list-style-type: none;
+}
+
+#popular-cats-l .cat {
+    padding: 12px;
+    font-size: 14pt;
+    transition: background 0.2s;
+}
+
+#popular-cats-l .cat:hover {
+    background-color: #2e8b57;
+    cursor: pointer;
 }
 
 #popular-cats-l a {
     text-decoration: none;
+}
+
+#cont {
+    margin-left: 12%;
 }
