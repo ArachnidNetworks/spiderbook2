@@ -18,7 +18,8 @@
             {% endfor %}
         </ul>
         <button id="left-arrow">
-            <img src="{{ url_for('static', filename='icons/arrow.png') }}"  alt="">
+            <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="CLOSE"
+            onclick="close_aside();">
         </button>
     </aside>
     <div id="cont">
