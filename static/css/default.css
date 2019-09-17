@@ -1,14 +1,13 @@
 :root {
     --main-bg-color: #0d1014;
-    --aside-len: 20.5vw;
+    --aside-len: 16vw;
     --aside-bg: #232a35;
-    --arrow-width: 70px;
+    --arrow-width: 55px;
 }
 
 * {
     color: white;
     font-family: Arial, Helvetica;
-    font-weight: normal;
     box-sizing: border-box;
 }
 
@@ -33,8 +32,8 @@ html, body {
 
 #popular-cats-h {
     margin: 12px;
-    font-weight: 100;
-    font-size: 2.5vw;
+    font-size: 1.7vw;
+    font-weight: 1;
     text-align: left;
 }
 
@@ -47,7 +46,7 @@ html, body {
 
 #popular-cats-l .cat {
     padding: 12px;
-    font-size: 2vw;
+    font-size: 1.4vw;
     display: block;
     transition: background 0.2s;
 }
@@ -67,6 +66,20 @@ html, body {
 
 #cont {
     margin-left: var(--aside-len);
+}
+
+@media screen and (min-width: 771px) and (max-width: 1000px) {
+    #popular-cats-a {
+        width: calc(var(--aside-len) + 1.5vw);
+    }
+
+    #popular-cats-h {
+        font-size: 16pt;
+    }
+
+    #popular-cats-l .cat {
+        font-size: 12pt;
+    }
 }
 
 @media screen and (max-width: 770px) {
@@ -107,7 +120,7 @@ html, body {
 
     #open-aside {
         position: fixed;
-        left: -500%;
+        left: -100%;
         bottom: calc(var(--arrow-width) / 3 - 15px);
         background-color: var(--main-bg-color);
         transition: left 0.2s;
@@ -149,12 +162,12 @@ html, body {
     }
 
     #popular-cats-h {
-        font-size: 13vw;
+        font-size: 25pt;
         text-align: center;
     }
 
     #popular-cats-l .cat {
-        font-size: 8vw;
+        font-size: 20pt;
         text-align: center;
     }
 }
