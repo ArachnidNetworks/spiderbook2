@@ -53,38 +53,35 @@ def format_cat(rows):
         cats[category] = count
     return cats
 
-def cats_query(query, limit=None, values=None):
+def cats_query(query, limit=None, values=None, d=None):
     if limit:
         query += " LIMIT %s"
         if values: values += (limit,)
         else: values = (limit,)
     if values: c.execute(query, values)
     else: c.execute(query)
-    frows = c.fetchall()
-    rows = []
-    for row in frows:
-        rows.append(row_to_dict(row, c))
-    return format_cat(rows)
+    if d:
+        frows = c.fetchall()
+        rows = []
+        for row in frows:
+            rows.append(row_to_dict(row, c))
+        return format_cat(rows)
+    else:
+        return c.fetchall()
 
 def get_popular_cats(limit):
     cats = cats_query("""SELECT category, COUNT(category) FROM posts
     GROUP BY category ORDER BY COUNT DESC""", limit)
-    print(cats)
     popular = []
-    ns = list(cats.values())
-    ns.sort(reverse=True)
-    amm = len(ns)
-    if amm >= limit: amm = limit
-    for x in range(amm):
-        for cat, count in cats.items():
-            if cats[cat] == ns[x]: popular.append(cat)
+    for cat, count in cats:
+        popular.append(cat)
     return popular
 
 def get_hot_cats(limit):
     hot = []
     curdate = datetime.now().date()
     cats = cats_query("""SELECT category, COUNT(category) FROM posts
-        WHERE curdate = %s GROUP BY category""", (curdate,))
+        WHERE curdate = %s GROUP BY category""", (curdate,), d=True)
     ns = list(cats.values())
     ns.sort(reverse=True)
     amm = len(ns)
