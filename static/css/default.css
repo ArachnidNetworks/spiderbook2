@@ -104,14 +104,6 @@ html, body {
         background-color: var(--aside-bg);
     }
 
-    #open-aside {
-        position: fixed;
-        left: -500%;
-        bottom: calc(var(--arrow-width) / 3 - 15px);
-        background-color: var(--main-bg-color);
-        transition: left 0.2s;
-    }
-
     .aside-btn img {
         width: calc(var(--arrow-width) - 12px);
     }
@@ -119,16 +111,13 @@ html, body {
     .aside-btn img:hover {
         cursor: pointer;
     }
-    #close-aside {
-        background-color: var(--aside-bg);
-    }
 
     #open-aside {
         position: fixed;
         left: -100%;
         bottom: calc(var(--arrow-width) / 3 - 15px);
         background-color: var(--main-bg-color);
-        transition: left 0.2s;
+        transition: left 0.05s;
     }
 
     .aside-btn img {
@@ -148,10 +137,6 @@ html, body {
         transform: translateX(-100%);
     }
 
-    .oa-active {
-        transition: left 0.4s!important;
-        left: 2px!important;
-    }
     #close-aside img {
         -webkit-transform: scaleX(-1);
         transform: scaleX(-1);
