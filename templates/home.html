@@ -1,5 +1,9 @@
 {% extends "default.html" %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock styles %}
+
 {% block page_header %}
     <!-- Category header. Really big. -->
     <div id="page-header">
