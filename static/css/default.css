@@ -22,6 +22,10 @@ html, body {
     overflow-x: hidden;
 }
 
+body {
+    padding: 15px;
+}
+
 #logo {
     width: 30%;
     margin-top: auto;

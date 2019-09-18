@@ -51,7 +51,8 @@ def home(category, page):
         OFFSET %s LIMIT %s""", (off, limit))
         print(posts)
         popular = dbi.get_popular_cats(5)
-        return render_template("home.html", title=" Home", posts=posts, popular=popular)
+        return render_template("home.html", title=" Home", posts=posts, popular=popular,
+        category=category)
     except Exception as e:
         return str(e)
 
