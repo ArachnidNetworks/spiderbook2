@@ -15,21 +15,14 @@
 </head>
 <body>
     <!-- Aside to display the most popular categories -->
-    <aside id="popular-cats-a">
+    <aside id="popular">
         <!-- Header -->
-        <h2 id="popular-cats-h">Popular categories</h2>
+        <h2 id="pheader">Popular categories</h2>
         <!-- List of links that highlight when hovered over -->
-        <ul id="popular-cats-l">
-            {% for cat in popular %}
-                <li><a href="{{ url_for('home', category=cat, page=1) }}" class="cat"
-                ontouchstart="clickpc(this, 1);" ontouchend="clickpc(this, 0);">{{ cat }}</a></li>
-            {% endfor %}
-        </ul>
+        {% for cat in popular %}
+        <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>
+        {% endfor %}
         <!-- Website's logo and closing button -->
-        <img id="logo" src="{{ url_for('static', filename='logo.png') }}" alt="LOGO">
-        <button id="close-aside" class="aside-btn" onclick="ctrl_aside(1);">
-            <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="CLOSE">
-        </button>
     </aside>
     <button id="open-aside" class="aside-btn" onclick="ctrl_aside(0);">
         <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="OPEN">
