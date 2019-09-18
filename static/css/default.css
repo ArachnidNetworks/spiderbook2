@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
 :root {
     --main-color: #479366;
     --main-bg-color: #080c0a;
@@ -8,7 +10,7 @@
 
 * {
     color: white;
-    font-family: Arial, Helvetica;
+    font-family: 'Lato', Helvetica;
     box-sizing: border-box;
 }
 
