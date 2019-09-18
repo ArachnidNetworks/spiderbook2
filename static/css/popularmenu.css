@@ -9,7 +9,6 @@
 #popular {
     display: inline-block;
     pointer-events: none;
-    margin-left: 15px;
 }
 
 #popular:hover {
