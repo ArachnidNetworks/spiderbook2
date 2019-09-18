@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+* {
+    color: white;
+    font-family: 'Lato', Helvetica;
+    box-sizing: border-box;
+}
+
+#popular {
+    display: inline-block;
+    pointer-events: none;
+    margin-left: 15px;
+}
+
+#popular:hover {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+#pheader {
+    display: inline-block;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+#spacer {
+    display: inline-block;
+    width: 5vw;
+    margin-left: 15px; margin-right: 15px;
+    vertical-align: middle;
+    cursor: pointer;
+    position: relative;
+}
+
+#spacer:before {
+    content: "";
+    position: absolute;
+    border-bottom: 1px solid #ffffff;
+    height: 1px;
+    width: 0%;
+    transition: width 0.25s ease;
+    transition-delay: 0.7s;
+}
+
+.cat {
+    position: relative;
+    display: inline-block;
+    margin-right: 30px;
+    top: 10px;
+    opacity: 0;
+    transition: opacity 0.5s ease, top 0.5s ease;
+    transition-delay: 0;
+}
+
+.cat span {
+    transition: color 0.5s ease;
+}
+
+.cat:hover span {
+    color: var(--main-color);
+}
+
+#popular:hover #spacer:before {
+    width: 100%;
+    transition-delay: 0s;
+}
+
+#popular:hover .cat {
+    opacity: 1;
+    top: 0px;
+}
+
+.cat:nth-child(3) {
+    transition-delay: 0.3s;
+}
+.cat:nth-child(4) {
+    transition-delay: 0.35s;
+}
+.cat:nth-child(5) {
+    transition-delay: 0.4s;
+}
+.cat:nth-child(6) {
+    transition-delay: 0.45s;
+}
+.cat:nth-child(7) {
+    transition-delay: 0.5s;
+}
+
+#mobilemenu, #mobheader, .mobcat {
+    display: none;
+}
+
+@media screen and (max-width: 770px) {
+    #popular {
+        display: none;
+    }
+    #mobilemenu {
+        position: fixed;
+        margin: 0; padding: 10px;
+        display: block;
+        height: 100%; width: 100%;
+        background-color: var(--aside-bg);
+    }
+    #mobilemenu ul {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        padding: 0;
+    }
+    #mobheader {
+        display: block;
+        font-size: 8vw;
+        text-align: center;
+    }
+    .mobcat {
+        display: block;
+        text-align: center;
+        margin: 3vw;
+    }
+    .mobcat a {
+        font-size: 5vw;
+        text-decoration: none;
+        border-radius: 10px;
+        padding: 1.5vw;
+        padding-left: 6vw; padding-right: 6vw;
+        background-color: var(--main-color);
+        filter: saturate(50%);
+        transition: filter 0.25s ease;
+    }
+    .touched {
+        filter: saturate(200%)!important;
+    }
+}

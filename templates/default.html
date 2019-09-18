@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}"
+    type="image/ico">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/popularmenu.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
+    {% block styles %}{% endblock styles %}
+    
+    <title>Spiderbook{{ title }}</title>
+</head>
+<body>
+    <!-- Header to display the most popular categories -->
+    <header id="popular">
+        <!-- Header title -->
+        <h2 id="pheader">Popular categories</h2>
+        <!-- Little spacer line -->
+        <div id="spacer"></div>
+        <!-- List of links that highlight when hovered over -->
+        {% for cat in popular %}
+            <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>
+        {% endfor %}
+        <!-- Website's logo and closing button -->
+    </header>
+    <!-- Menu to display popular categories on mobile -->
+    <menu id="mobilemenu">
+        <h2 id="mobheader">Popular categories</h2>
+        <ul>
+            {% for cat in popular %}
+            <span class="mobcat">
+                <a href="{{ url_for('home', category=cat, page=1) }}"
+                ontouchstart="mclickpc(this);">{{ cat }}</a>
+            </span>
+            {% endfor %}
+        </ul>
+    </menu>
+    {% block category %}
+    {% endblock category %}
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
+</body>
+
+<script src="{{ url_for('static', filename='js/default.js') }}" ></script>
+
+</html>
