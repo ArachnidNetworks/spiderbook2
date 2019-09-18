@@ -35,8 +35,16 @@ def no_page(category):
 
 @app.route("/<category>/<page>")
 def home(category, page):
+    category = str(category).lower()
     try:
         page = int(page)
+    except:
+        return abort(NOT_FOUND)
+    try:
+        if category != 'all':
+            r = dbi.find_cat(category)
+            if not r:
+                return abort(NOT_FOUND)
     except:
         return abort(NOT_FOUND)
     try:

@@ -130,6 +130,13 @@ def get_val_placeholders(data):
         val_placeholders += '%s, '
     return val_placeholders
 
+def find_cat(category):
+    c.execute("SELECT category FROM posts WHERE category = %s", (category,))
+    if len(c.fetchall()) < 1:
+        return False
+    else:
+        return True
+
 def insert_row(data):
     new_pid = get_new_pid()
     table = data['table']
