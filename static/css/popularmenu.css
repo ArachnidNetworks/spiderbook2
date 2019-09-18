@@ -1,13 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
-:root {
-    --main-color: #479366;
-    --main-bg-color: #080c0a;
-    --aside-bg: #18241e;
-    --aside-len: 16vw;
-    --arrow-width: 55px;
-}
-
 * {
     color: white;
     font-family: 'Lato', Helvetica;
@@ -79,17 +71,63 @@
 }
 
 .cat:nth-child(3) {
-  transition-delay: 0.3s;
+    transition-delay: 0.3s;
 }
 .cat:nth-child(4) {
-  transition-delay: 0.35s;
+    transition-delay: 0.35s;
 }
 .cat:nth-child(5) {
-  transition-delay: 0.4s;
+    transition-delay: 0.4s;
 }
 .cat:nth-child(6) {
-  transition-delay: 0.45s;
+    transition-delay: 0.45s;
 }
 .cat:nth-child(7) {
-  transition-delay: 0.5s;
+    transition-delay: 0.5s;
+}
+
+#mobilemenu, #mobheader, .mobcat {
+    display: none;
+}
+
+@media screen and (max-width: 770px) {
+    #popular {
+        display: none;
+    }
+    #mobilemenu {
+        position: fixed;
+        margin: 0; padding: 10px;
+        display: block;
+        height: 100%; width: 100%;
+        background-color: var(--aside-bg);
+    }
+    #mobilemenu ul {
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        padding: 0;
+    }
+    #mobheader {
+        display: block;
+        font-size: 8vw;
+        text-align: center;
+    }
+    .mobcat {
+        display: block;
+        text-align: center;
+        margin: 3vw;
+    }
+    .mobcat a {
+        font-size: 5vw;
+        text-decoration: none;
+        border-radius: 10px;
+        padding: 1.5vw;
+        padding-left: 6vw; padding-right: 6vw;
+        background-color: var(--main-color);
+        filter: saturate(50%);
+        transition: filter 0.25s ease;
+    }
+    .touched {
+        filter: saturate(200%)!important;
+    }
 }

@@ -8,8 +8,8 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}"
     type="image/ico">
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/popularmenu.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
     {% block styles %}{% endblock styles %}
     
     <title>Spiderbook{{ title }}</title>
@@ -27,6 +27,18 @@
         {% endfor %}
         <!-- Website's logo and closing button -->
     </header>
+    <!-- Menu to display popular categories on mobile -->
+    <menu id="mobilemenu">
+        <h2 id="mobheader">Popular categories</h2>
+        <ul>
+            {% for cat in popular %}
+            <span class="mobcat">
+                <a href="{{ url_for('home', category=cat, page=1) }}"
+                ontouchstart="mclickpc(this);">{{ cat }}</a>
+            </span>
+            {% endfor %}
+        </ul>
+    </menu>
     {% block category %}
     {% endblock category %}
     <main>

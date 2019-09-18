@@ -11,13 +11,6 @@ function ctrl_aside(s) {
     }
 }
 
-function clickpc(cat, s) {
-    if (s) {
-        cat.classList.add("touched");
-    }
-    else {
-        setTimeout(() => {
-            cat.classList.remove("touched");
-        }, 80);
-    }
+function mclickpc(cat) {
+    cat.classList.add("touched");
 }
