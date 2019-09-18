@@ -23,7 +23,9 @@
         <div id="spacer"></div>
         <!-- List of links that highlight when hovered over -->
         {% for cat in popular %}
-            <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>
+            <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">
+                <span>{{ cat }}</span>
+            </a>
         {% endfor %}
         <!-- Website's logo and closing button -->
     </header>
