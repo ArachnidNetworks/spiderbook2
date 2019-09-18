@@ -1,3 +1,19 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+:root {
+    --main-color: #479366;
+    --main-bg-color: #080c0a;
+    --aside-bg: #18241e;
+    --aside-len: 16vw;
+    --arrow-width: 55px;
+}
+
+* {
+    color: white;
+    font-family: 'Lato', Helvetica;
+    box-sizing: border-box;
+}
+
 #popular {
     display: inline-block;
     pointer-events: none;
