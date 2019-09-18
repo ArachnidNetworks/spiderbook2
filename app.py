@@ -25,38 +25,31 @@ def get_curtimestamp():
 @app.route('/')
 def root():
     try:
-        return redirect(url_for('home', page=1))
+        return redirect(url_for('home', category='all', page=1))
     except:
         return abort(SERVER)
 
-
-@app.route("/page/<page>")
-def home(page):
+@app.route("/<category>/<page>")
+def home(category, page):
+    category = "all"
     try:
         page = int(page)
+    except:
+        return abort(NOT_FOUND)
+    try:
         if page < 1:
-            return redirect(url_for('home', page=1))
+            return redirect(url_for('home', category=category, page=1))
         page = page-1
         limit = 3
         off = int(page)*limit
-        posts = dbi.get_posts("ORDER BY postts DESC OFFSET %s LIMIT %s", (off, limit))
+        "WHERE category = %s "
+        posts = dbi.get_posts("""ORDER BY postts DESC
+        OFFSET %s LIMIT %s""", (off, limit))
+        print(posts)
         popular = dbi.get_popular_cats(5)
-        print(popular)
         return render_template("home.html", title=" Home", posts=posts, popular=popular)
-    except:
-        return abort(SERVER)
-
-
-@app.route("/cat/<category>")
-def catpost(category):
-    try:
-        posts = dbi.get_posts("WHERE category = %s", (category,))
-        for post in posts:
-            post.pop('pid')
-            post.pop('category')
-        return jsonify(posts)
-    except:
-        return abort(SERVER)
+    except Exception as e:
+        return str(e)
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():

@@ -81,8 +81,7 @@ html, body {
 }
 
 #logo {
-    width: 35%;
-    float: left;
+    width: 30%;
     margin-top: auto;
     margin-bottom: 5%;
     margin-right: 5%;
@@ -182,9 +181,5 @@ html, body {
 
     #popular-cats-l a {
         max-width: none;
-    }
-
-    #logo {
-        width: 35%;
     }
 }

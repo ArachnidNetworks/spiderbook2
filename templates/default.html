@@ -21,7 +21,7 @@
         <!-- List of links that highlight when hovered over -->
         <ul id="popular-cats-l">
             {% for cat in popular %}
-                <li><a href="{{ url_for('catpost', category=cat) }}" class="cat"
+                <li><a href="{{ url_for('home', category=cat, page=1) }}" class="cat"
                 ontouchstart="clickpc(this, 1);" ontouchend="clickpc(this, 0);">{{ cat }}</a></li>
             {% endfor %}
         </ul>
