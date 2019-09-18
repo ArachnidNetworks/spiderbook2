@@ -46,15 +46,17 @@ def home(category, page):
         off = (page-1)*limit
         if category != "all":
             query = "WHERE category = %s "
+            vals = (category, off, limit)
         else:
             query = " "
+            vals = (off, limit)
         posts = dbi.get_posts(query + """ORDER BY postts DESC
-        OFFSET %s LIMIT %s""", (category, off, limit))
+        OFFSET %s LIMIT %s""", vals)
         popular = dbi.get_popular_cats(5)
         return render_template("home.html", title=" Home", posts=posts, popular=popular,
         category=category, page=page)
     except Exception as e:
-        return str(e)
+        return abort(SERVER)
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():
