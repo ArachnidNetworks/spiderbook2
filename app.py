@@ -29,6 +29,10 @@ def root():
     except:
         return abort(SERVER)
 
+@app.route('/<category>')
+def no_page(category):
+    return redirect(url_for('home', category=category, page=1))
+
 @app.route("/<category>/<page>")
 def home(category, page):
     category = "all"
