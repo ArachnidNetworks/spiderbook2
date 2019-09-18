@@ -15,9 +15,9 @@
     <title>Spiderbook{{ title }}</title>
 </head>
 <body>
-    <!-- Aside to display the most popular categories -->
-    <aside id="popular">
-        <!-- Header -->
+    <!-- Header to display the most popular categories -->
+    <header id="popular">
+        <!-- Header title -->
         <h2 id="pheader">Popular categories</h2>
         <!-- Little spacer line -->
         <div id="spacer"></div>
@@ -26,7 +26,7 @@
             <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>
         {% endfor %}
         <!-- Website's logo and closing button -->
-    </aside>
+    </header>
     {% block category %}
     {% endblock category %}
     <main>
