@@ -18,6 +18,8 @@
     <aside id="popular">
         <!-- Header -->
         <h2 id="pheader">Popular categories</h2>
+        <!-- Little spacer line -->
+        <div id="spacer"></div>
         <!-- List of links that highlight when hovered over -->
         {% for cat in popular %}
             <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>

@@ -30,6 +30,26 @@ html, body {
     margin-left: auto;
 }
 
+#popular {
+    display: inline-block;
+    pointer-events: none;
+}
+
+#popular:hover {
+    pointer-events: all;
+    cursor: pointer;
+}
+
+#pheader {
+    display: inline-block;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+#spacer {
+    
+}
+
 @media screen and (min-width: 1250px) and (max-width: 2000px) {
 }
 
