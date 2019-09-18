@@ -35,7 +35,6 @@ def no_page(category):
 
 @app.route("/<category>/<page>")
 def home(category, page):
-    category = "all"
     try:
         page = int(page)
     except:
@@ -43,16 +42,17 @@ def home(category, page):
     try:
         if page < 1:
             return redirect(url_for('home', category=category, page=1))
-        page = page-1
         limit = 3
-        off = int(page)*limit
-        "WHERE category = %s "
-        posts = dbi.get_posts("""ORDER BY postts DESC
-        OFFSET %s LIMIT %s""", (off, limit))
-        print(posts)
+        off = (page-1)*limit
+        if category != "all":
+            query = "WHERE category = %s "
+        else:
+            query = " "
+        posts = dbi.get_posts(query + """ORDER BY postts DESC
+        OFFSET %s LIMIT %s""", (category, off, limit))
         popular = dbi.get_popular_cats(5)
         return render_template("home.html", title=" Home", posts=posts, popular=popular,
-        category=category)
+        category=category, page=page)
     except Exception as e:
         return str(e)
 

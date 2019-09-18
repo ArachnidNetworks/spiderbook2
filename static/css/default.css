@@ -34,6 +34,18 @@ body {
     margin-left: auto;
 }
 
+#page-header {
+    margin: 5px;
+}
+
+#page-header h1 {
+    margin: 0;
+    font-size: 4vw;
+}
+#page-header small {
+    font-size: 1.5vw;
+}
+
 @media screen and (min-width: 1250px) and (max-width: 2000px) {
 }
 

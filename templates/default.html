@@ -39,9 +39,11 @@
             {% endfor %}
         </ul>
     </menu>
-    <h1 id="category">
-        {{ category }}
-    </h1>
+    <!-- Category header. Really big. -->
+    <div id="page-header">
+        <h1>{{ category }}</h1>
+        <small>Page {{ page }}</small>
+    </div>
     <main>
         {% block content %}
         {% endblock content %}
