@@ -22,66 +22,6 @@ html, body {
     overflow-x: hidden;
 }
 
-#popular-cats-a {
-    margin: 0;
-    top: 0; left: 0;
-    position: fixed;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: var(--aside-len);
-    background-color: var(--aside-bg);
-    overflow-x: hidden;
-    transition: transform 0.3s;
-}
-
-#popular-cats-h {
-    margin: 12px;
-    font-size: 2.4vw;
-    font-weight: 1;
-    text-align: left;
-}
-
-#popular-cats-l {
-    margin: 0;
-    margin-bottom: 15px;
-    padding: 0;
-    list-style-type: none;
-}
-
-#popular-cats-l .cat {
-    padding: 12px;
-    font-size: 1.8vw;
-    display: block;
-    transition: background 0.2s;
-}
-
-#popular-cats-l .cat:hover {
-    background-color: var(--main-color);
-    cursor: pointer;
-}
-
-.touched {
-    transition: background 1s;
-    background-color: var(--main-color);
-}
-
-#popular-cats-l a {
-    /* white-space: nowrap; */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 20ch;
-    text-decoration: none;
-}
-
-.aside-btn {
-    display: none;
-}
-
-#cont {
-    margin-left: var(--aside-len);
-}
-
 #logo {
     width: 30%;
     margin-top: auto;
@@ -91,97 +31,10 @@ html, body {
 }
 
 @media screen and (min-width: 1250px) and (max-width: 2000px) {
-    #popular-cats-h {
-        font-size: 20pt;
-    }
-
-    #popular-cats-l .cat {
-        font-size: 15pt;
-    }
 }
 
 @media screen and (min-width: 771px) and (max-width: 1000px) {
-    #popular-cats-a {
-        width: calc(var(--aside-len) + 1.5vw);
-    }
-
-    #popular-cats-h {
-        font-size: 20pt;
-    }
-
-    #popular-cats-l .cat {
-        font-size: 16pt;
-    }
-
 }
 
 @media screen and (max-width: 770px) {
-    :root {
-        --aside-len: 100vw;
-    }
-
-    #logo {
-        display: none;
-    }
-
-    .aside-btn {
-        display: flex;
-        width: var(--arrow-width);
-        margin-top: auto;
-        margin-bottom: calc(var(--arrow-width) / 3);
-        border: 0;
-    }
-
-    #close-aside {
-        background-color: var(--aside-bg);
-    }
-
-    .aside-btn img {
-        width: calc(var(--arrow-width) - 12px);
-    }
-
-    .aside-btn img:hover {
-        cursor: pointer;
-    }
-
-    #open-aside {
-        position: fixed;
-        left: -100%;
-        bottom: calc(var(--arrow-width) / 3 - 16px);
-        /* background-color: var(--main-bg-color); */
-        background-color: transparent;
-        transition: left 0.2s 0.1s;
-    }
-
-    #close-aside img {
-        -webkit-transform: scaleX(-1);
-        transform: scaleX(-1);
-    }
-
-    #close-aside img {
-        -webkit-transform: scaleX(-1);
-        transform: scaleX(-1);
-    }
-
-    .closed {
-        transform: translateX(-100%);
-    }
-
-    .oa-active {
-        left: 2px!important;
-    }
-
-    #popular-cats-h {
-        font-size: 25pt;
-        text-align: center;
-    }
-
-    #popular-cats-l .cat {
-        font-size: 20pt;
-        text-align: center;
-    }
-
-    #popular-cats-l a {
-        max-width: none;
-    }
 }

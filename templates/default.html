@@ -20,21 +20,16 @@
         <h2 id="pheader">Popular categories</h2>
         <!-- List of links that highlight when hovered over -->
         {% for cat in popular %}
-        <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>
+            <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">{{ cat }}</a>
         {% endfor %}
         <!-- Website's logo and closing button -->
     </aside>
-    <button id="open-aside" class="aside-btn" onclick="ctrl_aside(0);">
-        <img src="{{ url_for('static', filename='icons/arrow.png') }}" alt="OPEN">
-    </button>
-    <div id="cont">
     {% block category %}
     {% endblock category %}
-        <main>
-            {% block content %}
-            {% endblock content %}
-        </main>
-    </div>
+    <main>
+        {% block content %}
+        {% endblock content %}
+    </main>
 </body>
 
 <script src="{{ url_for('static', filename='js/default.js') }}" ></script>
