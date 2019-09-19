@@ -41,3 +41,7 @@ main {
     max-width: 100ch;
     word-wrap: break-word;
 }
+
+@media screen and (max-width: 650px) {
+}
+
