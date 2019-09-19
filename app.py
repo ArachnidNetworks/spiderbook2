@@ -72,12 +72,12 @@ def create_post():
         try:
             post_data = dict(request.form)
             data = {}
-            data['author'] = re.escape(str(post_data.get('author')))
+            data['author'] = str(post_data.get('author'))
             if not data['author']:
                 data['author'] = 'Anonymous'
-            data['category'] = re.escape(str(post_data.get('category')))
-            data['title'] = re.escape(str(post_data.get('title')))
-            data['body'] = re.escape(str(post_data.get('body')))
+            data['category'] = str(post_data.get('category'))
+            data['title'] = str(post_data.get('title'))
+            data['body'] = str(post_data.get('body'))
             data['postts'] = get_curtimestamp()
             data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
             image = request.files.get('imgbin')

@@ -16,7 +16,9 @@
 {% for p in posts %}
     <article class="post">
         <header>{{ p['title'] }}</header>
-        <main class="post-body">{{ p['body'] }}</main>
+        {% if p['body'] %}
+            <p class="post-body">{{ p['body'] }}</p>
+        {% endif %}
     </article>
 {% endfor %}
 {% endblock content %}
