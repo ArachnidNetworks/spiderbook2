@@ -82,7 +82,7 @@ def create_post():
             data['category'] = str(post_data.get('category'))
             data['title'] = str(post_data.get('title'))
             data['body'] = str(post_data.get('body'))
-            if len(data['body']) > 10000:
+            if len(data['body']) > 7000:
                 return abort(UNPROC_ENTITY)
             data['postts'] = get_curtimestamp()
             data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
