@@ -21,7 +21,7 @@ main {
     margin-bottom: 5px;
     margin-left: 8px;
     max-width: 20ch;
-    font-size: 18pt;
+    font-size: 3vw;
 }
 
 .post-content {
@@ -31,7 +31,6 @@ main {
 .post-content a {
     max-width: 400px;
     max-height: 400px;
-    margin-right: 15px;
     margin-bottom: 6px;
 }
 
@@ -39,17 +38,19 @@ main {
     max-width: 100%; max-height: 100%;
     border-radius: 5px;
     float: left;
+    margin-right: 25px;
+    margin-bottom: 15px;
 }
 
 .post-content p {
-    margin: 0; margin-top: 10px;
+    font-size: 14pt;
     max-width: 100ch;
     word-wrap: break-word;
 }
 
-@media screen and (max-width: 650px) {
+@media screen and (min-width: 0px) and (max-width: 900px) {
     .post header h1 {
-        font-size: 16pt;
+        font-size: 18pt;
     }
     .post-content {
         margin: 0; padding: 0;
@@ -57,6 +58,7 @@ main {
     .post-content a {
         max-width: 40%;
         margin-left: 15px;
+        margin-right: 25px;
         float: left;
     }
     .post-content img {
@@ -65,6 +67,7 @@ main {
     .post-content p {
         max-width: 90%;
         margin-left: auto; margin-right: auto;
+        font-size: 15pt;
     }
 }
 
