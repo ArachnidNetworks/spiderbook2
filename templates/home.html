@@ -15,11 +15,15 @@
 {% block content %}
 {% for p in posts %}
     <article class="post">
-        <header>{{ p['title'] }}</header>
-        {% if p['body'] %}
-            <p class="post-body">{{ p['body'] }}</p>
-        {% endif %}
-        <img src="{{ url_for('static', filename='images/'+p[98765]) }}" alt="">
+        <header>
+            <h1>{{ p['title'] }}</h1>
+        </header>
+        <div class="post-content">
+            <img src="{{ url_for('static', filename='images/'+p[98765]) }}" alt="">
+            {% if p['body'] %}
+                <p class="post-body">{{ p['body'] }}</p>
+            {% endif %}
+        </div>
     </article>
 {% endfor %}
 {% endblock content %}
