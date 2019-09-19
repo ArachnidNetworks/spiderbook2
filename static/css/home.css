@@ -20,8 +20,9 @@ main {
 .post header p {
     margin: 0;
     margin-bottom: 5px;
-    margin-left: 10px;
+    margin-left: 8px;
     max-width: 20ch;
+    font-size: 18pt;
 }
 
 .post-content img {
@@ -34,6 +35,8 @@ main {
 }
 
 .post-content p {
+    float: left;
     margin: 0; margin-top: 10px;
     max-width: 100ch;
+    word-wrap: break-word;
 }
