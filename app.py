@@ -64,6 +64,7 @@ def home(category, page):
         return render_template("home.html", title=" Home", posts=posts, popular=popular,
         category=category, page=page)
     except Exception as e:
+        print(e)
         return abort(SERVER)
 
 @app.route("/post", methods=['GET', 'POST'])
