@@ -13,4 +13,10 @@
 {% endblock page_header %}
 
 {% block content %}
+{% for p in posts %}
+    <article class="post">
+        <header>{{ p['title'] }}</header>
+        <main class="post-body">{{ p['body'] }}</main>
+    </article>
+{% endfor %}
 {% endblock content %}

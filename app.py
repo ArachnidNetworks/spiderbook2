@@ -50,7 +50,7 @@ def home(category, page):
     try:
         if page < 1:
             return redirect(url_for('home', category=category, page=1))
-        limit = 3
+        limit = 10
         off = (page-1)*limit
         if category != "all":
             query = "WHERE category = %s "
