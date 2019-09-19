@@ -9,15 +9,12 @@ main {
 }
 
 .post {
-    display: -webkit-flex;
-    display: flex;
-    flex-direction: column;
     border-top: 2px solid var(--post-sep-color);
     padding-top: 10px; margin-bottom: 20px;
     width: 100%;
 }
 
-.post header p {
+.post header h1 {
     margin: 0;
     margin-bottom: 5px;
     margin-left: 8px;
@@ -25,10 +22,14 @@ main {
     font-size: 18pt;
 }
 
+.post-content {
+    margin-left: 10px;
+    display: flex;
+}
+
 .post-content img {
     max-width: 400px;
     max-height: 400px;
-    margin-left: 10px;
     margin-right: 20px;
     border-radius: 5px;
     float: left;
