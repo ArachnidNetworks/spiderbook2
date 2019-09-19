@@ -19,6 +19,7 @@
         {% if p['body'] %}
             <p class="post-body">{{ p['body'] }}</p>
         {% endif %}
+        <img src="{{ url_for('static', filename='images/'+p[98765]) }}" alt="">
     </article>
 {% endfor %}
 {% endblock content %}
