@@ -15,34 +15,7 @@
     <title>Spiderbook{{ title }}</title>
 </head>
 <body>
-    <!-- Header to display the most popular categories -->
-    <header id="popular">
-        <!-- Header title -->
-        <h2 id="pheader">Popular categories</h2>
-        <!-- Little spacer line -->
-        <div id="spacer"></div>
-        <!-- List of links that highlight when hovered over -->
-        {% for cat in popular %}
-            <a href="{{ url_for('home', category=cat, page=1) }}" class="cat">
-                <span>{{ cat }}</span>
-            </a>
-        {% endfor %}
-        <!-- Website's logo and closing button -->
-    </header>
-    <!-- Menu to display popular categories on mobile -->
-    <menu id="mobilemenu">
-        <h2 id="mobheader">Popular categories</h2>
-        <ul>
-            {% for cat in popular %}
-            <span class="mobcat">
-                <a href="{{ url_for('home', category=cat, page=1) }}"
-                ontouchstart="mclickpc(this);">{{ cat }}</a>
-            </span>
-            {% endfor %}
-        </ul>
-    </menu>
     {% block page_header %}
-    <div>HEllo</div>
     {% endblock page_header %}
     <main>
         {% block content %}

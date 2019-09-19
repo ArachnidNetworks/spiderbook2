@@ -47,28 +47,28 @@ def home(category, page):
                 return abort(NOT_FOUND)
     except:
         return abort(NOT_FOUND)
-    try:
-        if page < 1:
-            return redirect(url_for('home', category=category, page=1))
-        limit = 10
-        off = (page-1)*limit
-        if category != "all":
-            query = "WHERE category = %s "
-            vals = (category, off, limit)
-        else:
-            query = " "
-            vals = (off, limit)
-        posts = dbi.get_posts(query + """ORDER BY postts DESC
-        OFFSET %s LIMIT %s""", vals)
-        popular = dbi.get_popular_cats(5)
-        for post in posts:
-            post[98765] = post['imgurl']
-            post.pop('imgurl')
-        return render_template("home.html", title=" Home", posts=posts, popular=popular,
-        category=category, page=page)
-    except Exception as e:
+    """ try: """
+    if page < 1:
+        return redirect(url_for('home', category=category, page=1))
+    limit = 10
+    off = (page-1)*limit
+    if category != "all":
+        query = "WHERE category = %s "
+        vals = (category, off, limit)
+    else:
+        query = " "
+        vals = (off, limit)
+    posts = dbi.get_posts(query + """ORDER BY postts DESC
+    OFFSET %s LIMIT %s""", vals)
+    popular = dbi.get_popular_cats(5)
+    for post in posts:
+        post[98765] = post['imgurl']
+        post.pop('imgurl')
+    return render_template("home.html", title=" Home", posts=posts, popular=popular,
+    category=category, page=page)
+    """ except Exception as e:
         print(e)
-        return abort(SERVER)
+        return abort(SERVER) """
 
 @app.route("/post", methods=['GET', 'POST'])
 def create_post():

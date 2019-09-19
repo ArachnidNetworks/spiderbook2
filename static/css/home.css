@@ -1,28 +1,39 @@
+:root {
+    --post-sep-color: #101b16;
+}
+
 main {
+    width: 100%;
     margin-top: 32px;
     margin-bottom: 32px;
-    padding-left: 64px;
 }
 
 .post {
     display: -webkit-flex;
     display: flex;
     flex-direction: column;
+    border-top: 2px solid var(--post-sep-color);
+    padding-top: 10px; margin-bottom: 20px;
+    width: 100%;
 }
 
-.post header h1 {
-    margin-bottom: 20px;
+.post header p {
+    margin: 0;
+    margin-bottom: 5px;
+    margin-left: 10px;
+    max-width: 20ch;
 }
 
-.post img {
+.post-content img {
     max-width: 400px;
     max-height: 400px;
+    margin-left: 10px;
     margin-right: 20px;
     border-radius: 5px;
     float: left;
 }
 
-.post p {
+.post-content p {
     margin: 0; margin-top: 10px;
     max-width: 100ch;
 }
