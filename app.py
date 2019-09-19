@@ -16,7 +16,7 @@ FORBBIDEN = 403
 
 def get_image_url(image):
     name = image.filename
-    image.save(f'images/{name}')
+    image.save(f'static/images/{name}')
     return name
 
 def get_curtimestamp():
