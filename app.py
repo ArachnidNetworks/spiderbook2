@@ -61,9 +61,10 @@ def home(category, page):
     posts = dbi.get_posts(query + """ORDER BY postts DESC
     OFFSET %s LIMIT %s""", vals)
     popular = dbi.get_popular_cats(5)
-    for post in posts:
+    """ for post in posts:
         post[98765] = post['imgurl']
-        post.pop('imgurl')
+        post.pop('imgurl') """
+    print(posts)
     return render_template("home.html", title=" Home", posts=posts, popular=popular,
     category=category, page=page)
     """ except Exception as e:
