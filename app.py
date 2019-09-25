@@ -82,12 +82,12 @@ def create_post():
         try:
             post_data = dict(request.form)
             data = {}
-            data['author'] = str(post_data.get('author'))
+            data['author'] = str(post_data.get('author')).replace(" ", "")
             if not data['author']:
                 data['author'] = 'Anonymous'
-            data['category'] = str(post_data.get('category'))
-            data['title'] = str(post_data.get('title'))
-            data['body'] = str(post_data.get('body'))
+            data['category'] = str(post_data.get('category')).replace(" ", "")
+            data['title'] = str(post_data.get('title')).replace(" ", "")
+            data['body'] = str(post_data.get('body')).replace(" ", "")
             if len(data['body']) > 7000:
                 return abort(UNPROC_ENTITY)
             data['postts'] = get_curtimestamp()
