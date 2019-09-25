@@ -71,7 +71,12 @@ def home(category, page):
         print(e)
         return abort(SERVER) """
 
-@app.route("/post", methods=['GET', 'POST'])
+@app.route("/post/<pid>")
+def indpost(pid):
+    post = dbi.get_posts("WHERE pid = %s", (pid,))
+    return jsonify(post)
+
+@app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
         try:
