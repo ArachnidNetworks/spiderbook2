@@ -74,7 +74,8 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    return render_template("indpost.html", pid=pid, title=post['title'])
+    return render_template("indpost.html", pid=pid, title=post['title'],
+    body=post['body'], img={'imgurl': post['imgurl']})
 
 @app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
