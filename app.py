@@ -77,7 +77,19 @@ def indpost(pid):
     return render_template("indpost.html", pid=pid, title=post['title'],
     body=post['body'], img={'imgurl': post['imgurl']})
 
-@app.route("/createpost", methods=['GET', 'POST'])
+@app.route("/create/comment", methods=['POST'])
+def create_comment():
+    try:
+        data = dict(request.form)
+        data['author'] = str(data.get('author')).replace(" ", "")
+        if not data['author']:
+                data['author'] = 'Anonymous'
+        data['content'] = str(data.get('content')).replace(" ", "")
+        data['op_id'] = str(data.get('op_id')).replace(" ", "")
+    except:
+        return abort(UNPROC_ENTITY)
+
+@app.route("/create/post", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
         try:
