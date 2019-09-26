@@ -77,15 +77,15 @@ def indpost(pid):
     return render_template("indpost.html", pid=pid, title=post['title'],
     body=post['body'], img={'imgurl': post['imgurl']})
 
-@app.route("/create/comment", methods=['POST'])
-def create_comment():
+@app.route("/post/<pid>/comment", methods=['POST'])
+def create_comment(pid):
     try:
         data = dict(request.form)
         data['author'] = str(data.get('author')).replace(" ", "")
         if not data['author']:
                 data['author'] = 'Anonymous'
         data['content'] = str(data['content']).replace(" ", "")
-        data['op_id'] = str(data['op_id']).replace(" ", "")
+        data['op_id'] = str(pid).replace(" ", "")
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
         image = request.files.get('imgbin')
         if image:
@@ -98,7 +98,7 @@ def create_comment():
         return abort(UNPROC_ENTITY)
     return jsonify(True)
 
-@app.route("/create/post", methods=['GET', 'POST'])
+@app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
         try:
