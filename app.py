@@ -86,6 +86,14 @@ def create_comment():
                 data['author'] = 'Anonymous'
         data['content'] = str(data.get('content')).replace(" ", "")
         data['op_id'] = str(data.get('op_id')).replace(" ", "")
+        data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        image = request.files.get('imgbin')
+        if image:
+            data['imgurl'] = get_image_url(image)
+        else:
+            data['imgurl'] = None
+        data['table'] = 'comments'
+        dbi.insert_row(data)
     except:
         return abort(UNPROC_ENTITY)
 
