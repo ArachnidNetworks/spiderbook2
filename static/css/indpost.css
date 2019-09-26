@@ -1,5 +1,7 @@
 main {
     margin-left: 10px;
+    border-bottom: 1px solid var(--main-color);
+    margin-bottom: 25px;
 }
 #post-body {
     /* Max width of 140 characters */
