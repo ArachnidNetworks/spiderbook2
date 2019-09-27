@@ -10,7 +10,6 @@ main {
 
 .post {
     max-width: 25%;
-    height: 350px;
     overflow-y: auto;
     margin-bottom: 10px;
 }
@@ -32,4 +31,23 @@ main {
     margin: auto;
     border: 1px solid #dfdfdf;
     box-shadow: 5px 5px 5px #b9b9b9;
+}
+
+@media screen and (max-width: 700px) {
+    main {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 32px;
+        display: flex; display: -ms-flexbox; display: -webkit-flex;
+        flex-direction: column; -ms-flex-direction: column;
+        align-items: center;
+    }
+    .post {
+        max-width: none; width: 100%;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+    .post h1 {
+        font-size: 6vw;
+    }
 }
