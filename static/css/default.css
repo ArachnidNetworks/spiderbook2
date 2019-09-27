@@ -1,15 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
 :root {
-    --main-color: #479366;
-    --main-bg-color: #0a0f0d;
-    --aside-bg: #18241e;
+    --main-color: #bde6bd;
+    --main-bg-color: #fafafa;
+    --post-bg-color: #c7ebc7;
     --aside-len: 16vw;
     --arrow-width: 55px;
 }
 
 * {
-    color: white;
+    color: #1d1f1d;
     font-family: 'Lato', Helvetica;
     box-sizing: border-box;
 }
@@ -44,10 +44,17 @@ body {
 }
 #page-header small {
     font-size: 1.5vw;
+    margin-left: 10px;
 }
 
 @media screen and (min-width: 1250px) and (max-width: 2000px) {
 }
 
-@media screen and (min-width: 771px) and (max-width: 1000px) {
+@media screen and (max-width: 900px) {
+    #page-header h1 {
+        font-size: 30pt;
+    }
+    #page-header small {
+        font-size: 15pt;
+    }
 }
