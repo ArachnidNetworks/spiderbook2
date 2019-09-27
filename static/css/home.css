@@ -8,7 +8,7 @@ main {
 
 .post {
     border-top: 2px solid var(--main-color);
-    padding-top: 10px; margin-bottom: 20px;
+    padding-top: 10px; padding-bottom: 20px;
     width: 100%;
     word-wrap: break-word;
 }
@@ -26,10 +26,10 @@ main {
 }
 
 .post-content {
-    padding-left: 10px;
-    background-color: var(--post-bg-color);
+/*     background-color: var(--post-bg-color); */
     border-radius: 15px;
-    padding-top: 25px; padding-left: 10px;
+    padding-left: 10px;
+/*     padding-top: 25px; */
     width: 70%;
 }
 
@@ -41,14 +41,12 @@ main {
 
 .post-content img {
     max-width: 20%; max-height: 500px;
-    border-radius: 5px;
     float: left;
     margin-right: 25px;
     margin-bottom: 15px;
 }
 
 .post-content p {
-    margin: 0;
     font-size: 14pt;
     max-width: 80ch;
 }
