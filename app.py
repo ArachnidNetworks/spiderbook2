@@ -129,7 +129,9 @@ def create_post():
 
 @app.route("/search", methods=['POST'])
 def search_cat():
-    return jsonify(True)
+    form_data = dict(request.form)
+    category = form_data.get('category')
+    return redirect(url_for('home', category=category, page=1))
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])
