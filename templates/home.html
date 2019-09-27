@@ -16,9 +16,11 @@
 {% for p in posts %}
     <article class="post">
         <header>
-            <a href="{{ url_for('indpost', pid=p['pid']) }}">
-                <h1>{{ p['title'] }}</h1>
-            </a>
+            <h1>
+                <a href="{{ url_for('indpost', pid=p['pid']) }}">
+                    {{ p['title'] }}
+                </a>
+            </h1>
         </header>
         <div class="post-content">
             {% if p['imgurl'] %}
