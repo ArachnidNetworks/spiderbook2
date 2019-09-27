@@ -6,10 +6,11 @@
 
 {% block page_header %}
     <!-- Category header. Really big. -->
-    <div id="page-header">
-        <h1>{{ category }}</h1>
-        <small>Page {{ page }}</small>
-    </div>
+    <h1>{{ category }}</h1>
+    <small>Page {{ page }}</small>
+    <a href="../createpost">
+        <button>NEW THREAD</button>
+    </a>
 {% endblock page_header %}
 
 {% block content %}

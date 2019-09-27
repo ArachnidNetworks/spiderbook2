@@ -127,6 +127,9 @@ def create_post():
     else:
         return "Create post"
 
+@app.route("/search", methods=['POST'])
+def search_cat():
+    return jsonify(True)
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])

@@ -15,8 +15,13 @@
     <title>Spiderbook{{ title }}</title>
 </head>
 <body>
-    {% block page_header %}
-    {% endblock page_header %}
+    <form id="catsearch" action="../search" method="post">
+        <input type="text" placeholder="Search categories..."><button type="submit">Go</button>
+    </form>
+    <header id="page-header">
+        {% block page_header %}
+        {% endblock page_header %}
+    </header>
     {% block content %}
     {% endblock content %}
 </body>
