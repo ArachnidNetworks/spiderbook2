@@ -61,27 +61,55 @@ def home(category, page):
     posts = dbi.get_posts(query + """ORDER BY postts DESC
     OFFSET %s LIMIT %s""", vals)
     popular = dbi.get_popular_cats(5)
-    for post in posts:
+    """ for post in posts:
         post[98765] = post['imgurl']
-        post.pop('imgurl')
+        post.pop('imgurl') """
+    print(posts)
     return render_template("home.html", title=" Home", posts=posts, popular=popular,
     category=category, page=page)
     """ except Exception as e:
         print(e)
         return abort(SERVER) """
 
-@app.route("/post", methods=['GET', 'POST'])
+@app.route("/post/<pid>")
+def indpost(pid):
+    post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
+    return render_template("indpost.html", pid=pid, title=post['title'],
+    body=post['body'], img={'imgurl': post['imgurl']})
+
+@app.route("/post/<pid>/comment", methods=['POST'])
+def create_comment(pid):
+    try:
+        data = dict(request.form)
+        data['author'] = str(data.get('author')).replace(" ", "")
+        if not data['author']:
+                data['author'] = 'Anonymous'
+        data['content'] = str(data['content']).replace(" ", "")
+        data['op_id'] = str(pid).replace(" ", "")
+        data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        image = request.files.get('imgbin')
+        if image:
+            data['imgurl'] = get_image_url(image)
+        else:
+            data['imgurl'] = None
+        data['table'] = 'comments'
+        dbi.insert_row(data)
+    except:
+        return abort(UNPROC_ENTITY)
+    return jsonify(True)
+
+@app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
         try:
             post_data = dict(request.form)
             data = {}
-            data['author'] = str(post_data.get('author'))
+            data['author'] = str(post_data['author']).replace(" ", "")
             if not data['author']:
                 data['author'] = 'Anonymous'
-            data['category'] = str(post_data.get('category'))
-            data['title'] = str(post_data.get('title'))
-            data['body'] = str(post_data.get('body'))
+            data['category'] = str(post_data['category']).replace(" ", "")
+            data['title'] = str(post_data['title']).replace(" ", "")
+            data['body'] = str(post_data.get('body')).replace(" ", "")
             if len(data['body']) > 7000:
                 return abort(UNPROC_ENTITY)
             data['postts'] = get_curtimestamp()
