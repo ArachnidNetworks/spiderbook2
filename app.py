@@ -77,17 +77,38 @@ def indpost(pid):
     return render_template("indpost.html", pid=pid, title=post['title'],
     body=post['body'], img={'imgurl': post['imgurl']})
 
+@app.route("/post/<pid>/comment", methods=['POST'])
+def create_comment(pid):
+    try:
+        data = dict(request.form)
+        data['author'] = str(data.get('author')).replace(" ", "")
+        if not data['author']:
+                data['author'] = 'Anonymous'
+        data['content'] = str(data['content']).replace(" ", "")
+        data['op_id'] = str(pid).replace(" ", "")
+        data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        image = request.files.get('imgbin')
+        if image:
+            data['imgurl'] = get_image_url(image)
+        else:
+            data['imgurl'] = None
+        data['table'] = 'comments'
+        dbi.insert_row(data)
+    except:
+        return abort(UNPROC_ENTITY)
+    return jsonify(True)
+
 @app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
         try:
             post_data = dict(request.form)
             data = {}
-            data['author'] = str(post_data.get('author')).replace(" ", "")
+            data['author'] = str(post_data['author']).replace(" ", "")
             if not data['author']:
                 data['author'] = 'Anonymous'
-            data['category'] = str(post_data.get('category')).replace(" ", "")
-            data['title'] = str(post_data.get('title')).replace(" ", "")
+            data['category'] = str(post_data['category']).replace(" ", "")
+            data['title'] = str(post_data['title']).replace(" ", "")
             data['body'] = str(post_data.get('body')).replace(" ", "")
             if len(data['body']) > 7000:
                 return abort(UNPROC_ENTITY)
