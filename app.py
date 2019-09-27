@@ -36,41 +36,43 @@ def no_page(category):
 
 @app.route("/<category>/<page>")
 def home(category, page):
+    # Uppercase bad
     category = str(category).lower()
     try:
+        # If the page number is not valid, return 404
         page = int(page)
     except:
         return abort(NOT_FOUND)
     try:
-        if category != 'all':
-            r = dbi.find_cat(category)
-            if not r:
-                return abort(NOT_FOUND)
+        # If the category is not 'all' and it doesn't exist, return 404
+        if category != 'all' and not dbi.find_cat(category):
+            return abort(NOT_FOUND)
     except:
         return abort(NOT_FOUND)
-    """ try: """
+    # If the page number is invalid, turn it to 1
     if page < 1:
         return redirect(url_for('home', category=category, page=1))
+    # Limit amount of posts per page
     limit = 8
+    # Offset calculation to not get the same post per page
     off = (page-1)*limit
+    # If a category is specified, look for that one only
     if category != "all":
         query = "WHERE category = %s "
         vals = (category, off, limit)
     else:
+        # If not, then look for every single post
         query = " "
         vals = (off, limit)
-    posts = dbi.get_posts(query + """ORDER BY postts DESC
-    OFFSET %s LIMIT %s""", vals)
-    popular = dbi.get_popular_cats(5)
-    """ for post in posts:
-        post[98765] = post['imgurl']
-        post.pop('imgurl') """
-    print(posts)
-    return render_template("home.html", title=" Home", posts=posts, popular=popular,
-    category=category, page=page)
-    """ except Exception as e:
-        print(e)
-        return abort(SERVER) """
+    # Get recent posts
+    try:
+        posts = dbi.get_posts(query + """ORDER BY postts DESC
+        OFFSET %s LIMIT %s""", vals)
+        return render_template("home.html", title=" Home", posts=posts,
+        category=category, page=page)
+    except:
+        # If something goes wrong with the query or template, return a 500 error
+        return abort(SERVER)
 
 @app.route("/post/<pid>")
 def indpost(pid):
