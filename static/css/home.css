@@ -8,7 +8,7 @@ main {
 }
 
 .post {
-    max-width: 25%;
+    max-width: 23%;
     overflow-y: auto;
     margin-bottom: 10px;
 }
@@ -22,6 +22,9 @@ main {
     margin: 0;
     margin-bottom: 5px;
     text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .post-content img {
