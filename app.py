@@ -16,8 +16,9 @@ FORBBIDEN = 403
 
 def get_image_url(image):
     name = image.filename
-    image.save(f'static/images/{name}')
-    return name
+    imagename = dbi.get_image_name(name)
+    image.save(f'static/images/{imagename}')
+    return imagename
 
 def get_curtimestamp():
     return datetime.datetime.utcnow()
