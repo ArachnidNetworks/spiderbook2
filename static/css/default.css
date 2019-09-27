@@ -45,17 +45,27 @@ body {
 }
 
 #page-header button {
-    padding: 10px;
-    font-size: 1.2vw;
     border: none;
+    background-color: var(--main-color);
+    padding: 1vw;
+    font-size: 1.5vw;
     font-weight: 700;
 }
 
-@media screen and (max-width: 900px) {
+#page-header button:hover {
+    filter: saturate(250%);
+}
+
+@media screen and (max-width: 700px) {
     #page-header h1 {
         font-size: 30pt;
     }
     #page-header small {
         font-size: 15pt;
+    }
+    #page-header button {
+        padding: 3vw;
+        font-size: 5vw;
+        font-weight: 700;
     }
 }
