@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify, abort
-from flask import send_from_directory
+from flask import send_from_directory, flash
 import os
 import time
 import re
@@ -133,6 +133,7 @@ def search_cat():
     category = form_data.get('category')
     prevpage = form_data.get('previouspage')
     if not dbi.find_cat(category):
+        flash("Category not found")
         return redirect(prevpage)
     return redirect(url_for('home', category=category, page=1))
 

@@ -23,11 +23,22 @@ body {
     padding-left: 5px; padding-right: 5px;
 }
 
+.errorflash {
+    margin-top: 10px;
+    height: 60px;
+    line-height: 60px;
+    border: 1px solid #d8b3b3; border-radius: 10px;
+    background-color: #f3cccc;
+    color: #804646;
+    padding-left: 10px;
+}
+
 #catsearch input {
     width: 90%;
     border: 1px solid var(--main-color); border-right: 0;
     font-size: 1.2vw;
     padding: 3px;
+    padding-left: 5px;
     margin-top: 10px;
 }
 
