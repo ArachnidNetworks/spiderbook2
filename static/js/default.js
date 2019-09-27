@@ -14,3 +14,5 @@ function ctrl_aside(s) {
 function mclickpc(cat) {
     cat.classList.add("touched");
 }
+
+document.getElementById("prevpage").value = window.location.href;

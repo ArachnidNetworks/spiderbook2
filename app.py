@@ -131,6 +131,9 @@ def create_post():
 def search_cat():
     form_data = dict(request.form)
     category = form_data.get('category')
+    prevpage = form_data.get('previouspage')
+    if not dbi.find_cat(category):
+        return redirect(prevpage)
     return redirect(url_for('home', category=category, page=1))
 
 # Login and Signup pages.
