@@ -1,15 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Lato');
 
 :root {
-    --main-color: #232727;
-    --main-bg-color: #111313;
-    --aside-bg: #181a19;
+    --main-color: #132513;
+    --main-bg-color: #080808;
     --aside-len: 16vw;
     --arrow-width: 55px;
 }
 
 * {
-    color: white;
+    color: #bbd1bb;
     font-family: 'Lato', Helvetica;
     box-sizing: border-box;
 }
