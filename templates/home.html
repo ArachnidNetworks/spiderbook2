@@ -13,25 +13,27 @@
 {% endblock page_header %}
 
 {% block content %}
-{% for p in posts %}
-    <article class="post">
-        <header>
-            <h1>
-                <a href="{{ url_for('indpost', pid=p['pid']) }}">
-                    {{ p['title'] }}
-                </a>
-            </h1>
-        </header>
-        <div class="post-content">
-            {% if p['imgurl'] %}
-                <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}" alt="">
-            {% else %}
-                <img src="{{ url_for('static', filename='images/noimage.png') }}" alt="">
-            {% endif %}
-<!--             {% if p['body'] %}
-                <p class="post-body">{{ p['body'] }}</p>
-            {% endif %} -->
-        </div>
-    </article>
-{% endfor %}
+<main>
+    {% for p in posts %}
+        <article class="post">
+            <header>
+                <h1>
+                    <a href="{{ url_for('indpost', pid=p['pid']) }}">
+                        {{ p['title'] }}
+                    </a>
+                </h1>
+            </header>
+            <div class="post-content">
+                {% if p['imgurl'] %}
+                    <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}" alt="">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/noimage.png') }}" alt="">
+                {% endif %}
+    <!--             {% if p['body'] %}
+                    <p class="post-body">{{ p['body'] }}</p>
+                {% endif %} -->
+            </div>
+        </article>
+    {% endfor %}
+</main>
 {% endblock content %}

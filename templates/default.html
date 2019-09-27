@@ -17,10 +17,8 @@
 <body>
     {% block page_header %}
     {% endblock page_header %}
-    <main>
-        {% block content %}
-        {% endblock content %}
-    </main>
+    {% block content %}
+    {% endblock content %}
 </body>
 
 <script src="{{ url_for('static', filename='js/default.js') }}" ></script>
