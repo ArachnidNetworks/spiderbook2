@@ -15,20 +15,20 @@
 {% block content %}
 {% for p in posts %}
     <article class="post">
-        <a href="{{ url_for('indpost', pid=p['pid']) }}">
-            <header>
+        <header>
+            <a href="{{ url_for('indpost', pid=p['pid']) }}">
                 <h1>{{ p['title'] }}</h1>
-            </header>
-        </a>
+            </a>
+        </header>
         <div class="post-content">
             {% if p['imgurl'] %}
-                <a href="{{ url_for('static', filename='images/'+p['imgurl']) }}">
-                    <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}" alt="">
-                </a>
+                <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}" alt="">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/noimage.png') }}" alt="">
             {% endif %}
-            {% if p['body'] %}
+<!--             {% if p['body'] %}
                 <p class="post-body">{{ p['body'] }}</p>
-            {% endif %}
+            {% endif %} -->
         </div>
     </article>
 {% endfor %}
