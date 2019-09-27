@@ -6,30 +6,35 @@
 
 {% block page_header %}
     <!-- Category header. Really big. -->
-    <div id="page-header">
-        <h1>{{ category }}</h1>
-        <small>Page {{ page }}</small>
-    </div>
+    <h1>{{ category }}</h1>
+    <small>Page {{ page }}</small>
+    <a href="../createpost">
+        <button>NEW THREAD</button>
+    </a>
 {% endblock page_header %}
 
 {% block content %}
-{% for p in posts %}
-    <article class="post">
-        <a href="{{ url_for('indpost', pid=p['pid']) }}">
+<main>
+    {% for p in posts %}
+        <article class="post">
             <header>
-                <h1>{{ p['title'] }}</h1>
+                <h1>
+                    <a href="{{ url_for('indpost', pid=p['pid']) }}">
+                        {{ p['title'] }}
+                    </a>
+                </h1>
             </header>
-        </a>
-        <div class="post-content">
-            {% if p['imgurl'] %}
-                <a href="{{ url_for('static', filename='images/'+p['imgurl']) }}">
+            <div class="post-content">
+                {% if p['imgurl'] %}
                     <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}" alt="">
-                </a>
-            {% endif %}
-            {% if p['body'] %}
-                <p class="post-body">{{ p['body'] }}</p>
-            {% endif %}
-        </div>
-    </article>
-{% endfor %}
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/noimage.png') }}" alt="">
+                {% endif %}
+    <!--             {% if p['body'] %}
+                    <p class="post-body">{{ p['body'] }}</p>
+                {% endif %} -->
+            </div>
+        </article>
+    {% endfor %}
+</main>
 {% endblock content %}

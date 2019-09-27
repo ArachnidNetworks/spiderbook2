@@ -1,76 +1,52 @@
 main {
-    width: 100%;
-    margin-top: 32px;
+    margin-top: 10px;
     margin-bottom: 32px;
-    display: flex;
-    flex-direction: column;
+    display: flex; display: -ms-flexbox; display: -webkit-flex;
+    flex-direction: row; -ms-flex-direction: row;
+    flex-wrap: wrap; -ms-flex-wrap: wrap;
+    justify-content: space-evenly;
 }
 
 .post {
-    border-top: 2px solid var(--main-color);
-    padding-top: 10px; padding-bottom: 20px;
-    width: 100%;
-    word-wrap: break-word;
+    max-width: 25%;
+    overflow-y: auto;
+    margin-bottom: 10px;
 }
 
 .post a {
     text-decoration: none;
 }
 
-.post header h1 {
+.post h1 {
+    font-size: 1.9vw;
     margin: 0;
     margin-bottom: 5px;
-    margin-left: 8px;
-    max-width: 20ch;
-    font-size: 3vw;
-}
-
-.post-content {
-/*     background-color: var(--post-bg-color); */
-    border-radius: 15px;
-    padding-left: 10px;
-/*     padding-top: 25px; */
-    width: 70%;
-}
-
-.post-content a {
-    max-width: 400px;
-    max-height: 400px;
-    margin-bottom: 6px;
+    text-align: center;
 }
 
 .post-content img {
-    max-width: 20%; max-height: 500px;
-    float: left;
-    margin-right: 25px;
-    margin-bottom: 15px;
+    width: 70%;
+    display: block;
+    margin: auto;
+    border: 1px solid #dfdfdf;
+    box-shadow: 5px 5px 5px #b9b9b9;
 }
 
-.post-content p {
-    font-size: 14pt;
-    max-width: 80ch;
-}
-
-@media screen and (min-width: 0px) and (max-width: 900px) {
-    .post header h1 {
-        font-size: 18pt;
+@media screen and (max-width: 700px) {
+    main {
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 32px;
+        display: flex; display: -ms-flexbox; display: -webkit-flex;
+        flex-direction: column; -ms-flex-direction: column;
+        align-items: center;
     }
-    .post-content {
-        margin: 0; padding: 0;
+    .post {
+        max-width: none; width: 100%;
+        overflow-y: auto;
+        margin-bottom: 10px;
     }
-    .post-content a {
-        max-width: 40%;
-        margin-left: 15px;
-        margin-right: 25px;
-        float: left;
-    }
-    .post-content img {
-        max-width: 100%;
-    }
-    .post-content p {
-        max-width: 90%;
-        margin-left: auto; margin-right: auto;
-        font-size: 15pt;
+    .post h1 {
+        font-size: 6vw;
     }
 }
-

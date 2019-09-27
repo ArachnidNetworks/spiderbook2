@@ -2,10 +2,7 @@
 
 :root {
     --main-color: #bde6bd;
-    --main-bg-color: #fafafa;
-    --post-bg-color: #c7ebc7;
-    --aside-len: 16vw;
-    --arrow-width: 55px;
+    --main-bg-color: #ffffff;
 }
 
 * {
@@ -26,35 +23,74 @@ body {
     padding-left: 5px; padding-right: 5px;
 }
 
-#logo {
-    width: 30%;
-    margin-top: auto;
-    margin-bottom: 5%;
-    margin-right: 5%;
-    margin-left: auto;
+#catsearch input {
+    width: 90%;
+    border: 1px solid var(--main-color); border-right: 0;
+    font-size: 1.2vw;
+    padding: 3px;
+    margin-top: 10px;
 }
+
+#catsearch button {
+    width: 10%;
+    font-size: 1.2vw;
+    padding: 3px;
+    border: 1px solid var(--main-color); border-left: 0;
+    background-color: #ffffff;
+}
+
+#catsearch button:hover { background-color: #e6ffdc; }
 
 #page-header {
     margin: 5px;
+    margin-left: 10px;
+    display: flex; display: -ms-flexbox; display: -webkit-flex;
+    flex-direction: column; -ms-flex-direction: column;
+    justify-content: center;
 }
-
 #page-header h1 {
     margin: 0;
     font-size: 4vw;
+    text-align: center;
 }
 #page-header small {
     font-size: 1.5vw;
-    margin-left: 10px;
+    text-align: center;
 }
 
-@media screen and (min-width: 1250px) and (max-width: 2000px) {
+#page-header a {
+    margin-top: 10px; margin-left: auto; margin-right: auto;
 }
 
-@media screen and (max-width: 900px) {
+#page-header button {
+    border: none;
+    background-color: var(--main-color);
+    padding: 1vw;
+    font-size: 1.5vw;
+    font-weight: 700;
+}
+
+#page-header button:hover {
+    filter: saturate(250%);
+    cursor: pointer;
+}
+
+@media screen and (max-width: 700px) {
+    #catsearch input {
+        font-size: 12pt;
+    }
+    #catsearch button {
+        font-size: 12pt;
+    }
     #page-header h1 {
         font-size: 30pt;
     }
     #page-header small {
         font-size: 15pt;
+    }
+    #page-header button {
+        padding: 3vw;
+        font-size: 5vw;
+        font-weight: 700;
     }
 }
