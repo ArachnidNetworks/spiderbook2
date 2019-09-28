@@ -70,11 +70,8 @@ body {
     text-align: center;
 }
 
-#page-header a {
-    margin-top: 10px; margin-left: auto; margin-right: auto;
-}
-
 #page-header button {
+    margin-top: 10px; margin-left: auto; margin-right: auto;
     border: none;
     background-color: var(--main-color);
     padding: 1vw;
