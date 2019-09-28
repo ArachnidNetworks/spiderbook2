@@ -6,6 +6,7 @@ import re
 import datetime
 import dbi
 import mimetypes
+import traceback
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
@@ -35,6 +36,7 @@ def root():
     try:
         return redirect(url_for('home', category='all', page=1))
     except:
+        traceback.print_exc()
         return abort(SERVER)
 
 @app.route('/<category>')
@@ -49,12 +51,14 @@ def home(category, page):
         # If the page number is not valid, return 404
         page = int(page)
     except:
+        traceback.print_exc()
         return abort(NOT_FOUND)
     try:
         # If the category is not 'all' and it doesn't exist, return 404
         if category != 'all' and not dbi.find_cat(category):
             return abort(NOT_FOUND)
     except:
+        traceback.print_exc()
         return abort(NOT_FOUND)
     # If the page number is invalid, turn it to 1
     if page < 1:
@@ -82,9 +86,9 @@ def home(category, page):
                 post.pop('imgurl')
         return render_template("home.html", title=" Home", posts=posts,
         category=category, page=page)
-    except Exception as e:
+    except:
         # If something goes wrong with the query or template, return a 500 error
-        print(e)
+        traceback.print_exc()
         return abort(SERVER)
 
 @app.route("/post/<pid>")
@@ -111,39 +115,40 @@ def create_comment(pid):
         data['table'] = 'comments'
         dbi.insert_row(data)
     except:
+        traceback.print_exc()
         return abort(UNPROC_ENTITY)
     return jsonify(True)
 
 @app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
-        """ try: """
-        post_data = dict(request.form)
-        data = {}
-        data['author'] = str(post_data['author']).replace(" ", "")
-        if not data['author']:
-            data['author'] = 'Anonymous'
-        data['category'] = str(post_data['category']).replace(" ", "")
-        data['title'] = str(post_data['title']).replace(" ", "")
-        data['body'] = str(post_data.get('body')).replace(" ", "")
-        # If the body is too big, return an error
-        if len(data['body']) > 7000:
-            return abort(UNPROC_ENTITY)
-        # Set post timestamp to the current timestamp
-        data['postts'] = get_curtimestamp()
-        # Get the poster's IP for... reasons... and hash it
-        data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
-        # Get image if it exists
-        image = request.files.get('imgbin')
-        # Save it on the server and return URL
-        new_pid = dbi.get_new_pid(True)
-        data['imgurl'] = get_image_url(image, new_pid)
-        data['table'] = 'posts'
-        dbi.insert_row(data, new_pid)
-        return "Post created!"
-        """ except Exception as e:
+        try:
+            post_data = dict(request.form)
+            data = {}
+            data['author'] = str(post_data['author']).replace(" ", "")
+            if not data['author']:
+                data['author'] = 'Anonymous'
+            data['category'] = str(post_data['category']).replace(" ", "")
+            data['title'] = str(post_data['title']).replace(" ", "")
+            data['body'] = str(post_data.get('body')).replace(" ", "")
+            # If the body is too big, return an error
+            if len(data['body']) > 7000:
+                return abort(UNPROC_ENTITY)
+            # Set post timestamp to the current timestamp
+            data['postts'] = get_curtimestamp()
+            # Get the poster's IP for... reasons... and hash it
+            data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+            # Get image if it exists
+            image = request.files.get('imgbin')
+            # Save it on the server and return URL
+            new_pid = dbi.get_new_pid(True)
+            data['imgurl'] = get_image_url(image, new_pid)
+            data['table'] = 'posts'
+            dbi.insert_row(data, new_pid)
+            return "Post created!"
+        except Exception as e:
             print(e)
-        return abort(UNPROC_ENTITY) """
+        return abort(UNPROC_ENTITY)
     else:
         return "Create post"
 
