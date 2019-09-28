@@ -18,7 +18,7 @@ FORBBIDEN = 403
 def get_image_url(image, new_pid):
     # If the image exists
     if image:
-        # If it's actually an image
+        # If it's actually an image:
         if mimetypes.guess_type(image).startswith("image"):
             name = image.filename
             # Get the new name (next post's id + image's extension)
@@ -75,10 +75,16 @@ def home(category, page):
     try:
         posts = dbi.get_posts(query + """ORDER BY postts DESC
         OFFSET %s LIMIT %s""", vals)
+        # If any image inside is not in the filesystem, set the value to none
+        for post in posts:
+            if not os.path.isfile(url_for('static', filename=f'images/{post["imgurl"]}')[1:]):
+                print(url_for('static', filename=f'images/{post["imgurl"]}')[1:])
+                post.pop('imgurl')
         return render_template("home.html", title=" Home", posts=posts,
         category=category, page=page)
-    except:
+    except Exception as e:
         # If something goes wrong with the query or template, return a 500 error
+        print(e)
         return abort(SERVER)
 
 @app.route("/post/<pid>")
