@@ -130,12 +130,12 @@ def create_post():
     try:
         post_data = dict(request.form)
         data = {}
-        data['author'] = str(post_data['author']).replace(" ", "")
+        data['author'] = post_data['author'].replace(" ", "")
         if not data['author']:
             data['author'] = 'Anonymous'
-        data['category'] = str(post_data['category']).replace(" ", "")
-        data['title'] = str(post_data['title']).replace(" ", "")
-        data['body'] = str(post_data.get('body')).replace(" ", "")
+        data['category'] = post_data['category'].replace(" ", "")
+        data['title'] = post_data['title'].replace(" ", "")
+        data['body'] = post_data.get('body').replace(" ", "")
         # If the body is too big, return an error
         if len(data['body']) > 7000:
             return abort(UNPROC_ENTITY)

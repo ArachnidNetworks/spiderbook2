@@ -17,10 +17,8 @@
         <div class="linebreak"></div>
         <textarea name="body" style="min-width: 90%; min-height: 400px" placeholder="Body"></textarea><br>
         <div class="linebreak"></div>
-        <label class="filein-btn">
-            Choose a file
-            <input type="file" name="imgbin" class="filein">
-        </label>
+        <label class="filein-btn" for="filein-id">Choose a file</label>
+        <input type="file" name="imgbin" class="filein" id="filein-id">
         <div class="linebreak"></div>
         <div class="linebreak"></div>
         <input class="submit-btn" type="submit" value="Submit">
@@ -49,3 +47,7 @@
     {% endfor %}
 </main>
 {% endblock content %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}" ></script>
+{% endblock scripts %}
