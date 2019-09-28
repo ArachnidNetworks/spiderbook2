@@ -19,8 +19,8 @@ def get_image_url(image, new_pid):
     # If the image exists
     if image:
         # If it's actually an image:
-        if mimetypes.guess_type(image).startswith("image"):
-            name = image.filename
+        name = image.filename
+        if mimetypes.guess_type(name)[0].startswith("image"):
             # Get the new name (next post's id + image's extension)
             imagename = new_pid + os.path.splitext(name)[1]
             image.save(f'static/images/{imagename}')
@@ -117,31 +117,33 @@ def create_comment(pid):
 @app.route("/createpost", methods=['GET', 'POST'])
 def create_post():
     if request.method == 'POST':
-        try:
-            post_data = dict(request.form)
-            data = {}
-            data['author'] = str(post_data['author']).replace(" ", "")
-            if not data['author']:
-                data['author'] = 'Anonymous'
-            data['category'] = str(post_data['category']).replace(" ", "")
-            data['title'] = str(post_data['title']).replace(" ", "")
-            data['body'] = str(post_data.get('body')).replace(" ", "")
-            # If the body is too big, return an error
-            if len(data['body']) > 7000:
-                return abort(UNPROC_ENTITY)
-            # Set post timestamp to the current timestamp
-            data['postts'] = get_curtimestamp()
-            # Get the poster's IP for... reasons... and hash it
-            data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
-            # Get image if it exists
-            image = request.files.get('imgbin')
-            # Save it on the server and return URL
-            data['imgurl'] = get_image_url(image)
-            data['table'] = 'posts'
-            dbi.insert_row(data)
-            return "Post created!"
-        except:
+        """ try: """
+        post_data = dict(request.form)
+        data = {}
+        data['author'] = str(post_data['author']).replace(" ", "")
+        if not data['author']:
+            data['author'] = 'Anonymous'
+        data['category'] = str(post_data['category']).replace(" ", "")
+        data['title'] = str(post_data['title']).replace(" ", "")
+        data['body'] = str(post_data.get('body')).replace(" ", "")
+        # If the body is too big, return an error
+        if len(data['body']) > 7000:
             return abort(UNPROC_ENTITY)
+        # Set post timestamp to the current timestamp
+        data['postts'] = get_curtimestamp()
+        # Get the poster's IP for... reasons... and hash it
+        data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        # Get image if it exists
+        image = request.files.get('imgbin')
+        # Save it on the server and return URL
+        new_pid = dbi.get_new_pid(True)
+        data['imgurl'] = get_image_url(image, new_pid)
+        data['table'] = 'posts'
+        dbi.insert_row(data, new_pid)
+        return "Post created!"
+        """ except Exception as e:
+            print(e)
+        return abort(UNPROC_ENTITY) """
     else:
         return "Create post"
 

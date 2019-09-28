@@ -8,8 +8,10 @@ main {
 }
 
 .post {
+    min-width: 15%;
     max-width: 23%;
     overflow-y: auto;
+    max-height: 400px;
     margin-bottom: 10px;
 }
 
@@ -28,7 +30,7 @@ main {
 }
 
 .post-content img {
-    width: 70%;
+    max-width: 70%;
     display: block;
     margin: auto;
     border: 1px solid #a9ff93;

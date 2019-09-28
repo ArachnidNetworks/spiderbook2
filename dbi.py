@@ -138,8 +138,7 @@ def find_cat(category):
     else:
         return True
 
-def insert_row(data):
-    new_pid = get_new_pid(True)
+def insert_row(data, new_pid):
     table = data['table']
     data.pop('table')
     # cols is a list of the columns from the data, and scols is that list
