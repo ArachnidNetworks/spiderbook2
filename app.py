@@ -110,10 +110,12 @@ def create_comment(pid):
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
         # Get image if it exists
         image = request.files.get('imgbin')
+        # Get pid for image name and post
+        new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgurl'] = get_image_url(image)
+        data['imgurl'] = get_image_url(image, new_pid)
         data['table'] = 'comments'
-        dbi.insert_row(data)
+        dbi.insert_row(data, new_pid)
     except:
         traceback.print_exc()
         return abort(UNPROC_ENTITY)
@@ -139,8 +141,9 @@ def create_post():
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
         # Get image if it exists
         image = request.files.get('imgbin')
-        # Save it on the server and return URL
+        # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
+        # Save it on the server and return URL
         data['imgurl'] = get_image_url(image, new_pid)
         data['table'] = 'posts'
         dbi.insert_row(data, new_pid)
