@@ -128,14 +128,13 @@ def create_comment(pid):
 @app.route("/createpost", methods=['POST'])
 def create_post():
     try:
-        post_data = dict(request.form)
         data = {}
-        data['author'] = post_data['author'].replace(" ", "")
+        data['author'] = request.form['author'].replace(" ", "")
         if not data['author']:
             data['author'] = 'Anonymous'
-        data['category'] = post_data['category'].replace(" ", "")
-        data['title'] = post_data['title'].replace(" ", "")
-        data['body'] = post_data.get('body').replace(" ", "")
+        data['category'] = request.form['category'].replace(" ", "")
+        data['title'] = request.form['title'].replace(" ", "")
+        data['body'] = request.form['body'].replace(" ", "")
         # If the body is too big, return an error
         if len(data['body']) > 7000:
             return abort(UNPROC_ENTITY)
@@ -144,17 +143,23 @@ def create_post():
         # Get the poster's IP for... reasons... and hash it
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
         # Get image if it exists
-        image = request.files.get('imgbin')
+        image = request.files['imgbin']
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
         data['imgurl'] = get_image_url(image, new_pid)
+        # If any of the required fields is null, return an error
+        for fieldname, value in data.items():
+            print(value, '=>', type(value))
+            if value == '':
+                flash("Please fill in the 'Category' and 'Title' fields.")
+                return redirect(request.form['previouspage'])
         data['table'] = 'posts'
         dbi.insert_row(data, new_pid)
         return "Post created!"
     except:
         traceback.print_exc()
-    return abort(UNPROC_ENTITY)
+        return abort(UNPROC_ENTITY)
 
 @app.route("/search", methods=['POST'])
 def search():
