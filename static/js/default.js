@@ -15,4 +15,9 @@ function mclickpc(cat) {
     cat.classList.add("touched");
 }
 
-document.getElementById("prevpage").value = window.location.href;
+const elements = document.getElementsByClassName("prevpage");
+console.log(elements);
+for (var i=0; i<elements.length; i++) {
+    elements[i].value = window.location.href;
+}
+console.log(elements);

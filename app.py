@@ -39,11 +39,15 @@ def root():
         traceback.print_exc()
         return abort(SERVER)
 
-@app.route('/<category>')
+@app.route('/br')
+def no_cat():
+    return redirect(url_for('home', category='all', page=1))
+
+@app.route('/br/<category>')
 def no_page(category):
     return redirect(url_for('home', category=category, page=1))
 
-@app.route("/<category>/<page>")
+@app.route("/br/<category>/<page>")
 def home(category, page):
     # Uppercase bad
     category = str(category).lower()
@@ -84,8 +88,8 @@ def home(category, page):
             if not os.path.isfile(url_for('static', filename=f'images/{post["imgurl"]}')[1:]):
                 print(url_for('static', filename=f'images/{post["imgurl"]}')[1:])
                 post.pop('imgurl')
-        return render_template("home.html", title=" Home", posts=posts,
-        category=category, page=page)
+        return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
+        posts=posts)
     except:
         # If something goes wrong with the query or template, return a 500 error
         traceback.print_exc()
@@ -94,8 +98,8 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    return render_template("indpost.html", pid=pid, title=post['title'],
-    body=post['body'], img={'imgurl': post['imgurl']})
+    return render_template("indpost.html", title=post['title'], header=post['title'],
+    body=post['body'], img={'imgurl': post['imgurl']}, author=post['author'])
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
@@ -124,14 +128,13 @@ def create_comment(pid):
 @app.route("/createpost", methods=['POST'])
 def create_post():
     try:
-        post_data = dict(request.form)
         data = {}
-        data['author'] = str(post_data['author']).replace(" ", "")
+        data['author'] = request.form['author'].replace(" ", "")
         if not data['author']:
             data['author'] = 'Anonymous'
-        data['category'] = str(post_data['category']).replace(" ", "")
-        data['title'] = str(post_data['title']).replace(" ", "")
-        data['body'] = str(post_data.get('body')).replace(" ", "")
+        data['category'] = request.form['category'].replace(" ", "")
+        data['title'] = request.form['title'].replace(" ", "")
+        data['body'] = request.form['body'].replace(" ", "")
         # If the body is too big, return an error
         if len(data['body']) > 7000:
             return abort(UNPROC_ENTITY)
@@ -140,20 +143,26 @@ def create_post():
         # Get the poster's IP for... reasons... and hash it
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
         # Get image if it exists
-        image = request.files.get('imgbin')
+        image = request.files['imgbin']
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
         data['imgurl'] = get_image_url(image, new_pid)
+        # If any of the required fields is null, return an error
+        for fieldname, value in data.items():
+            print(value, '=>', type(value))
+            if value == '':
+                flash("Please fill in the 'Category' and 'Title' fields.")
+                return redirect(request.form['previouspage'])
         data['table'] = 'posts'
         dbi.insert_row(data, new_pid)
         return "Post created!"
     except:
         traceback.print_exc()
-    return abort(UNPROC_ENTITY)
+        return abort(UNPROC_ENTITY)
 
 @app.route("/search", methods=['POST'])
-def search_cat():
+def search():
     form_data = dict(request.form)
     category = form_data.get('category')
     prevpage = form_data.get('previouspage')

@@ -5,12 +5,25 @@
 {% endblock styles %}
 
 {% block page_header %}
-    <!-- Category header. Really big. -->
-    <h1>{{ category }}</h1>
-    <small>Page {{ page }}</small>
-    <a href="../createpost">
-        <button>NEW THREAD</button>
-    </a>
+    <button onclick="open_postcreator();">NEW THREAD</button>
+    <form action="{{ url_for('create_post') }}"  method="post" class="post-creator"
+    enctype="multipart/form-data">
+        <div class="post-creator-container">
+            <input class="prevpage" type="hidden" name="previouspage" value=False>
+            <input type="text" name="author" placeholder="Author"><input type="text" name="category"
+            placeholder="Category">
+            <div class="linebreak"></div>
+            <input type="text" name="title" placeholder="Title">
+            <div class="linebreak"></div>
+            <textarea name="body" style="min-width: 90%; min-height: 400px" placeholder="Body"></textarea><br>
+            <div class="linebreak"></div>
+            <label class="filein-btn" for="filein-id">Choose a file</label>
+            <input type="file" name="imgbin" class="filein" id="filein-id">
+            <div class="linebreak"></div>
+            <div class="linebreak"></div>
+            <input class="submit-btn" type="submit" value="Submit">
+        </div>
+    </form>
 {% endblock page_header %}
 
 {% block content %}
@@ -35,3 +48,7 @@
     {% endfor %}
 </main>
 {% endblock content %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}" ></script>
+{% endblock scripts %}

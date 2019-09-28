@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
     {% block styles %}{% endblock styles %}
     
-    <title>Spiderbook{{ title }}</title>
+    <title>Spiderbook - {{ title }}</title>
 </head>
 <body>
     {% with messages = get_flashed_messages() %}
@@ -22,12 +22,16 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form id="catsearch" action="../search" method="post">
-        <input id="prevpage" type="hidden" name="previouspage" value=False>
+    <form id="catsearch" action="{{ url_for('search') }}"  method="post">
+        <input class="prevpage" type="hidden" name="previouspage" value=False>
         <input type="text" placeholder="Go to category..."
         name="category"><button type="submit">Go</button>
     </form>
     <header id="page-header">
+        <h1>{{ header }}</h1>
+        {% if small %}
+            <small>{{ small }}</small>
+        {% endif %}
         {% block page_header %}
         {% endblock page_header %}
     </header>
@@ -36,5 +40,7 @@
 </body>
 
 <script src="{{ url_for('static', filename='js/default.js') }}" ></script>
+{% block scripts %}
+{% endblock scripts %}
 
 </html>

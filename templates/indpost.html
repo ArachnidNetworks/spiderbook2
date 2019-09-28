@@ -5,18 +5,18 @@
 {% endblock styles %}
 
 {% block page_header %}
-<div id="page-header">
-    <h1>{{ title }}</h1>
-</div>
 {% endblock page_header %}
 
 {% block content %}
-    {% if img['imgurl'] %}
-        <a href="{{ url_for('static', filename='images/'+img['imgurl']) }}">
-            <img id="post-image" src="{{ url_for('static', filename='images/'+img['imgurl']) }}" alt="">
-        </a>
-    {% endif %}
-    {% if body %}
-        <p id="post-body">{{ body }}</p>
-    {% endif %}
+    <main>
+        <article class="op-post">
+            {% if img['imgurl'] %}
+                <img id="post-image" src="{{ url_for('static', filename='images/'+img['imgurl']) }}">
+            {% endif %}
+            <div id="author-name">> {{ author }}</div>
+            {% if body %}
+                <div id="post-body">{{ body }}</div>
+            {% endif %}
+        </article>
+    </main>
 {% endblock content %}
