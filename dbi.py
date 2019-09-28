@@ -1,4 +1,4 @@
-import hashlib, random, base64
+import hashlib, random, base64, os
 from datetime import datetime
 import psycopg2
 
@@ -104,12 +104,13 @@ def login(e, p):
         return False
 
 # Create a post with the form data harvested at the view function
-def get_new_pid():
+def get_new_pid(create_new):
     c.execute("SELECT * FROM ids ORDER BY v DESC LIMIT 1")
     last_id = c.fetchone()[0]
     uhs_new_pid = last_id + random.randint(1, 9)
-    c.execute("INSERT INTO ids (v) VALUES (%s)", (uhs_new_pid,))
-    conn.commit()
+    if create_new:
+        c.execute("INSERT INTO ids (v) VALUES (%s)", (uhs_new_pid,))
+        conn.commit()
     return hash_str(str(uhs_new_pid), 25)
 
 def get_cols(data):
@@ -137,8 +138,7 @@ def find_cat(category):
     else:
         return True
 
-def insert_row(data):
-    new_pid = get_new_pid()
+def insert_row(data, new_pid):
     table = data['table']
     data.pop('table')
     # cols is a list of the columns from the data, and scols is that list

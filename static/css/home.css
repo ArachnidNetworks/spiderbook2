@@ -8,8 +8,10 @@ main {
 }
 
 .post {
-    max-width: 25%;
+    min-width: 15%;
+    max-width: 23%;
     overflow-y: auto;
+    max-height: 400px;
     margin-bottom: 10px;
 }
 
@@ -22,14 +24,19 @@ main {
     margin: 0;
     margin-bottom: 5px;
     text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .post-content img {
-    width: 70%;
+    max-width: 70%;
     display: block;
     margin: auto;
-    border: 1px solid #dfdfdf;
-    box-shadow: 5px 5px 5px #b9b9b9;
+    border: 1px solid #a9ff93;
+    box-shadow: -3px -3px 10px 0 #a9ff93;
+    -webkit-box-shadow: -3px -3px 10px 0 #a9ff93;
+    -moz-box-shadow: -3px -3px 10px 0 #a9ff93;
 }
 
 @media screen and (max-width: 700px) {

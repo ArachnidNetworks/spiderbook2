@@ -35,22 +35,22 @@ body {
 
 #catsearch input {
     width: 90%;
-    border: 1px solid var(--main-color); border-right: 0;
     font-size: 1.2vw;
-    padding: 3px;
+    padding: 6px;
     padding-left: 5px;
+    border: 1px solid var(--main-color); border-right: 0;
     margin-top: 10px;
 }
 
 #catsearch button {
     width: 10%;
     font-size: 1.2vw;
-    padding: 3px;
+    padding: 6px;
     border: 1px solid var(--main-color); border-left: 0;
     background-color: #ffffff;
 }
 
-#catsearch button:hover { background-color: #e6ffdc; }
+#catsearch button:hover { background-color: #ccffb8; }
 
 #page-header {
     margin: 5px;
