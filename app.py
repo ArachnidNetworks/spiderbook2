@@ -157,7 +157,7 @@ def create_post():
     return abort(UNPROC_ENTITY)
 
 @app.route("/search", methods=['POST'])
-def search_cat():
+def search():
     form_data = dict(request.form)
     category = form_data.get('category')
     prevpage = form_data.get('previouspage')

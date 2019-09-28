@@ -22,7 +22,7 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <form id="catsearch" action="../search" method="post">
+    <form id="catsearch" action="{{ url_for('search') }}"  method="post">
         <input id="prevpage" type="hidden" name="previouspage" value=False>
         <input type="text" placeholder="Go to category..."
         name="category"><button type="submit">Go</button>
