@@ -5,10 +5,11 @@
 {% endblock styles %}
 
 {% block page_header %}
-    <a href="../createpost">
+    <a href="/createpost">
         <button>NEW THREAD</button>
     </a>
-    <div class="post-creator"></div>
+    <form action="/createpost"  method="post"></form>
+    <form class="post-creator"></form>
 {% endblock page_header %}
 
 {% block content %}

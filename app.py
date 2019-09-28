@@ -39,11 +39,15 @@ def root():
         traceback.print_exc()
         return abort(SERVER)
 
-@app.route('/<category>')
+@app.route('/br')
+def no_cat():
+    return redirect(url_for('home', category='all', page=1))
+
+@app.route('/br/<category>')
 def no_page(category):
     return redirect(url_for('home', category=category, page=1))
 
-@app.route("/<category>/<page>")
+@app.route("/br/<category>/<page>")
 def home(category, page):
     # Uppercase bad
     category = str(category).lower()

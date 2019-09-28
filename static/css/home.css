@@ -41,8 +41,9 @@ main {
 
 .post-creator {
     align-self: center;
+    margin-top: 20px;
     width: 500px;
-    height: 500px;
+    height: 350px;
     background-color: red;
 }
 
