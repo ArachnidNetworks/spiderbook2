@@ -119,38 +119,35 @@ def create_comment(pid):
         return abort(UNPROC_ENTITY)
     return jsonify(True)
 
-@app.route("/createpost", methods=['GET', 'POST'])
+@app.route("/createpost", methods=['POST'])
 def create_post():
-    if request.method == 'POST':
-        try:
-            post_data = dict(request.form)
-            data = {}
-            data['author'] = str(post_data['author']).replace(" ", "")
-            if not data['author']:
-                data['author'] = 'Anonymous'
-            data['category'] = str(post_data['category']).replace(" ", "")
-            data['title'] = str(post_data['title']).replace(" ", "")
-            data['body'] = str(post_data.get('body')).replace(" ", "")
-            # If the body is too big, return an error
-            if len(data['body']) > 7000:
-                return abort(UNPROC_ENTITY)
-            # Set post timestamp to the current timestamp
-            data['postts'] = get_curtimestamp()
-            # Get the poster's IP for... reasons... and hash it
-            data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
-            # Get image if it exists
-            image = request.files.get('imgbin')
-            # Save it on the server and return URL
-            new_pid = dbi.get_new_pid(True)
-            data['imgurl'] = get_image_url(image, new_pid)
-            data['table'] = 'posts'
-            dbi.insert_row(data, new_pid)
-            return "Post created!"
-        except Exception as e:
-            print(e)
-        return abort(UNPROC_ENTITY)
-    else:
-        return "Create post"
+    try:
+        post_data = dict(request.form)
+        data = {}
+        data['author'] = str(post_data['author']).replace(" ", "")
+        if not data['author']:
+            data['author'] = 'Anonymous'
+        data['category'] = str(post_data['category']).replace(" ", "")
+        data['title'] = str(post_data['title']).replace(" ", "")
+        data['body'] = str(post_data.get('body')).replace(" ", "")
+        # If the body is too big, return an error
+        if len(data['body']) > 7000:
+            return abort(UNPROC_ENTITY)
+        # Set post timestamp to the current timestamp
+        data['postts'] = get_curtimestamp()
+        # Get the poster's IP for... reasons... and hash it
+        data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        # Get image if it exists
+        image = request.files.get('imgbin')
+        # Save it on the server and return URL
+        new_pid = dbi.get_new_pid(True)
+        data['imgurl'] = get_image_url(image, new_pid)
+        data['table'] = 'posts'
+        dbi.insert_row(data, new_pid)
+        return "Post created!"
+    except:
+        traceback.print_exc()
+    return abort(UNPROC_ENTITY)
 
 @app.route("/search", methods=['POST'])
 def search_cat():
