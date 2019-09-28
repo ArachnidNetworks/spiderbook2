@@ -5,6 +5,7 @@ import time
 import re
 import datetime
 import dbi
+import mimetypes
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
@@ -14,11 +15,17 @@ SERVER = 500
 NOT_FOUND = 404
 FORBBIDEN = 403
 
-def get_image_url(image):
-    name = image.filename
-    imagename = dbi.get_image_name(name)
-    image.save(f'static/images/{imagename}')
-    return imagename
+def get_image_url(image, new_pid):
+    # If the image exists
+    if image:
+        # If it's actually an image
+        if mimetypes.guess_type(image).startswith("image"):
+            name = image.filename
+            # Get the new name (next post's id + image's extension)
+            imagename = new_pid + os.path.splitext(name)[1]
+            image.save(f'static/images/{imagename}')
+            return imagename
+    return None
 
 def get_curtimestamp():
     return datetime.datetime.utcnow()
@@ -89,12 +96,12 @@ def create_comment(pid):
                 data['author'] = 'Anonymous'
         data['content'] = str(data['content']).replace(" ", "")
         data['op_id'] = str(pid).replace(" ", "")
+        # Get the poster's IP for... reasons... and hash it
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        # Get image if it exists
         image = request.files.get('imgbin')
-        if image:
-            data['imgurl'] = get_image_url(image)
-        else:
-            data['imgurl'] = None
+        # Save it on the server and return URL
+        data['imgurl'] = get_image_url(image)
         data['table'] = 'comments'
         dbi.insert_row(data)
     except:
@@ -113,15 +120,17 @@ def create_post():
             data['category'] = str(post_data['category']).replace(" ", "")
             data['title'] = str(post_data['title']).replace(" ", "")
             data['body'] = str(post_data.get('body')).replace(" ", "")
+            # If the body is too big, return an error
             if len(data['body']) > 7000:
                 return abort(UNPROC_ENTITY)
+            # Set post timestamp to the current timestamp
             data['postts'] = get_curtimestamp()
+            # Get the poster's IP for... reasons... and hash it
             data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+            # Get image if it exists
             image = request.files.get('imgbin')
-            if image:
-                data['imgurl'] = get_image_url(image)
-            else:
-                data['imgurl'] = None
+            # Save it on the server and return URL
+            data['imgurl'] = get_image_url(image)
             data['table'] = 'posts'
             dbi.insert_row(data)
             return "Post created!"

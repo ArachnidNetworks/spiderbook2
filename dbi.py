@@ -138,11 +138,6 @@ def find_cat(category):
     else:
         return True
 
-def get_image_name(name):
-    new_pid = get_new_pid(False)
-    extension = os.path.splitext(name)[1]
-    return new_pid + extension
-
 def insert_row(data):
     new_pid = get_new_pid(True)
     table = data['table']
