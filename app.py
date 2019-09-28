@@ -84,8 +84,8 @@ def home(category, page):
             if not os.path.isfile(url_for('static', filename=f'images/{post["imgurl"]}')[1:]):
                 print(url_for('static', filename=f'images/{post["imgurl"]}')[1:])
                 post.pop('imgurl')
-        return render_template("home.html", title=" Home", posts=posts,
-        category=category, page=page)
+        return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
+        posts=posts)
     except:
         # If something goes wrong with the query or template, return a 500 error
         traceback.print_exc()

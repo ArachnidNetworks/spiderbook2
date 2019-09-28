@@ -28,6 +28,10 @@
         name="category"><button type="submit">Go</button>
     </form>
     <header id="page-header">
+        <h1>{{ header }}</h1>
+        {% if small %}
+            <small>{{ small }}</small>
+        {% endif %}
         {% block page_header %}
         {% endblock page_header %}
     </header>
