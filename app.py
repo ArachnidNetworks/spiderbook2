@@ -98,8 +98,8 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    return render_template("indpost.html", pid=pid, title=post['title'],
-    body=post['body'], img={'imgurl': post['imgurl']})
+    return render_template("indpost.html", title=post['title'], header=post['title'],
+    body=post['body'], img={'imgurl': post['imgurl']}, author=post['author'])
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
