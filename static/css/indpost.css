@@ -28,6 +28,7 @@ main {
 
 #post-image {
     float: left;
+    min-width: 5%;
     max-width: 20%;
     max-height: 700px;
     overflow: hidden;
