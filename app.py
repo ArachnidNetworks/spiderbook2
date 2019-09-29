@@ -104,7 +104,10 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    imgbin = post['imgbin']
+    if not type(post['imgbin']) == memoryview:
+        imgbin = False
+    else:
+        imgbin = True
     return render_template("indpost.html", title=post['title'],
     body=post['body'], author=post['author'], imgbin=imgbin, pid=pid)
 
