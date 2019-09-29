@@ -98,7 +98,7 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    return render_template("indpost.html", title=post['title'], header=post['title'],
+    return render_template("indpost.html", title=post['title'],
     body=post['body'], img={'imgurl': post['imgurl']}, author=post['author'])
 
 @app.route("/post/<pid>/comment", methods=['POST'])
@@ -142,6 +142,9 @@ def create_post():
         data['postts'] = get_curtimestamp()
         # Get the poster's IP for... reasons... and hash it
         data['poster_ip'] = dbi.hash_str(str(request.environ['REMOTE_ADDR']))
+        if data['poster_ip'] != '4b84b15bff6ee5796152495a230e45e3d7e947d9' and data['author'].lower() == 'owner':
+            flash("Only the owner can use that author name.")
+            return redirect(request.form['previouspage'])
         # Get image if it exists
         image = request.files['imgbin']
         # Get pid for image name and post

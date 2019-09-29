@@ -10,10 +10,11 @@
 {% block content %}
     <main>
         <article class="op-post">
+            <h2>{{ title }}</h2>
+            <small id="author-name">{{ author }}</small>
             {% if img['imgurl'] %}
                 <img id="post-image" src="{{ url_for('static', filename='images/'+img['imgurl']) }}">
             {% endif %}
-            <div id="author-name">> {{ author }}</div>
             {% if body %}
                 <div id="post-body">{{ body }}</div>
             {% endif %}

@@ -28,7 +28,9 @@
         name="category"><button type="submit">Go</button>
     </form>
     <header id="page-header">
-        <h1>{{ header }}</h1>
+        {% if header %}
+            <h1>{{ header }}</h1>
+        {% endif %}
         {% if small %}
             <small>{{ small }}</small>
         {% endif %}

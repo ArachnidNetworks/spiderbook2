@@ -2,14 +2,6 @@
     --post-background: #ecfaf3;
 }
 
-#page-header {
-    margin-left: 5px;
-}
-
-#page-header h1 {
-    text-align: left;
-}
-
 main {
     margin-bottom: 20px;
 }
@@ -22,13 +14,15 @@ main {
     padding: 15px;
 }
 
+.op-post h2 {
+    margin: 0;
+}
+
 #author-name {
-    padding-top: 1px;
-    padding-left: 5px; padding-right: 5px;
-    padding-bottom: 2px;
-    box-shadow: 0 0 5px 5px var(--main-color);
-    display: inline;
-    margin: 3px;
+    font-size: 11pt;
+    margin: 0;
+    display: block;
+    margin-bottom: 15px;
 }
 
 #post-image {
