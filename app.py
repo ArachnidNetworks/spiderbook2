@@ -104,8 +104,9 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
+    imgbin = post['imgbin']
     return render_template("indpost.html", title=post['title'],
-    body=post['body'], img={'imgurl': post['imgurl']}, author=post['author'])
+    body=post['body'], author=post['author'], imgbin=imgbin, pid=pid)
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
@@ -140,7 +141,7 @@ def create_post():
             data['author'] = 'Anonymous'
         data['category'] = request.form['category'].replace(" ", "")
         data['title'] = request.form['title'].replace(" ", "")
-        data['body'] = request.form['body'].replace(" ", "")
+        data['body'] = request.form['body']
         # If the body is too big, return an error
         if len(data['body']) > 7000:
             return abort(UNPROC_ENTITY)
