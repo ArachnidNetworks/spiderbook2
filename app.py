@@ -16,16 +16,22 @@ SERVER = 500
 NOT_FOUND = 404
 FORBBIDEN = 403
 
-def get_image_url(image, new_pid):
+def get_image_binary(image, filename):
+    image.save(filename)
+    with open(image, 'rb') as f:
+        return f.read()
+    os.delete(filename)
+
+def get_image(image, new_pid):
     # If the image exists
     if image:
         # If it's actually an image:
         name = image.filename
         if mimetypes.guess_type(name)[0].startswith("image"):
             # Get the new name (next post's id + image's extension)
-            imagename = new_pid + os.path.splitext(name)[1]
-            image.save(f'static/images/{imagename}')
-            return imagename
+            imagename = f'static/images/{new_pid + os.path.splitext(name)[1]}'
+            imagebin = get_image_binary(image, imagename)
+            return imagebin
     return None
 
 def get_curtimestamp():
@@ -117,7 +123,7 @@ def create_comment(pid):
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgurl'] = get_image_url(image, new_pid)
+        data['imgurl'] = get_image(image, new_pid)
         data['table'] = 'comments'
         dbi.insert_row(data, new_pid)
     except:
@@ -150,7 +156,7 @@ def create_post():
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgurl'] = get_image_url(image, new_pid)
+        data['imgbin'] = get_image(image, new_pid)
         # If any of the required fields is null, return an error
         for fieldname, value in data.items():
             print(value, '=>', type(value))
