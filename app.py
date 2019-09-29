@@ -170,6 +170,15 @@ def create_post():
         traceback.print_exc()
         return abort(UNPROC_ENTITY)
 
+@app.route("/getimage", methods=['GET'])
+def getimage():
+    postid = request.args['postid']
+    imgbin, imgext = dbi.getimage(postid)
+    response = make_response(imgbin)
+    response.headers.set('Content-Type', f'image/{imgext}')
+    response.headers.set('Content-Disposition', 'attachment', filename=f'{postid}.{imgext}')
+    return response
+
 @app.route("/search", methods=['POST'])
 def search():
     form_data = dict(request.form)

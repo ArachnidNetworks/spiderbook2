@@ -1,4 +1,4 @@
-import hashlib, random, base64, os
+import hashlib, random, base64, os, imghdr
 from datetime import datetime
 import psycopg2
 
@@ -157,3 +157,10 @@ def insert_row(data, new_pid):
     except Exception as e:
         reset_con()
         raise e
+
+def getimage(postid):
+    query = f"""SELECT imgbin FROM posts WHERE pid = %s"""
+    c.execute(query, (postid,))
+    imgbin = c.fetchone()[0]
+    imgext = imgbin.what('', h=imgbin)
+    return imgbin, imgext
