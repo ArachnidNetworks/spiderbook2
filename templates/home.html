@@ -39,9 +39,7 @@
             </header>
             <div class="post-content">
                 {% if p['imgbin'] %}
-                    <img class="validimg" src="{{ url_for('getimage', postid=p['pid']) }}">
-                {% else %}
-                    <img class="invalidimg" src="{{ url_for('static', filename='images/noimage.jpg') }}">
+                    <img class="validimg" src="data:image/{{ p['imgext'] }};base64,{{ p['imgbin'] }}">
                 {% endif %}
             </div>
         </article>

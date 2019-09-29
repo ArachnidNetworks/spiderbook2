@@ -7,6 +7,7 @@ import datetime
 import dbi
 import mimetypes
 import traceback
+import base64
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
@@ -16,24 +17,30 @@ SERVER = 500
 NOT_FOUND = 404
 FORBBIDEN = 403
 
-def get_image_binary(image, filename):
-    image.save(filename)
-    with open(filename, 'rb') as f:
-        imgbin = f.read()
-    os.delete(filename)
-    return imgbin
-
-def get_image(image, new_pid):
+def get_image(image):
     # If the image exists
     if image:
         # If it's actually an image:
         name = image.filename
         if mimetypes.guess_type(name)[0].startswith("image"):
             # Get the new name (next post's id + image's extension)
-            imagename = f'static/images/{new_pid + os.path.splitext(name)[1]}'
-            imagebin = get_image_binary(image, imagename)
+            imagebin = image.read()
             return imagebin
     return None
+
+
+def get_image_bin(postid):
+    try:
+        imgbin, imgext = dbi.get_image(postid)
+        return imgbin, imgext
+        """ response = make_response(imgbin)
+        response.headers.set('Content-Type', f'image/{imgext}')
+        response.headers.set('Content-Disposition',
+                             'attachment', filename=f'{postid}.{imgext}')
+        return response """
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
 
 def get_curtimestamp():
     return datetime.datetime.utcnow()
@@ -90,11 +97,13 @@ def home(category, page):
     try:
         posts = dbi.get_posts(query + """ORDER BY postts DESC
         OFFSET %s LIMIT %s""", vals)
-        # If any image inside is not in the filesystem, set the value to none
+        # If any image inside is not in the filesystem, remove it from the post
         for post in posts:
             if not post['imgbin']:
-                print(post['pid'], post['imgbin'])
                 post.pop('imgbin')
+            else:
+                post['imgbin'], post['imgext'] = get_image_bin(post['pid'])
+                post['imgbin'] = str(base64.b64encode(post['imgbin'])).replace("b'", '').replace("'", '')
         return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
         posts=posts)
     except:
@@ -105,12 +114,11 @@ def home(category, page):
 @app.route("/post/<pid>")
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    if not type(post['imgbin']) == memoryview:
-        imgbin = False
-    else:
-        imgbin = True
+    post['imgbin'], post['imgext'] = get_image_bin(post['pid'])
+    post['imgbin'] = str(base64.b64encode(post['imgbin'])).replace("b'", '').replace("'", '')
+
     return render_template("indpost.html", title=post['title'],
-    body=post['body'], author=post['author'], imgbin=imgbin, pid=pid)
+    body=post['body'], author=post['author'], imgbin=post['imgbin'], imgext=post['imgext'], pid=pid)
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
@@ -128,7 +136,7 @@ def create_comment(pid):
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgurl'] = get_image(image, new_pid)
+        data['imgurl'] = get_image(image)
         data['table'] = 'comments'
         dbi.insert_row(data, new_pid)
     except:
@@ -164,7 +172,7 @@ def create_post():
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgbin'] = get_image(image, new_pid)
+        data['imgbin'] = get_image(image)
         # If any of the required fields is null, return an error
         for fieldname, value in data.items():
             print(value, '=>', type(value))
@@ -177,19 +185,6 @@ def create_post():
     except:
         traceback.print_exc()
         return abort(UNPROC_ENTITY)
-
-@app.route("/getimage", methods=['GET'])
-def getimage():
-    try:
-        postid = request.args['postid']
-        imgbin, imgext = dbi.getimage(postid)
-        response = make_response(imgbin)
-        response.headers.set('Content-Type', f'image/{imgext}')
-        response.headers.set('Content-Disposition', 'attachment', filename=f'{postid}.{imgext}')
-        return response
-    except:
-        traceback.print_exc()
-        return abort(SERVER)
 
 @app.route("/search", methods=['POST'])
 def search():

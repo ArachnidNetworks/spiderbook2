@@ -13,7 +13,7 @@
             <h2>{{ title }}</h2>
             <small id="author-name">{{ author }}</small>
             {% if imgbin %}
-                <img id="post-image" src="{{ url_for('getimage', postid=pid) }}">
+                <img id="post-image" src="data:image/{{ imgext }};base64,{{ imgbin }}">
             {% endif %}
             {% if body %}
                 <div id="post-body">{{ body }}</div>
