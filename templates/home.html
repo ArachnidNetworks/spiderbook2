@@ -31,7 +31,11 @@
     {% for p in posts %}
         <article class="post">
             <header>
+                {% if p['imgbin'] %}
                 <h1><a href="{{ url_for('indpost', pid=p['pid']) }}">
+                {% else %}
+                <h1 style="height: 200px; line-height: 200px"><a href="{{ url_for('indpost', pid=p['pid']) }}">
+                {% endif %}
                     {{ p['title'] }}
                 </a></h1>
             </header>
