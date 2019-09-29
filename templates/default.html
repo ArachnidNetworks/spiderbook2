@@ -17,7 +17,12 @@
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-                <div class="errorflash">{{ message }}</div>
+                <div class="errorflash">
+                    {{ message }}
+                    <button>
+                        <img src="{{ url_for('static', filename='icons/x.png') }}"  alt="CLOSE">
+                    </button>
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
