@@ -33,7 +33,7 @@ main {
     white-space: nowrap;
 }
 
-.post-content img {
+.validimg {
     max-width: 70%;
     display: block;
     margin: auto;
@@ -41,6 +41,11 @@ main {
     box-shadow: -3px -3px 10px 0 #a9ff93;
     -webkit-box-shadow: -3px -3px 10px 0 #a9ff93;
     -moz-box-shadow: -3px -3px 10px 0 #a9ff93;
+}
+
+.invalidimg {
+    width: 5px;
+    height: 5px;
 }
 
 .post-creator-container {

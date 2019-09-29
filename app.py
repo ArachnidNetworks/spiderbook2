@@ -19,8 +19,9 @@ FORBBIDEN = 403
 def get_image_binary(image, filename):
     image.save(filename)
     with open(filename, 'rb') as f:
-        return f.read()
+        imgbin = f.read()
     os.delete(filename)
+    return imgbin
 
 def get_image(image, new_pid):
     # If the image exists
@@ -90,10 +91,10 @@ def home(category, page):
         posts = dbi.get_posts(query + """ORDER BY postts DESC
         OFFSET %s LIMIT %s""", vals)
         # If any image inside is not in the filesystem, set the value to none
-        """ for post in posts:
-            if not os.path.isfile(url_for('static', filename=f'images/{post["imgurl"]}')[1:]):
-                print(url_for('static', filename=f'images/{post["imgurl"]}')[1:])
-                post.pop('imgurl') """
+        for post in posts:
+            if not post['imgbin']:
+                print(post['pid'], post['imgbin'])
+                post.pop('imgbin')
         return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
         posts=posts)
     except:
@@ -139,11 +140,14 @@ def create_comment(pid):
 def create_post():
     try:
         data = {}
-        data['author'] = request.form['author'].replace(" ", "")
+        data['author'] = request.form['author']
         if not data['author']:
             data['author'] = 'Anonymous'
-        data['category'] = request.form['category'].replace(" ", "")
-        data['title'] = request.form['title'].replace(" ", "")
+        data['category'] = request.form['category']
+        if ' ' in data['author'] or ' ' in data['category']:
+            flash("No spaces!")
+            return redirect(request.form['previouspage'])
+        data['title'] = request.form['title']
         data['body'] = request.form['body']
         # If the body is too big, return an error
         if len(data['body']) > 7000:
@@ -169,7 +173,7 @@ def create_post():
                 return redirect(request.form['previouspage'])
         data['table'] = 'posts'
         dbi.insert_row(data, new_pid)
-        return "Post created!"
+        return redirect(url_for('home', category=data['category'], page=1))
     except:
         traceback.print_exc()
         return abort(UNPROC_ENTITY)
