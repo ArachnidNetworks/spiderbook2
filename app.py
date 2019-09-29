@@ -113,11 +113,17 @@ def home(category, page):
 
 @app.route("/post/<pid>")
 def indpost(pid):
-    post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    imgbin, post['imgext'] = get_image_bin(post['pid'])
+    try:
+        post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
+        imgbin, post['imgext'] = get_image_bin(post['pid'])
+        if imgbin != None:
+            imgbin = str(base64.b64encode(imgbin)).replace("b'",'').replace("'",'')
 
-    return render_template("indpost.html", title=post['title'],
-    body=post['body'], author=post['author'], imgbin=post['imgbin'], imgext=post['imgext'], pid=pid)
+        return render_template("indpost.html", title=post['title'],
+        body=post['body'], author=post['author'], imgbin=imgbin, imgext=post['imgext'], pid=pid)
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
