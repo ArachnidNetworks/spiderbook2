@@ -115,8 +115,6 @@ def home(category, page):
 def indpost(pid):
     post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
     imgbin, post['imgext'] = get_image_bin(post['pid'])
-    if imgbin:
-        post['imgbin'] = str(base64.b64encode(imgbin)).replace("b'", '').replace("'", '')
 
     return render_template("indpost.html", title=post['title'],
     body=post['body'], author=post['author'], imgbin=post['imgbin'], imgext=post['imgext'], pid=pid)
