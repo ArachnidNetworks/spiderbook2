@@ -38,8 +38,8 @@
                 </h1>
             </header>
             <div class="post-content">
-                {% if p['imgurl'] %}
-                    <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}">
+                {% if p['imgbin'] %}
+                    <img src="{{ url_for('getimage', postid=p['pid']) }}">
                 {% else %}
                     <img src="{{ url_for('static', filename='images/noimage.png') }}">
                 {% endif %}

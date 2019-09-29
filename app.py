@@ -18,7 +18,7 @@ FORBBIDEN = 403
 
 def get_image_binary(image, filename):
     image.save(filename)
-    with open(image, 'rb') as f:
+    with open(filename, 'rb') as f:
         return f.read()
     os.delete(filename)
 
@@ -90,10 +90,10 @@ def home(category, page):
         posts = dbi.get_posts(query + """ORDER BY postts DESC
         OFFSET %s LIMIT %s""", vals)
         # If any image inside is not in the filesystem, set the value to none
-        for post in posts:
+        """ for post in posts:
             if not os.path.isfile(url_for('static', filename=f'images/{post["imgurl"]}')[1:]):
                 print(url_for('static', filename=f'images/{post["imgurl"]}')[1:])
-                post.pop('imgurl')
+                post.pop('imgurl') """
         return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
         posts=posts)
     except:
@@ -172,12 +172,16 @@ def create_post():
 
 @app.route("/getimage", methods=['GET'])
 def getimage():
-    postid = request.args['postid']
-    imgbin, imgext = dbi.getimage(postid)
-    response = make_response(imgbin)
-    response.headers.set('Content-Type', f'image/{imgext}')
-    response.headers.set('Content-Disposition', 'attachment', filename=f'{postid}.{imgext}')
-    return response
+    try:
+        postid = request.args['postid']
+        imgbin, imgext = dbi.getimage(postid)
+        response = make_response(imgbin)
+        response.headers.set('Content-Type', f'image/{imgext}')
+        response.headers.set('Content-Disposition', 'attachment', filename=f'{postid}.{imgext}')
+        return response
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
 
 @app.route("/search", methods=['POST'])
 def search():

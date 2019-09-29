@@ -161,6 +161,6 @@ def insert_row(data, new_pid):
 def getimage(postid):
     query = f"""SELECT imgbin FROM posts WHERE pid = %s"""
     c.execute(query, (postid,))
-    imgbin = c.fetchone()[0]
-    imgext = imgbin.what('', h=imgbin)
+    imgbin = c.fetchone()[0].tobytes()
+    imgext = imghdr.what('', h=imgbin)
     return imgbin, imgext
