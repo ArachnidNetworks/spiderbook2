@@ -82,7 +82,7 @@ def home(category, page):
     if page < 1:
         return redirect(url_for('home', category=category, page=1))
     # Limit amount of posts per page
-    limit = 8
+    limit = 16
     # Offset calculation to not get the same post per page
     off = (page-1)*limit
     # If a category is specified, look for that one only
