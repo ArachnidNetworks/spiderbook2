@@ -1,3 +1,7 @@
+:root {
+    --post-out-color: #a9ff93;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -33,14 +37,24 @@ main {
     white-space: nowrap;
 }
 
-.post img {
+.noimg-a {
+    padding: 5px;
+    border: 1px solid var(--post-out-color);
+    background-color: #e5fdf1;
+}
+
+.post-content img {
+    width: 100%;
+    border: 1px solid var(--post-out-color);
+    box-shadow: -3px -3px 10px 0 var(--post-out-color);
+    -webkit-box-shadow: -3px -3px 10px 0 var(--post-out-color);
+    -moz-box-shadow: -3px -3px 10px 0 var(--post-out-color);
+}
+
+.post-content a {
     max-width: 70%;
     display: block;
     margin: auto;
-    border: 1px solid #a9ff93;
-    box-shadow: -3px -3px 10px 0 #a9ff93;
-    -webkit-box-shadow: -3px -3px 10px 0 #a9ff93;
-    -moz-box-shadow: -3px -3px 10px 0 #a9ff93;
 }
 
 .post-creator-container {
