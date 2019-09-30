@@ -1,5 +1,6 @@
 :root {
     --post-out-color: #a9ff93;
+    --post-category-color: #638d59;
 }
 
 * {
@@ -28,16 +29,38 @@ main {
 }
 
 .post h1 {
-    font-size: 1.9vw;
+    font-size: 16pt;
     margin: 0;
-    margin-bottom: 5px;
     text-align: center;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
 }
 
-.noimg-a {
+.post small {
+    color: var(--post-category-color);
+    font-size: 13pt;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: -5px;
+}
+
+.noimg-post small {
+    margin: 0;
+}
+
+
+.noimg-post {
+    height: 100%;
+    width: 100%;
+    display: flex; display: -webkit-flex; display: -ms-flexbox;
+    flex-direction: column; -ms-flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.noimg-post h1 {
     padding: 5px;
     border: 1px solid var(--post-out-color);
     background-color: #e5fdf1;
@@ -118,5 +141,11 @@ main {
     }
     .post h1 {
         font-size: 6vw;
+    }
+    .noimg-post h1 {
+        width: 70%;
+    }
+    .post small {
+        font-size: 4vw;
     }
 }

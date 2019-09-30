@@ -30,23 +30,32 @@
 <main>
     {% for p in posts %}
         <article class="post">
-            <header>
-                {% if p['imgbin'] %}
-                <h1><a href="{{ url_for('indpost', pid=p['pid']) }}">
-                {% else %}
-                <h1 style="height: 200px; line-height: 200px"><a 
-                    class="noimg-a" href="{{ url_for('indpost', pid=p['pid']) }}">
-                {% endif %}
-                    {{ p['title'] }}
-                </a></h1>
-            </header>
-            <div class="post-content">
-                {% if p['imgbin'] %}
+            {% if p['imgbin'] %}
+                <header>
+                    <h1><a href="{{ url_for('indpost', pid=p['pid']) }}">
+                        {{ p['title'] }}
+                    </a></h1>
+                    <small>
+                        {{ p['category'] }}
+                    </small>
+                </header>
+                <section class="post-content">
+                    {% if p['imgbin'] %}
                     <a href="{{ url_for('indpost', pid=p['pid']) }}">
                         <img src="data:image/{{ p['imgext'] }};base64,{{ p['imgbin'] }}">
                     </a>
-                {% endif %}
-            </div>
+                    {% endif %}
+                </section>
+            {% else %}
+                <section class="noimg-post">
+                    <h1><a href="{{ url_for('indpost', pid=p['pid']) }}">
+                        {{ p['title'] }}
+                    </a></h1>
+                    <small>
+                        {{ p['category'] }}
+                    </small>
+                </section>
+            {% endif %}
         </article>
     {% endfor %}
 </main>
