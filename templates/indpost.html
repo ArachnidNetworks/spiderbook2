@@ -16,7 +16,13 @@
                 <img id="post-image" src="data:image/{{ imgext }};base64,{{ imgbin }}">
             {% endif %}
             {% if body %}
-                <div id="post-body">{{ body }}</div>
+                {% for line in body %}
+                    {% if line %}
+                        <div id="post-body">{{ line }}</div>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
         </article>
     </main>

@@ -121,6 +121,7 @@ def indpost(pid):
         imgbin, post['imgext'] = get_image_bin(post['pid'])
         if imgbin != None:
             imgbin = str(base64.b64encode(imgbin)).replace("b'",'').replace("'",'')
+        post['body'] = post['body'].split("\r\n")
     except:
         traceback.print_exc()
         return abort(SERVER)
@@ -248,5 +249,6 @@ def signup():
 if __name__ == "__main__":
     app.run(
         host="localhost",
-        port=80
+        port=8000,
+        debug=True
     )
