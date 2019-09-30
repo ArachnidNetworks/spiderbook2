@@ -66,18 +66,17 @@ def home(category, page):
     # Uppercase bad
     category = str(category).lower()
     try:
-        # If the page number is not valid, return 404
+        # If the page number is not valid, go to page 1
         page = int(page)
     except:
-        traceback.print_exc()
-        return abort(NOT_FOUND)
+        page = 1
     try:
         # If the category is not 'all' and it doesn't exist, return 404
         if category != 'all' and not dbi.find_cat(category):
             return abort(NOT_FOUND)
     except:
         traceback.print_exc()
-        return abort(NOT_FOUND)
+        return abort(SERVER)
     # If the page number is invalid, turn it to 1
     if page < 1:
         return redirect(url_for('home', category=category, page=1))
@@ -115,15 +114,22 @@ def home(category, page):
 def indpost(pid):
     try:
         post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
+    except:
+        traceback.print_exc()
+        return abort(NOT_FOUND)
+    try:
         imgbin, post['imgext'] = get_image_bin(post['pid'])
         if imgbin != None:
             imgbin = str(base64.b64encode(imgbin)).replace("b'",'').replace("'",'')
-
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
+    try:
         return render_template("indpost.html", title=post['title'],
         body=post['body'], author=post['author'], imgbin=imgbin, imgext=post['imgext'], pid=pid)
     except:
         traceback.print_exc()
-        return abort(SERVER)
+        return abort(UNPROC_ENTITY)
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
@@ -193,13 +199,21 @@ def create_post():
 
 @app.route("/search", methods=['POST'])
 def search():
-    form_data = dict(request.form)
-    category = form_data.get('category').replace(' ', '')
-    prevpage = form_data.get('previouspage')
-    if not dbi.find_cat(category) and category != 'all':
-        flash("Category not found")
-        return redirect(prevpage)
-    return redirect(url_for('home', category=category, page=1))
+    try:
+        form_data = dict(request.form)
+        category = form_data.get('category').replace(' ', '')
+        prevpage = form_data.get('previouspage')
+    except:
+        traceback.print_exc()
+        return abort(UNPROC_ENTITY)
+    try:
+        if not dbi.find_cat(category) and category != 'all':
+            flash("Category not found")
+            return redirect(prevpage)
+        return redirect(url_for('home', category=category, page=1))
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])
