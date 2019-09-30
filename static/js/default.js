@@ -15,9 +15,11 @@ function mclickpc(cat) {
     cat.classList.add("touched");
 }
 
-const elements = document.getElementsByClassName("prevpage");
-console.log(elements);
-for (var i=0; i<elements.length; i++) {
-    elements[i].value = window.location.href;
+const prevpage_inputs = document.getElementsByClassName("prevpage");
+for (var i=0; i<prevpage_inputs.length; i++) {
+    prevpage_inputs[i].value = window.location.href;
 }
-console.log(elements);
+
+document.querySelector(".errorflash img").onclick = () => {
+    document.querySelector(".errorflash").style.display = "none";
+};
