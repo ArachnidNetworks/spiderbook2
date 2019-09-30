@@ -181,7 +181,7 @@ def create_post():
         # If any of the required fields is null, return an error
         for fieldname, value in data.items():
             print(value, '=>', type(value))
-            if value == '':
+            if value == '' and fieldname in ['category', 'title']:
                 flash("Please fill in the 'Category' and 'Title' fields.")
                 return redirect(request.form['previouspage'])
         data['table'] = 'posts'
