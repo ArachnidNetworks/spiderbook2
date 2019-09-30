@@ -27,23 +27,22 @@ body {
 
 .errorflash {
     margin-top: 10px;
-    height: 60px;
-    line-height: 60px;
     border: 1px solid #d8b3b3; border-radius: 10px;
     background-color: #f3cccc;
-    color: #804646;
-    padding-left: 10px; padding-right: 10px;
+    padding: 15px;
+    display: flex; display: -ms-flexbox; display: -webkit-flex;
+    align-items: center;
 }
 
-.errorflash div {
-    float: right;
-    vertical-align: middle;
-    height: 100%;
-    border: 0; background: none;
+.errorflash p {
+    margin: 0;
+    color: #804646;
 }
 
 .errorflash img {
-    margin-top: 3px;
+    margin: 0; padding: 0;
+    margin-left: auto;
+    background: none;
     width: 1vw;
     filter: opacity(60%);
 }
@@ -54,7 +53,7 @@ body {
 
 #catsearch input {
     width: 90%;
-    font-size: 1.5vw;
+    font-size: 13pt;
     padding: 6px;
     padding-left: 10px;
     border: 1px solid var(--main-color); border-right: 0;
@@ -63,7 +62,7 @@ body {
 
 #catsearch button {
     width: 10%;
-    font-size: 1.5vw;
+    font-size: 13pt;
     padding: 6px;
     border: 1px solid var(--main-color); border-left: 0;
     background-color: #ffffff;
@@ -103,10 +102,18 @@ body {
 }
 
 @media screen and (max-width: 700px) {
+    .errorflash img {
+        width: 6vw;
+    }
+    #catsearch {
+        margin-left: 2px; margin-right: 2px;
+    }
     #catsearch input {
+        width: 85%;
         font-size: 11pt;
     }
     #catsearch button {
+        width: 15%;
         font-size: 11pt;
     }
     #page-header h1 {

@@ -18,10 +18,8 @@
         {% if messages %}
             {% for message in messages %}
                 <div class="errorflash">
-                    {{ message }}
-                    <div>
-                        <img src="{{ url_for('static', filename='icons/x.png') }}"  alt="CLOSE">
-                    </div>
+                    <p>{{ message }}</p>
+                    <img src="{{ url_for('static', filename='icons/x.png') }}"  alt="CLOSE">
                 </div>
             {% endfor %}
         {% endif %}
