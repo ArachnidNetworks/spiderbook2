@@ -13,7 +13,7 @@
             <input type="text" name="author" placeholder="Author"><input type="text" name="category"
             placeholder="Category">
             <div class="linebreak"></div>
-            <input type="text" name="title" placeholder="Title">
+            <input type="text" name="title" placeholder="Title" style="width: 85ch">
             <div class="linebreak"></div>
             <textarea name="body" style="min-width: 90%; min-height: 400px" placeholder="Body"></textarea><br>
             <div class="linebreak"></div>
@@ -30,20 +30,32 @@
 <main>
     {% for p in posts %}
         <article class="post">
-            <header>
-                <h1>
-                    <a href="{{ url_for('indpost', pid=p['pid']) }}">
+            {% if p['imgbin'] %}
+                <header>
+                    <h1><a href="{{ url_for('indpost', pid=p['pid']) }}">
                         {{ p['title'] }}
+                    </a></h1>
+                    <small>
+                        {{ p['category'] }}
+                    </small>
+                </header>
+                <section class="post-content">
+                    {% if p['imgbin'] %}
+                    <a href="{{ url_for('indpost', pid=p['pid']) }}">
+                        <img src="data:image/{{ p['imgext'] }};base64,{{ p['imgbin'] }}">
                     </a>
-                </h1>
-            </header>
-            <div class="post-content">
-                {% if p['imgurl'] %}
-                    <img src="{{ url_for('static', filename='images/'+p['imgurl']) }}">
-                {% else %}
-                    <img src="{{ url_for('static', filename='images/noimage.png') }}">
-                {% endif %}
-            </div>
+                    {% endif %}
+                </section>
+            {% else %}
+                <section class="noimg-post">
+                    <h1><a href="{{ url_for('indpost', pid=p['pid']) }}">
+                        {{ p['title'] }}
+                    </a></h1>
+                    <small>
+                        {{ p['category'] }}
+                    </small>
+                </section>
+            {% endif %}
         </article>
     {% endfor %}
 </main>

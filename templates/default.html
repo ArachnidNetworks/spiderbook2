@@ -8,7 +8,6 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}"
     type="image/ico">
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/popularmenu.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css') }}">
     {% block styles %}{% endblock styles %}
     
@@ -18,7 +17,10 @@
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}
-                <div class="errorflash">{{ message }}</div>
+                <div class="errorflash">
+                    <p>{{ message }}</p>
+                    <img src="{{ url_for('static', filename='icons/x.png') }}"  alt="CLOSE">
+                </div>
             {% endfor %}
         {% endif %}
     {% endwith %}

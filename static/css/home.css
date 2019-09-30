@@ -1,3 +1,8 @@
+:root {
+    --post-out-color: #a9ff93;
+    --post-category-color: #638d59;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -14,7 +19,7 @@ main {
 .post {
     min-width: 15%;
     max-width: 23%;
-    overflow-y: hidden;
+    overflow: hidden;
     max-height: 350px;
     margin-bottom: 10px;
 }
@@ -24,23 +29,55 @@ main {
 }
 
 .post h1 {
-    font-size: 1.9vw;
+    max-width: 100%;
+    font-size: 16pt;
     margin: 0;
-    margin-bottom: 5px;
     text-align: center;
-    text-overflow: ellipsis;
+    word-wrap: break-word;
+    max-height: 350px;
+    overflow-y: auto;
+    /* text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: nowrap; */
+}
+
+.post small {
+    color: var(--post-category-color);
+    font-size: 13pt;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: -5px;
+}
+
+.noimg-post small {
+    margin: 0;
+}
+
+
+.noimg-post {
+    height: 100%;
+    width: auto;
+    display: flex; display: -webkit-flex; display: -ms-flexbox;
+    flex-direction: column; -ms-flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.noimg-post h1 {
+    padding: 5px;
+    border: 1px solid var(--post-out-color);
+    background-color: #e5fdf1;
+}
+
+.post-content a { 
+    height: 350px;
 }
 
 .post-content img {
-    max-width: 70%;
-    display: block;
-    margin: auto;
-    border: 1px solid #a9ff93;
-    box-shadow: -3px -3px 10px 0 #a9ff93;
-    -webkit-box-shadow: -3px -3px 10px 0 #a9ff93;
-    -moz-box-shadow: -3px -3px 10px 0 #a9ff93;
+    max-width: 100%;
+    max-height: 350px;
+    border: 2px solid var(--post-out-color);
 }
 
 .post-creator-container {
@@ -90,19 +127,33 @@ main {
 }
 
 @media screen and (max-width: 700px) {
-    main {
-        width: 100%;
-        margin-top: 10px;
-        margin-bottom: 32px;
-        display: flex; display: -ms-flexbox; display: -webkit-flex;
-        flex-direction: column; -ms-flex-direction: column;
-        align-items: center;
-    }
-    .post {
-        max-width: none; width: 100%;
-        margin-bottom: 10px;
-    }
-    .post h1 {
-        font-size: 6vw;
-    }
+
+.post {
+    max-width: none; width: 90%;
+    max-height: none;
+    margin-bottom: 80px;
+}
+
+.post h1 {
+    font-size: 6vw;
+}
+
+.post-content {
+    display: flex; display: -ms-flexbox; display: -webkit-flex;
+    flex-direction: column; -ms-flex-direction: column;
+    align-content: center; align-items: center;
+}
+
+.post-content img {
+    height: 350px;
+}
+
+.noimg-post h1 {
+    width: 70%;
+}
+
+.post small {
+    font-size: 4vw;
+}
+
 }

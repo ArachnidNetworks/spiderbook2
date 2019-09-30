@@ -7,6 +7,7 @@ import datetime
 import dbi
 import mimetypes
 import traceback
+import base64
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
@@ -16,17 +17,30 @@ SERVER = 500
 NOT_FOUND = 404
 FORBBIDEN = 403
 
-def get_image_url(image, new_pid):
+def get_image(image):
     # If the image exists
     if image:
         # If it's actually an image:
         name = image.filename
         if mimetypes.guess_type(name)[0].startswith("image"):
             # Get the new name (next post's id + image's extension)
-            imagename = new_pid + os.path.splitext(name)[1]
-            image.save(f'static/images/{imagename}')
-            return imagename
+            imagebin = image.read()
+            return imagebin
     return None
+
+
+def get_image_bin(postid):
+    try:
+        imgbin, imgext = dbi.get_image(postid)
+        return imgbin, imgext
+        """ response = make_response(imgbin)
+        response.headers.set('Content-Type', f'image/{imgext}')
+        response.headers.set('Content-Disposition',
+                             'attachment', filename=f'{postid}.{imgext}')
+        return response """
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
 
 def get_curtimestamp():
     return datetime.datetime.utcnow()
@@ -68,7 +82,7 @@ def home(category, page):
     if page < 1:
         return redirect(url_for('home', category=category, page=1))
     # Limit amount of posts per page
-    limit = 8
+    limit = 16
     # Offset calculation to not get the same post per page
     off = (page-1)*limit
     # If a category is specified, look for that one only
@@ -83,11 +97,13 @@ def home(category, page):
     try:
         posts = dbi.get_posts(query + """ORDER BY postts DESC
         OFFSET %s LIMIT %s""", vals)
-        # If any image inside is not in the filesystem, set the value to none
+        # If any image inside is not in the filesystem, remove it from the post
         for post in posts:
-            if not os.path.isfile(url_for('static', filename=f'images/{post["imgurl"]}')[1:]):
-                print(url_for('static', filename=f'images/{post["imgurl"]}')[1:])
-                post.pop('imgurl')
+            if not post['imgbin']:
+                post.pop('imgbin')
+            else:
+                post['imgbin'], post['imgext'] = get_image_bin(post['pid'])
+                post['imgbin'] = str(base64.b64encode(post['imgbin'])).replace("b'", '').replace("'", '')
         return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
         posts=posts)
     except:
@@ -97,9 +113,17 @@ def home(category, page):
 
 @app.route("/post/<pid>")
 def indpost(pid):
-    post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
-    return render_template("indpost.html", title=post['title'],
-    body=post['body'], img={'imgurl': post['imgurl']}, author=post['author'])
+    try:
+        post = dbi.get_posts("WHERE pid = %s", (pid,))[0]
+        imgbin, post['imgext'] = get_image_bin(post['pid'])
+        if imgbin != None:
+            imgbin = str(base64.b64encode(imgbin)).replace("b'",'').replace("'",'')
+
+        return render_template("indpost.html", title=post['title'],
+        body=post['body'], author=post['author'], imgbin=imgbin, imgext=post['imgext'], pid=pid)
+    except:
+        traceback.print_exc()
+        return abort(SERVER)
 
 @app.route("/post/<pid>/comment", methods=['POST'])
 def create_comment(pid):
@@ -117,7 +141,7 @@ def create_comment(pid):
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgurl'] = get_image_url(image, new_pid)
+        data['imgurl'] = get_image(image)
         data['table'] = 'comments'
         dbi.insert_row(data, new_pid)
     except:
@@ -129,12 +153,15 @@ def create_comment(pid):
 def create_post():
     try:
         data = {}
-        data['author'] = request.form['author'].replace(" ", "")
+        data['author'] = request.form['author']
         if not data['author']:
             data['author'] = 'Anonymous'
-        data['category'] = request.form['category'].replace(" ", "")
-        data['title'] = request.form['title'].replace(" ", "")
-        data['body'] = request.form['body'].replace(" ", "")
+        data['category'] = request.form['category']
+        if ' ' in data['author'] or ' ' in data['category']:
+            flash("No spaces!")
+            return redirect(request.form['previouspage'])
+        data['title'] = request.form['title']
+        data['body'] = request.form['body']
         # If the body is too big, return an error
         if len(data['body']) > 7000:
             return abort(UNPROC_ENTITY)
@@ -150,7 +177,7 @@ def create_post():
         # Get pid for image name and post
         new_pid = dbi.get_new_pid(True)
         # Save it on the server and return URL
-        data['imgurl'] = get_image_url(image, new_pid)
+        data['imgbin'] = get_image(image)
         # If any of the required fields is null, return an error
         for fieldname, value in data.items():
             print(value, '=>', type(value))
@@ -159,7 +186,7 @@ def create_post():
                 return redirect(request.form['previouspage'])
         data['table'] = 'posts'
         dbi.insert_row(data, new_pid)
-        return "Post created!"
+        return redirect(url_for('home', category=data['category'], page=1))
     except:
         traceback.print_exc()
         return abort(UNPROC_ENTITY)
