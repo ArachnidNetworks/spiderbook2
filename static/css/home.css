@@ -70,7 +70,9 @@ main {
     background-color: #e5fdf1;
 }
 
-.post-content a { height: 350px; }
+.post-content a { 
+    height: 350px;
+}
 
 .post-content img {
     max-width: 100%;
@@ -125,25 +127,33 @@ main {
 }
 
 @media screen and (max-width: 700px) {
-    main {
-        width: 100%;
-        margin-top: 10px;
-        margin-bottom: 32px;
-        display: flex; display: -ms-flexbox; display: -webkit-flex;
-        flex-direction: column; -ms-flex-direction: column;
-        align-items: center;
-    }
-    .post {
-        max-width: none; width: 100%;
-        margin-bottom: 80px;
-    }
-    .post h1 {
-        font-size: 6vw;
-    }
-    .noimg-post h1 {
-        width: 70%;
-    }
-    .post small {
-        font-size: 4vw;
-    }
+
+.post {
+    max-width: none; width: 90%;
+    max-height: none;
+    margin-bottom: 80px;
+}
+
+.post h1 {
+    font-size: 6vw;
+}
+
+.post-content {
+    display: flex; display: -ms-flexbox; display: -webkit-flex;
+    flex-direction: column; -ms-flex-direction: column;
+    align-content: center; align-items: center;
+}
+
+.post-content img {
+    height: 350px;
+}
+
+.noimg-post h1 {
+    width: 70%;
+}
+
+.post small {
+    font-size: 4vw;
+}
+
 }
