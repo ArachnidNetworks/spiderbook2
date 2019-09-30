@@ -194,9 +194,9 @@ def create_post():
 @app.route("/search", methods=['POST'])
 def search():
     form_data = dict(request.form)
-    category = form_data.get('category')
+    category = form_data.get('category').replace(' ', '')
     prevpage = form_data.get('previouspage')
-    if not dbi.find_cat(category):
+    if not dbi.find_cat(category) and category != 'all':
         flash("Category not found")
         return redirect(prevpage)
     return redirect(url_for('home', category=category, page=1))
