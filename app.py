@@ -70,13 +70,9 @@ def home(category, page):
         page = int(page)
     except:
         page = 1
-    try:
-        # If the category is not 'all' and it doesn't exist, return 404
-        if category != 'all' and not dbi.find_cat(category):
-            return abort(NOT_FOUND)
-    except:
-        traceback.print_exc()
-        return abort(SERVER)
+    # If the category is not 'all' and it doesn't exist, return 404
+    if category != 'all' and not dbi.find_cat(category):
+        return abort(NOT_FOUND)
     # If the page number is invalid, turn it to 1
     if page < 1:
         return redirect(url_for('home', category=category, page=1))
@@ -164,6 +160,7 @@ def create_post():
         if not data['author']:
             data['author'] = 'Anonymous'
         data['category'] = request.form['category']
+        # If the author or category have spaces, return a flash message
         if ' ' in data['author'] or ' ' in data['category']:
             flash("No spaces!")
             return redirect(request.form['previouspage'])
@@ -215,6 +212,13 @@ def search():
     except:
         traceback.print_exc()
         return abort(SERVER)
+
+@app.errorhandler(404)
+def not_found(err):
+    err_code = err.code
+    # Get error description (<p>...</p>) and remove the paragraph tags
+    err_desc = err.get_description().replace('<', '').replace('/', '').replace("p>", '')
+    return render_template("error.html", err_code=err_code, err_desc=err_desc)
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])
