@@ -69,7 +69,7 @@ def home(category, page):
         # If the page number is not valid, go to page 1
         page = int(page)
     except:
-        page = 1
+        return abort(NOT_FOUND)
     # If the category is not 'all' and it doesn't exist, return 404
     if category != 'all' and not dbi.find_cat(category):
         return abort(NOT_FOUND)
@@ -213,12 +213,22 @@ def search():
         traceback.print_exc()
         return abort(SERVER)
 
+"""
+UNPROC_ENTITY = 422
+SERVER = 500
+NOT_FOUND = 404
+FORBBIDEN = 403
+"""
+@app.errorhandler(422)
+@app.errorhandler(500)
 @app.errorhandler(404)
+@app.errorhandler(403)
 def not_found(err):
     err_code = err.code
     # Get error description (<p>...</p>) and remove the paragraph tags
     err_desc = err.get_description().replace('<', '').replace('/', '').replace("p>", '')
-    return render_template("error.html", err_code=err_code, err_desc=err_desc)
+    return render_template("error.html", title=err_code, err_code=err_code,
+    err_desc=err_desc)
 
 # Login and Signup pages.
 """ @app.route("/user/signin", methods=['GET', 'POST'])

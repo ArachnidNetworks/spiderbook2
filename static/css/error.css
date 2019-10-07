@@ -1,0 +1,22 @@
+:root {
+    --err-background: #fdebeb;
+    --err-border: #e6bdbd;
+}
+
+main {
+    background-color: var(--err-background);
+    border: 1px solid var(--err-border);
+    padding: 20px;
+}
+
+main * {
+    color: #a83535;
+}
+
+main h1 {
+    font-size: 25pt;
+}
+
+main p {
+    font-size: 14pt;
+}
