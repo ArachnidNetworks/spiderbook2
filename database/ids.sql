@@ -1,0 +1,3 @@
+CREATE TABLE ids (
+    v INTEGER NOT NULL
+);

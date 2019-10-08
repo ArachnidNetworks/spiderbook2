@@ -37,8 +37,8 @@ CREATE TABLE comments (
     imgbin BYTEA,
     /* Author's hashed IP address */
     poster_ip VARCHAR(40) NOT NULL DEFAULT 'NO_IP'
-)
+);
 
 CREATE TABLE ids (
     v INTEGER NOT NULL
-)
+);
