@@ -100,7 +100,7 @@ def home(category, page):
                 post['imgbin'], post['imgext'] = get_image_bin(post['pid'])
                 post['imgbin'] = str(base64.b64encode(post['imgbin'])).replace("b'", '').replace("'", '')
         return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
-        posts=posts)
+        pagen=int(page), posts=posts)
     except:
         # If something goes wrong with the query or template, return a 500 error
         traceback.print_exc()

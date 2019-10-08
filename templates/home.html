@@ -5,6 +5,17 @@
 {% endblock styles %}
 
 {% block page_header %}
+    <nav id="page-nav">
+        {% if pagen > 1 %}
+            <li>{{ pagen-1 }}</li>
+        {% endif %}
+        <li>{{ pagen }}</li>
+        <li>{{ pagen+1 }}</li>
+        {% if pagen == 1 %}
+            <li>{{ pagen+2 }}</li>
+        {% endif %}
+    </nav>
+
     <button onclick="open_postcreator();">NEW THREAD</button>
     <form action="{{ url_for('create_post') }}"  method="post" class="post-creator"
     enctype="multipart/form-data">
