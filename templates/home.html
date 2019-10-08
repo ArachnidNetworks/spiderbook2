@@ -7,12 +7,12 @@
 {% block page_header %}
     <nav id="page-nav">
         {% if pagen > 1 %}
-            <li>{{ pagen-1 }}</li>
+            <li><a href="">{{ pagen-1 }}</a></li>
         {% endif %}
         <li>{{ pagen }}</li>
-        <li>{{ pagen+1 }}</li>
+        <li><a href="">{{ pagen+1 }}</a></li>
         {% if pagen == 1 %}
-            <li>{{ pagen+2 }}</li>
+            <li><a href="">{{ pagen+2 }}</a></li>
         {% endif %}
     </nav>
 
