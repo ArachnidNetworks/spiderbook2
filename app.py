@@ -92,15 +92,18 @@ def home(category, page):
     try:
         posts = dbi.get_posts(query + """ORDER BY postts DESC
         OFFSET %s LIMIT %s""", vals)
-        # If any image inside is not in the filesystem, remove it from the post
-        for post in posts:
-            if not post['imgbin']:
-                post.pop('imgbin')
-            else:
-                post['imgbin'], post['imgext'] = get_image_bin(post['pid'])
-                post['imgbin'] = str(base64.b64encode(post['imgbin'])).replace("b'", '').replace("'", '')
-        return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
-        pagen=int(page), posts=posts)
+        if posts:
+            # If any image inside is not in the filesystem, remove it from the post
+            for post in posts:
+                if not post['imgbin']:
+                    post.pop('imgbin')
+                else:
+                    post['imgbin'], post['imgext'] = get_image_bin(post['pid'])
+                    post['imgbin'] = str(base64.b64encode(post['imgbin'])).replace("b'", '').replace("'", '')
+            return render_template("home.html", title=" Home", header=category, small=f"Page {page}",
+            pagen=int(page), posts=posts)
+        else:
+            return redirect(url_for('home', category=category, page=1))
     except:
         # If something goes wrong with the query or template, return a 500 error
         traceback.print_exc()
