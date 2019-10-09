@@ -190,3 +190,8 @@ main {
         font-size: 4vw;
     }
 }
+
+#footer-margin {
+    width: 100%;
+    height: 10px;
+}
