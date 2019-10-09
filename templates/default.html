@@ -41,7 +41,11 @@
     </header>
     {% block content %}
     {% endblock content %}
+
+    {% block footer %}
+    {% endblock footer %}
 </body>
+
 
 <script src="{{ url_for('static', filename='js/default.js') }}" ></script>
 {% block scripts %}
