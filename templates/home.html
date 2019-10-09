@@ -5,13 +5,6 @@
 {% endblock styles %}
 
 {% block page_header %}
-    <nav id="page-nav">
-        <a class="page-nav-item" href=""><</a>
-        <div></div>
-        <a class="page-nav-item" href="">></a>
-        
-    </nav>
-
     <button onclick="open_postcreator();">NEW THREAD</button>
     <form action="{{ url_for('create_post') }}"  method="post" class="post-creator"
     enctype="multipart/form-data">
@@ -67,6 +60,19 @@
     {% endfor %}
 </main>
 {% endblock content %}
+
+{% block footer %}
+    <nav id="page-nav">
+        <a class="page-nav-item" href="">
+            <img class="left" src="{{ url_for('static', filename='icons/arrow0.png') }}" alt=">">
+        </a>
+        <div></div>
+        <a class="page-nav-item" href="">
+            <img class="right" src="{{ url_for('static', filename='icons/arrow0.png') }}" alt=">">
+        </a>
+    </nav>
+{% endblock footer %}
+
 
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/home.js') }}" ></script>

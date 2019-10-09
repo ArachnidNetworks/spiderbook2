@@ -135,21 +135,30 @@ main {
 }
 
 #page-nav {
-    list-style-type: none; margin: 0; padding: 0;
-    margin-top: 10px; margin-bottom: 10px;
+    position: fixed;
+    width: 100%;
+    left: 0; bottom: 0;
+    list-style-type: none; margin: 0; padding: 5px;
+    padding-left: 15px; padding-right: 15px;
     background-color: var(--main-color);
     display: flex; display: inline-flex; display: -webkit-flex;
     justify-content: center;
 }
 
 #page-nav a {
-    color: var(--nav-link-color);
-    text-decoration: none;
-    padding: 10px;
+    width: 30px; height: 30px;
+}
+
+#page-nav img {
+    height: 30px;
+}
+
+#page-nav .left {
+    transform: scaleX(-1);
 }
 
 #page-nav div {
-    width: 10px;
+    width: 100%;
 }
 
 @media screen and (max-width: 700px) {
