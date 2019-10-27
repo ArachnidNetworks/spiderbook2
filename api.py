@@ -1,6 +1,7 @@
 from psycopg2 import connect
 from random import randint
 from hashlib import sha512
+from traceback import print_exc
 
 def dbsetup(db, user, password):
     conn = connect(f"dbname={db} user={user} password={password}")
@@ -26,7 +27,7 @@ def new_idn():
     query = "INSERT INTO idnumbers (idn) VALUES (%s)"
     arguments = (new,)
     c.execute(query, arguments)
-    # conn.commit()
+    conn.commit()
     # return the latest idn
     return new
 
@@ -34,5 +35,10 @@ def new_uid(chars):
     idn = new_idn()
     return sha512(bytes(idn)).hexdigest()[:chars]
 
+def insert(data):
+    try:
+        table = data['table']
+    except:
+        print_exc()
 c.close()
 conn.close()
