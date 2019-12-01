@@ -98,10 +98,13 @@ def select(data):
             query += " " + rst
         print(query)
         c.execute(query)
-        colnames = [desc[0] for desc in c.description]
-        print(colnames)
-        print(c.fetchall())
-        #return c.fetchall()
+        cols = [desc[0] for desc in c.description]
+        rows = c.fetchall()
+        result_table = []
+        for row in rows:
+            for index in range(len(cols)):
+                result_table.append({cols[index]: row[index]})
+        return result_table
     except:
         print_exc()
         return False
