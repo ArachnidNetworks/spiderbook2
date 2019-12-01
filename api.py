@@ -128,13 +128,5 @@ def select(data):
         print_exc()
         return False
 
-r = select(
-    {
-        'table': 'testing',
-        'cols': ['words', 'number']
-    }
-)
-print(r)
-
 c.close()
 conn.close()
