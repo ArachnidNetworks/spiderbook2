@@ -75,16 +75,42 @@ def insert(data, restriction=False):
         
         query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
         c.execute(query, values)
-        conn.commit()
+        #conn.commit()
         return True
     except:
         print_exc()
         return False
 
-insert(
+def select(data):
+    try:
+        table = data['table']
+        data.pop('table')
+        query = "SELECT "
+        cols = data.get('cols')
+        if cols == None:
+            query += '*'
+        else:
+            cols = format_for_query(str(tuple(cols)))
+            query += cols
+        query += " FROM " + table
+        rst = data.get('restriction')
+        if rst:
+            query += " " + rst
+        print(query)
+        c.execute(query)
+        colnames = [desc[0] for desc in c.description]
+        print(colnames)
+        print(c.fetchall())
+        #return c.fetchall()
+    except:
+        print_exc()
+        return False
+
+select(
     {
         'table': 'idnumbers',
-        'idn': 8
+        'cols': ['idn'],
+        'restriction': 'WHERE idn = 8'
     }
 )
 
