@@ -1,0 +1,7 @@
+CREATE TABLE idnumbers (
+    INTEGER idn
+);
+
+INSERT INTO idnumbers (idn) VALUES (
+    5
+);
