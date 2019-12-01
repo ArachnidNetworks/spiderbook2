@@ -23,6 +23,7 @@ TODO:
         - (admin) remove moderator
         - (admin) ban moderator
         - (admin) unban moderator
+    - proper admin/moderator authentication
 
 - Frontend:
     - home page
