@@ -35,9 +35,10 @@ def new_uid(chars):
     idn = new_idn()
     return sha512(bytes(idn)).hexdigest()[:chars]
 
-def insert(data):
+def insert(data, restriction=False):
     try:
         table = data['table']
+        data.pop('table')
     except:
         print_exc()
 c.close()
