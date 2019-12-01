@@ -5,7 +5,6 @@ The backend is being made with Python, with Flask taking care of requests. It wi
 
 TODO:
 - API:
-    - reliable, dynamic insertion
     - reliable, dyanmic selecting
     - specific calls for CRUD actions
 - Frontend:
