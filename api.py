@@ -54,14 +54,16 @@ def iterable_to_s(iterable, s):
     return "(" + ", ".join(iters) + ")"
 
 def format_for_query(s):
-    """ Removes single quotes and the comma
+    """ Removes single quotes, the comma
     next to the last parenthesis, if there
-    is one. """
+    is one, and the parenthesis themselves. """
     s = s.replace("'", '')
+    s = list(s)
     if s[-2] == ',':
-        s = list(s)
         s.pop(-2)
-        s = "".join(s)
+    s.pop(0)
+    s.pop(-1)
+    s = "".join(s)
     return s
 
 def insert(data, restriction=False):
@@ -75,7 +77,7 @@ def insert(data, restriction=False):
         
         query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
         c.execute(query, values)
-        #conn.commit()
+        conn.commit()
         return True
     except:
         print_exc()
@@ -85,6 +87,7 @@ def select(data):
     try:
         table = data['table']
         data.pop('table')
+
         query = "SELECT "
         cols = data.get('cols')
         if cols == None:
@@ -92,14 +95,17 @@ def select(data):
         else:
             cols = format_for_query(str(tuple(cols)))
             query += cols
+        
         query += " FROM " + table
         rst = data.get('restriction')
         if rst:
             query += " " + rst
-        print(query)
+    
         c.execute(query)
+
         cols = [desc[0] for desc in c.description]
         rows = c.fetchall()
+
         result_table = []
         for row in rows:
             for index in range(len(cols)):
@@ -108,14 +114,6 @@ def select(data):
     except:
         print_exc()
         return False
-
-select(
-    {
-        'table': 'idnumbers',
-        'cols': ['idn'],
-        'restriction': 'WHERE idn = 8'
-    }
-)
 
 c.close()
 conn.close()
