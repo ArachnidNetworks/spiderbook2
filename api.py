@@ -53,20 +53,28 @@ def iterable_to_s(iterable, s):
         iters.append(s)
     return "(" + ", ".join(iters) + ")"
 
-def format_for_query(s):
+def format_for_query(s, par=True):
     """ Removes single quotes, the comma
     next to the last parenthesis, if there
-    is one, and the parenthesis themselves. """
+    is one, and, optionally, the parenthesis
+    themselves. """
     s = s.replace("'", '')
     s = list(s)
     if s[-2] == ',':
+        # Remove last comma, if it's there
         s.pop(-2)
-    s.pop(0)
-    s.pop(-1)
+    if not par:
+        # Remove parenthesis
+        s.pop(0)
+        s.pop(-1)
     s = "".join(s)
     return s
 
 def insert(data, restriction=False):
+    """ Inserts data into a PostgreSQL database.
+    It's dynamic, using the 'table' key as the table
+    and considering any other key:value pair a
+    column:value pair. """
     try:
         table = data['table']
         data.pop('table')
@@ -83,37 +91,50 @@ def insert(data, restriction=False):
         print_exc()
         return False
 
+def cr_to_dict(rows, cols):
+    """ Returns a tuple of dictionaries, with
+    each dictionary being a single row, having
+    the columns as keys. """
+    result_table = ()
+    for row in rows:
+        result_table += ({cols[i]: row[i] for i in range(len(cols))},)
+    return result_table
+
 def select(data):
     try:
         table = data['table']
         data.pop('table')
-
+        # Start the query
         query = "SELECT "
+        # If columns weren't specified, add a * to the query,
+        # else add the formatted columns
         cols = data.get('cols')
         if cols == None:
             query += '*'
         else:
-            cols = format_for_query(str(tuple(cols)))
-            query += cols
-        
+            cols = tuple(cols)
+            query += format_for_query(str(cols), False)
+        # Add the table and the restriction, if it's there
         query += " FROM " + table
         rst = data.get('restriction')
         if rst:
             query += " " + rst
-    
+        # Execute the query and extract the rows
         c.execute(query)
-
-        cols = [desc[0] for desc in c.description]
         rows = c.fetchall()
-
-        result_table = []
-        for row in rows:
-            for index in range(len(cols)):
-                result_table.append({cols[index]: row[index]})
-        return result_table
+        # Format the results into a dictionary format
+        return cr_to_dict(rows, cols)
     except:
         print_exc()
         return False
+
+r = select(
+    {
+        'table': 'testing',
+        'cols': ['words', 'number']
+    }
+)
+print(r)
 
 c.close()
 conn.close()
