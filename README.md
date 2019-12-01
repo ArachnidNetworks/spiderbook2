@@ -6,6 +6,16 @@ The backend is being made with Python, with Flask taking care of requests. It wi
 TODO:
 - API:
     - specific calls for CRUD actions
+        - add post
+        - reply to post
+        - reply to reply
+        - (admin/moderator) remove post
+        - (admin/moderator) ban ip (24h-2mo limit)
+        - (admin/moderator) ban category
+        - (admin) add moderator
+        - (admin) remove moderator
+        - (admin) ban moderator
+
 - Frontend:
     - home page
     - admin/moderator dashboard
