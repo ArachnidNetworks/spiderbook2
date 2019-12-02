@@ -168,6 +168,8 @@ def reply(request):
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
         data['body_file_url'] = file_path
+        
+    insert(data)
 
 c.close()
 conn.close()
