@@ -105,15 +105,10 @@ def update(data):
             data.pop('restriction')
         else:
             restriction = ''
-        column = data.keys()[0]
+        column = tuple(data.keys())[0]
         new_value = data[column]
-        query = 'UPDATE %s SET %s = %s %s'
-        c.execute(query, (
-            table,
-            column,
-            new_value,
-            restriction
-        ))
+        query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
+        c.execute(query)
         conn.commit()
         return True
     except:
