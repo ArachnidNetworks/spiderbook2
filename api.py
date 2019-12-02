@@ -193,7 +193,7 @@ def get_replies(post, limit=100):
     restriction += f'ORDER BY dt DESC LIMIT {limit}'
     replies = select({
         'table': 'replies',
-        'cols': ['op_uid', 'body_text', 'body_file_url']
+        'cols': ['body_text', 'body_file_url']
     }, restriction)
 
 c.close()
