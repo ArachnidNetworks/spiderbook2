@@ -96,6 +96,25 @@ def insert(data):
         print_exc()
         return False
 
+def update(data):
+    try:
+        table = data['table']
+        data.pop('table')
+        restriction = data.get('restriction')
+        if restriction:
+            data.pop('restriction')
+        else:
+            restriction = ''
+        column = tuple(data.keys())[0]
+        new_value = data[column]
+        query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
+        c.execute(query)
+        conn.commit()
+        return True
+    except:
+        print_exc()
+        return False
+
 def cr_to_dict(rows, cols):
     """ Returns a tuple of dictionaries, with
     each dictionary being a single row, having
@@ -132,8 +151,8 @@ def select(data, restriction=''):
 
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
-    body_text = request.form.get('body-text')[:1000]
-    body_file = request.files.get('body-file')
+    body_text = request.form.get('body_text')
+    body_file = request.files.get('body_file')
 
     data = {
         'table': 'posts',
@@ -144,7 +163,7 @@ def add_post(request):
         'dt': dt_now()
     }
     if body_text:
-        data['body_text'] = body_text
+        data['body_text'] = body_text[:1000]
     elif body_file:
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
@@ -153,23 +172,41 @@ def add_post(request):
     insert(data)
 
 def reply(request):
-    """ Adds a reply to a post or reply based
-    on the Flask request's data. """
+    """ Replies to a post """
+    reply_uid = new_uid(32)
+    reply_post(request, reply_uid)
+    reply_update(request, reply_uid)
+
+def reply_post(request, reply_uid):
+    """ Inserts the reply data into the database """
     data = {
         'table': 'replies',
-        'uid': new_uid(32),
+        'uid': reply_uid,
         'op_uid': request.form['op_uid'],
-        'body_text': request.form['body-text'][:1000],
+        'body_text': request.form['body_text'][:1000],
         'ip': request.environ['REMOTE_ADDR'][:45],
         'dt': dt_now()
     }
-    body_file = request.files.get('body-file')
+    body_file = request.files.get('body_file')
     if body_file:
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
         data['body_file_url'] = file_path
 
     insert(data)
+
+def reply_update(request, reply_uid):
+    """ Adds the reply to the original post """
+    op_type = request.form['op_type']
+    if op_type == 'post':
+        table = 'posts'
+    else:
+        table = 'replies'
+    update({
+        'table': table,
+        'restriction': f'WHERE uid = \'{request.form["op_uid"]}\'',
+        'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(32)"
+    })
 
 def get_posts(limit=100, category='all'):
     if category != 'all':
@@ -195,6 +232,3 @@ def get_replies(post, limit=100):
         'table': 'replies',
         'cols': ['body_text', 'body_file_url']
     }, restriction)
-
-c.close()
-conn.close()
