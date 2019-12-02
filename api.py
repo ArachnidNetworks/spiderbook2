@@ -181,8 +181,7 @@ def get_posts(limit=100, category='all'):
     }, restriction)
 
 def get_post(request):
-    #uid = request.args['uid']
-    uid = 'UID'
+    uid = request.args['uid']
     post = select({
         'table': 'posts',
         'cols': ['title', 'category', 'body_text', 'body_file_url', 'dt']
