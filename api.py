@@ -168,8 +168,14 @@ def reply(request):
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
         data['body_file_url'] = file_path
-        
+
     insert(data)
 
+def get_posts(limit=100):
+    return select({
+        'table': 'posts',
+        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
+    }, f'ORDER BY dt DESC LIMIT {limit}')
+    
 c.close()
 conn.close()
