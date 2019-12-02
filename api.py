@@ -172,11 +172,25 @@ def add_post(request):
     insert(data)
 
 def reply(request):
-    """ Adds a reply to a post or reply based
-    on the Flask request's data. """
+    """ Replies to a post """
+    reply_uid = new_uid(32)
+    reply_post(request, reply_uid)
+    reply_update(request, reply_uid)
+
+def reply_update(request, reply_uid):
+    """ Adds the reply to the original post """
+    table = request.form['op_type']
+    update({
+        'table': table,
+        'restriction': f'WHERE uid = {request.form["op_uid"]}',
+        'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(30)"
+    })
+
+def reply_post(request, reply_uid):
+    """ Inserts the reply data into the database """
     data = {
         'table': 'replies',
-        'uid': new_uid(32),
+        'uid': reply_uid,
         'op_uid': request.form['op_uid'],
         'body_text': request.form['body-text'][:1000],
         'ip': request.environ['REMOTE_ADDR'][:45],
