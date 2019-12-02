@@ -2,6 +2,10 @@ from psycopg2 import connect
 from random import randint
 from hashlib import sha512
 from traceback import print_exc
+import datetime
+
+def dt_now():
+    return datetime.datetime.utcnow()
 
 def dbsetup(db, user, password):
     """ Connects to a database """
@@ -127,6 +131,16 @@ def select(data):
     except:
         print_exc()
         return False
+
+def add_post(request):
+    """ Adds a post based on the Flask request's data. """
+    uid = new_uid(32)
+    title = request.form['title']
+    category = request.form['category']
+    text = request.form.get('body-text')
+    file = request.files.get('body-file')
+    ip = request.environ['REMOTE_ADDR']
+    dt = dt_now()
 
 c.close()
 conn.close()
