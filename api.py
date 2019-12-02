@@ -58,16 +58,22 @@ def iterable_to_s(iterable, s):
         iters.append(s)
     return "(" + ", ".join(iters) + ")"
 
-def format_for_query(s, par=True):
-    """ Removes single quotes, the comma
-    next to the last parenthesis, if there
-    is one, and, optionally, the parenthesis
-    themselves. """
-    s = s.replace("'", '')
-    s = list(s)
-    if s[-2] == ',':
+def remove_last_comma(string_as_list):
+    if string_as_list[-2] == ',':
         # Remove last comma, if it's there
-        s.pop(-2)
+        string_as_list.pop(-2)
+    return string_as_list
+
+def format_for_query(s, single_quotes=False, comma=False, par=False):
+    """ Removes, optionally, single quotes, the comma
+    next to the last parenthesis, if there
+    is one, and the parenthesis
+    themselves. """
+    if not single_quotes:
+        s = s.replace("'", '')
+    s = list(s)
+    if not comma:
+        remove_last_comma(s)
     if not par:
         # Remove parenthesis
         s.pop(0)
@@ -84,7 +90,7 @@ def insert(data):
         table = data['table']
         data.pop('table')
         cols = str(tuple(data.keys()))
-        cols = format_for_query(cols)
+        cols = format_for_query(cols, par=True)
         value_placeholders = iterable_to_s(data.keys(), '%s')
         values = tuple(data.values())
         
@@ -137,7 +143,7 @@ def select(data, restriction=''):
             query += '*'
         else:
             cols = tuple(cols)
-            query += format_for_query(str(cols), False)
+            query += format_for_query(str(cols))
         # Add the table and restriction to the query
         query += " FROM " + table + " " + restriction
         # Execute the query and extract the rows
@@ -218,16 +224,27 @@ def get_posts(limit=100, category='all'):
     }, restriction)
 
 def get_post(request):
-    uid = request.args['uid']
+    #uid = request.args['uid']
+    uid = request
+    restriction = f'WHERE uid = \'{uid}\''
     post = select({
         'table': 'posts',
         'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'dt', 'reply_uids']
-    })[0]
+    }, restriction)
+    if len(post) > 0:
+        return post
+    else:
+        return False
 
 def get_replies(post, limit=100):
-    restriction = f'WHERE op_uid = \'{post["uid"]}\' '
-    restriction += f'ORDER BY dt DESC LIMIT {limit}'
-    replies = select({
-        'table': 'replies',
-        'cols': ['body_text', 'body_file_url']
-    }, restriction)
+    if post:
+        sql_uid_list = format_for_query(str(tuple(post["reply_uids"])),
+            single_quotes=True, par=True)
+        restriction = f'WHERE uid IN {sql_uid_list} ORDER BY dt DESC LIMIT {limit}'
+        replies = select({
+            'table': 'replies',
+            'cols': ['uid', 'body_text', 'body_file_url']
+        }, restriction)
+        return replies
+    else:
+        return False
