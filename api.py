@@ -152,5 +152,8 @@ def add_post(request):
 
     insert(data)
 
+def reply(request):
+    pass
+
 c.close()
 conn.close()

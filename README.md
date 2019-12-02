@@ -21,7 +21,6 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ### TODO:
 - #### API:
     - specific calls for CRUD actions
-        - add post
         - reply to post
         - reply to reply
         - get all posts
