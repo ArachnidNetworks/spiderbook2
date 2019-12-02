@@ -96,6 +96,20 @@ def insert(data):
         print_exc()
         return False
 
+def update(data):
+    try:
+        table = data['table']
+        data.pop('table')
+        column = data.keys()[0]
+        new_value = data[column]
+        query = f'UPDATE {table} SET {column} = {new_value}'
+        c.execute(query)
+        conn.commit()
+        return True
+    except:
+        print_exc()
+        return False
+
 def cr_to_dict(rows, cols):
     """ Returns a tuple of dictionaries, with
     each dictionary being a single row, having
