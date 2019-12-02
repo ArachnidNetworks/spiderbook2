@@ -177,15 +177,6 @@ def reply(request):
     reply_post(request, reply_uid)
     reply_update(request, reply_uid)
 
-def reply_update(request, reply_uid):
-    """ Adds the reply to the original post """
-    table = request.form['op_type']
-    update({
-        'table': table,
-        'restriction': f'WHERE uid = {request.form["op_uid"]}',
-        'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(30)"
-    })
-
 def reply_post(request, reply_uid):
     """ Inserts the reply data into the database """
     data = {
@@ -203,6 +194,15 @@ def reply_post(request, reply_uid):
         data['body_file_url'] = file_path
 
     insert(data)
+
+def reply_update(request, reply_uid):
+    """ Adds the reply to the original post """
+    table = request.form['op_type']
+    update({
+        'table': table,
+        'restriction': f'WHERE uid = {request.form["op_uid"]}',
+        'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(30)"
+    })
 
 def get_posts(limit=100, category='all'):
     if category != 'all':
