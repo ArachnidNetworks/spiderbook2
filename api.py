@@ -75,7 +75,7 @@ def format_for_query(s, par=True):
     s = "".join(s)
     return s
 
-def insert(data, restriction=False):
+def insert(data):
     """ Inserts data into a PostgreSQL database.
     It's dynamic, using the 'table' key as the table
     and considering any other key:value pair a
@@ -105,7 +105,7 @@ def cr_to_dict(rows, cols):
         result_table += ({cols[i]: row[i] for i in range(len(cols))},)
     return result_table
 
-def select(data):
+def select(data, restriction=''):
     try:
         table = data['table']
         data.pop('table')
@@ -119,11 +119,8 @@ def select(data):
         else:
             cols = tuple(cols)
             query += format_for_query(str(cols), False)
-        # Add the table and the restriction, if it's there
-        query += " FROM " + table
-        rst = data.get('restriction')
-        if rst:
-            query += " " + rst
+        # Add the table and restriction to the query
+        query += " FROM " + table + " " + restriction
         # Execute the query and extract the rows
         c.execute(query)
         rows = c.fetchall()
@@ -137,6 +134,7 @@ def add_post(request):
     """ Adds a post based on the Flask request's data. """
     body_text = request.form.get('body-text')[:1000]
     body_file = request.files.get('body-file')
+
     data = {
         'table': 'posts',
         'uid': new_uid(32),
@@ -151,6 +149,8 @@ def add_post(request):
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
         data['body_file_url'] = file_path
+
+    insert(data)
 
 c.close()
 conn.close()
