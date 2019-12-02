@@ -145,6 +145,12 @@ def add_post(request):
         'ip': request.environ['REMOTE_ADDR'][:45],
         'dt': dt_now()
     }
+    if body_text:
+        data['body_text'] = body_text
+    elif body_file:
+        file_path = 'post_files/' + body_file.filename
+        body_file.save(file_path)
+        data['body_file_url'] = file_path
 
 c.close()
 conn.close()
