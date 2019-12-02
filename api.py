@@ -173,7 +173,7 @@ def reply(request):
 
 def get_posts(limit=100, category='all'):
     if category != 'all':
-        restriction = f'WHERE category = {category} '
+        restriction = f'WHERE category = \'{category}\' '
     restriction += f'ORDER BY dt DESC LIMIT {limit}'
     return select({
         'table': 'posts',
@@ -181,7 +181,13 @@ def get_posts(limit=100, category='all'):
     }, restriction)
 
 def get_post(request):
-    pass
+    #uid = request.args['uid']
+    uid = 'UID'
+    post = select({
+        'table': 'posts',
+        'cols': ['title', 'category', 'body_text', 'body_file_url', 'dt']
+    })[0]
+    return post
 
 c.close()
 conn.close()
