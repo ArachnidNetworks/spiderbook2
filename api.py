@@ -221,9 +221,8 @@ def get_post(request):
     uid = request.args['uid']
     post = select({
         'table': 'posts',
-        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'dt']
+        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'dt', 'reply_uids']
     })[0]
-    return post
 
 def get_replies(post, limit=100):
     restriction = f'WHERE op_uid = \'{post["uid"]}\' '
