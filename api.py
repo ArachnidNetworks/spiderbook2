@@ -188,8 +188,13 @@ def get_post(request):
     })[0]
     return post
 
-def get_replies(post):
-    pass
+def get_replies(post, limit=100):
+    restriction = f'WHERE op_uid = \'{post["uid"]}\' '
+    restriction += f'ORDER BY dt DESC LIMIT {limit}'
+    replies = select({
+        'table': 'replies',
+        'cols': ['op_uid', 'body_text', 'body_file_url']
+    }, restriction)
 
 c.close()
 conn.close()
