@@ -153,7 +153,21 @@ def add_post(request):
     insert(data)
 
 def reply(request):
-    pass
+    """ Adds a reply to a post or reply based
+    on the Flask request's data. """
+    data = {
+        'table': 'replies',
+        'uid': new_uid(32),
+        'body_text': request.form['body-text'][:1000],
+        'op_uid': request.form['op_uid'],
+        'ip': request.environ['REMOTE_ADDR'][:45],
+        'dt': dt_now()
+    }
+    body_file = request.files.get('body-file')
+    if body_file:
+        file_path = 'post_files/' + body_file.filename
+        body_file.save(file_path)
+        data['body_file_url'] = file_path
 
 c.close()
 conn.close()
