@@ -100,10 +100,20 @@ def update(data):
     try:
         table = data['table']
         data.pop('table')
+        restriction = data.get('restriction')
+        if restriction:
+            data.pop('restriction')
+        else:
+            restriction = ''
         column = data.keys()[0]
         new_value = data[column]
-        query = f'UPDATE {table} SET {column} = {new_value}'
-        c.execute(query)
+        query = 'UPDATE %s SET %s = %s %s'
+        c.execute(query, (
+            table,
+            column,
+            new_value,
+            restriction
+        ))
         conn.commit()
         return True
     except:
