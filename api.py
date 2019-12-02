@@ -135,13 +135,16 @@ def select(data):
 
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
-    uid = new_uid(32)
-    title = request.form['title'][:200]
-    category = request.form['category'][:80]
     body_text = request.form.get('body-text')[:1000]
     body_file = request.files.get('body-file')
-    ip = request.environ['REMOTE_ADDR'][:45]
-    dt = dt_now()
+    data = {
+        'table': 'posts',
+        'uid': new_uid(32),
+        'title': request.form['title'][:200],
+        'category': request.form['category'][:80],
+        'ip': request.environ['REMOTE_ADDR'][:45],
+        'dt': dt_now()
+    }
 
 c.close()
 conn.close()
