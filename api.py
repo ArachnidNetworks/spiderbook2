@@ -5,7 +5,8 @@ from traceback import print_exc
 import datetime
 
 def dt_now():
-    return datetime.datetime.utcnow()
+    datetime.datetime.utcnow()
+    return datetime.datetime.utcnow().replace(microsecond=0)
 
 def dbsetup(db, user, password):
     """ Connects to a database """
@@ -135,11 +136,11 @@ def select(data):
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
     uid = new_uid(32)
-    title = request.form['title']
-    category = request.form['category']
-    text = request.form.get('body-text')
-    file = request.files.get('body-file')
-    ip = request.environ['REMOTE_ADDR']
+    title = request.form['title'][:200]
+    category = request.form['category'][:80]
+    body_text = request.form.get('body-text')[:1000]
+    body_file = request.files.get('body-file')
+    ip = request.environ['REMOTE_ADDR'][:45]
     dt = dt_now()
 
 c.close()
