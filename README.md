@@ -21,7 +21,6 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ### TODO:
 - #### API:
     - specific calls for CRUD action
-        - get specific post + replies
         - (admin/moderator) remove post
         - (admin/moderator) ban ip (24h-2mo limit)
         - (admin/moderator) unban ip
