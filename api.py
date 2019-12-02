@@ -184,9 +184,12 @@ def get_post(request):
     uid = request.args['uid']
     post = select({
         'table': 'posts',
-        'cols': ['title', 'category', 'body_text', 'body_file_url', 'dt']
+        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'dt']
     })[0]
     return post
+
+def get_replies(post):
+    pass
 
 c.close()
 conn.close()
