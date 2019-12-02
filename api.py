@@ -180,5 +180,8 @@ def get_posts(limit=100, category='all'):
         'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
     }, restriction)
 
+def get_post(request):
+    pass
+
 c.close()
 conn.close()
