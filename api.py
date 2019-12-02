@@ -171,11 +171,14 @@ def reply(request):
 
     insert(data)
 
-def get_posts(limit=100):
+def get_posts(limit=100, category='all'):
+    if category != 'all':
+        restriction = f'WHERE category = {category} '
+    restriction += f'ORDER BY dt DESC LIMIT {limit}'
     return select({
         'table': 'posts',
         'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
-    }, f'ORDER BY dt DESC LIMIT {limit}')
-    
+    }, restriction)
+
 c.close()
 conn.close()
