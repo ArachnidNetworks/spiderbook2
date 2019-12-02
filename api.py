@@ -158,8 +158,8 @@ def reply(request):
     data = {
         'table': 'replies',
         'uid': new_uid(32),
-        'body_text': request.form['body-text'][:1000],
         'op_uid': request.form['op_uid'],
+        'body_text': request.form['body-text'][:1000],
         'ip': request.environ['REMOTE_ADDR'][:45],
         'dt': dt_now()
     }

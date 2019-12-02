@@ -15,3 +15,12 @@ CREATE TABLE posts (
     ip VARCHAR(45) NOT NULL,
     dt TIMESTAMP NOT NULL
 );
+
+CREATE TABLE replies (
+    uid VARCHAR(32) NOT NULL,
+    op_uid VARCHAR(32) NOT NULL,
+    body_text VARCHAR(1000) NOT NULL,
+    body_file_url VARCHAR(500),
+    ip VARCHAR(45) NOT NULL,
+    dt TIMESTAMP NOT NULL
+);
