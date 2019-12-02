@@ -157,31 +157,41 @@ def select(data, restriction=''):
 
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
-    body_text = request.form.get('body_text')
-    body_file = request.files.get('body_file')
+    try:
+        body_text = request.form.get('body_text')
+        body_file = request.files.get('body_file')
 
-    data = {
-        'table': 'posts',
-        'uid': new_uid(32),
-        'title': request.form['title'][:200],
-        'category': request.form['category'][:80],
-        'ip': request.environ['REMOTE_ADDR'][:45],
-        'dt': dt_now()
-    }
-    if body_text:
-        data['body_text'] = body_text[:1000]
-    elif body_file:
-        file_path = 'post_files/' + body_file.filename
-        body_file.save(file_path)
-        data['body_file_url'] = file_path
+        data = {
+            'table': 'posts',
+            'uid': new_uid(32),
+            'title': request.form['title'][:200],
+            'category': request.form['category'][:80],
+            'ip': request.environ['REMOTE_ADDR'][:45],
+            'dt': dt_now()
+        }
+        if body_text:
+            data['body_text'] = body_text[:1000]
+        elif body_file:
+            file_path = 'post_files/' + body_file.filename
+            body_file.save(file_path)
+            data['body_file_url'] = file_path
 
-    insert(data)
+        insert(data)
+        return True
+    except:
+        print_exc()
+        return False
 
 def reply(request):
     """ Replies to a post """
-    reply_uid = new_uid(32)
-    reply_post(request, reply_uid)
-    reply_update(request, reply_uid)
+    try:
+        reply_uid = new_uid(32)
+        reply_post(request, reply_uid)
+        reply_update(request, reply_uid)
+        return True
+    except:
+        print_exc()
+        return False
 
 def reply_post(request, reply_uid):
     """ Inserts the reply data into the database """
@@ -215,17 +225,24 @@ def reply_update(request, reply_uid):
     })
 
 def get_posts(limit=100, category='all'):
-    if category != 'all':
-        restriction = f'WHERE category = \'{category}\' '
-    restriction += f'ORDER BY dt DESC LIMIT {limit}'
-    return select({
-        'table': 'posts',
-        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
-    }, restriction)
+    try:
+        if category != 'all':
+            restriction = f'WHERE category = \'{category}\' '
+        restriction += f'ORDER BY dt DESC LIMIT {limit}'
+        posts = select({
+            'table': 'posts',
+            'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
+        }, restriction)
+        if len(posts) > 0:
+            return posts
+        else:
+            return False
+    except:
+        print_exc()
+        return False
 
 def get_post(request):
-    #uid = request.args['uid']
-    uid = request
+    uid = request.args['uid']
     restriction = f'WHERE uid = \'{uid}\''
     post = select({
         'table': 'posts',
@@ -247,4 +264,15 @@ def get_replies(post, limit=100):
         }, restriction)
         return replies
     else:
+        return False
+
+def get_post_and_replies(request, reply_limit):
+    try:
+        post = get_post(request)
+        if post:
+            replies = get_replies(post, reply_limit)
+        else:
+            return False
+    except:
+        print_exc()
         return False
