@@ -15,9 +15,12 @@ FORBBIDEN = 403
 def root():
     return "Hello!"
 
-if __name__ == "__main__":
-    app.run(
-        host="localhost",
-        port=8000,
-        debug=True
-    )
+@app.route('/test/post', methods=['POST'])
+def test_post():
+    api.add_post(request)
+    return "Success!", 200
+
+@app.route('/test/reply', methods=['POST'])
+def test_reply():
+    api.reply(request)
+    return "Success!", 200

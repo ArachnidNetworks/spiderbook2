@@ -151,8 +151,8 @@ def select(data, restriction=''):
 
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
-    body_text = request.form.get('body-text')[:1000]
-    body_file = request.files.get('body-file')
+    body_text = request.form.get('body_text')
+    body_file = request.files.get('body_file')
 
     data = {
         'table': 'posts',
@@ -163,7 +163,7 @@ def add_post(request):
         'dt': dt_now()
     }
     if body_text:
-        data['body_text'] = body_text
+        data['body_text'] = body_text[:1000]
     elif body_file:
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
@@ -183,11 +183,11 @@ def reply_post(request, reply_uid):
         'table': 'replies',
         'uid': reply_uid,
         'op_uid': request.form['op_uid'],
-        'body_text': request.form['body-text'][:1000],
+        'body_text': request.form['body_text'][:1000],
         'ip': request.environ['REMOTE_ADDR'][:45],
         'dt': dt_now()
     }
-    body_file = request.files.get('body-file')
+    body_file = request.files.get('body_file')
     if body_file:
         file_path = 'post_files/' + body_file.filename
         body_file.save(file_path)
@@ -197,11 +197,15 @@ def reply_post(request, reply_uid):
 
 def reply_update(request, reply_uid):
     """ Adds the reply to the original post """
-    table = request.form['op_type']
+    op_type = request.form['op_type']
+    if op_type == 'post':
+        table = 'posts'
+    else:
+        table = 'replies'
     update({
         'table': table,
-        'restriction': f'WHERE uid = {request.form["op_uid"]}',
-        'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(30)"
+        'restriction': f'WHERE uid = \'{request.form["op_uid"]}\'',
+        'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(32)"
     })
 
 def get_posts(limit=100, category='all'):
@@ -228,6 +232,3 @@ def get_replies(post, limit=100):
         'table': 'replies',
         'cols': ['body_text', 'body_file_url']
     }, restriction)
-
-c.close()
-conn.close()
