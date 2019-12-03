@@ -6,10 +6,6 @@ from decorator import decorator
 from typing import Literal
 import datetime
 
-def dt_now() -> datetime.datetime:
-    datetime.datetime.utcnow()
-    return datetime.datetime.utcnow().replace(microsecond=0)
-
 def dbsetup(db:str, user:str, password:str):
     """ Connects to a database """
     conn = connect(f"dbname={db} user={user} password={password}")
@@ -17,36 +13,11 @@ def dbsetup(db:str, user:str, password:str):
     return conn, c
 conn, c = dbsetup(db="spiderbook", user="postgres", password="postgres")
 
-def get_idns(restriction:str='', arguments=()):
-    """ Returns all ID 'root' numbers with an optional
-    restriction and arguments. """
-    query = "SELECT idn FROM idnumbers"
-    query += " " + restriction
-    c.execute(query, arguments)
-    # Return everything, in the form of a list of tuples
-    return c.fetchall()
+# Utility Functions
 
-def new_idn() -> int:
-    """ Adds a new number to the idnumbers table and returns
-    it. The new number is the last plus a random value
-    between 1 and 9. """
-    # get the latest (biggest) id number
-    last_id = get_idns(restriction="ORDER BY idn DESC")[0][0]
-    # add a random value between 1 and 10 to it
-    new = last_id + randint(1, 10)
-    query = "INSERT INTO idnumbers (idn) VALUES (%s)"
-    arguments = (new,)
-    c.execute(query, arguments)
-    conn.commit()
-    # return the latest idn
-    return new
-
-def new_uid(chars:int=16) -> str:
-    """ Returns a new hashed ID with the
-    character limit being the parameter chars.
-    The default value for chars is 16. """
-    idn = new_idn()
-    return sha512(bytes(idn)).hexdigest()[:chars]
+def dt_now() -> datetime.datetime:
+    datetime.datetime.utcnow()
+    return datetime.datetime.utcnow().replace(microsecond=0)
 
 def iterable_to_s(iterable, s:str) -> str:
     """ Returns a list of s in the format
@@ -79,6 +50,48 @@ def format_for_query(s, single_quotes:bool=False, comma:bool=False, par:bool=Fal
         s.pop(-1)
     s = "".join(s)
     return s
+
+def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
+    """ Returns a tuple of dictionaries, with
+    each dictionary being a single row, having
+    the columns as keys. """
+    result_table = ()
+    for row in rows:
+        result_table += ({cols[i]: row[i] for i in range(len(cols))},)
+    return result_table
+
+# Database Interaction
+
+def get_idns(restriction: str = '', arguments=()):
+    """ Returns all ID 'root' numbers with an optional
+    restriction and arguments. """
+    query = "SELECT idn FROM idnumbers"
+    query += " " + restriction
+    c.execute(query, arguments)
+    # Return everything, in the form of a list of tuples
+    return c.fetchall()
+
+def new_idn() -> int:
+    """ Adds a new number to the idnumbers table and returns
+    it. The new number is the last plus a random value
+    between 1 and 9. """
+    # get the latest (biggest) id number
+    last_id = get_idns(restriction="ORDER BY idn DESC")[0][0]
+    # add a random value between 1 and 10 to it
+    new = last_id + randint(1, 10)
+    query = "INSERT INTO idnumbers (idn) VALUES (%s)"
+    arguments = (new,)
+    c.execute(query, arguments)
+    conn.commit()
+    # return the latest idn
+    return new
+
+def new_uid(chars: int = 16) -> str:
+    """ Returns a new hashed ID with the
+    character limit being the parameter chars.
+    The default value for chars is 16. """
+    idn = new_idn()
+    return sha512(bytes(idn)).hexdigest()[:chars]
 
 def insert(data:str) -> bool:
     """ Inserts data into a PostgreSQL database.
@@ -137,15 +150,6 @@ def delete(data:str) -> bool:
         print_exc()
         return False
 
-def cr_to_dict(rows:tuple, cols:tuple) -> tuple:
-    """ Returns a tuple of dictionaries, with
-    each dictionary being a single row, having
-    the columns as keys. """
-    result_table = ()
-    for row in rows:
-        result_table += ({cols[i]: row[i] for i in range(len(cols))},)
-    return result_table
-
 def select(data:str, restriction:str=''):
     try:
         table = data['table']
@@ -170,6 +174,8 @@ def select(data:str, restriction:str=''):
     except:
         print_exc()
         return False
+
+# CRUD Actions
 
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
@@ -240,7 +246,7 @@ def reply_update(request, reply_uid:str):
         'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(32)"
     })
 
-def get_posts(limit:str=100, category:str='all'):
+def get_posts(limit:int=100, category:str='all'):
     try:
         if category != 'all':
             restriction = f'WHERE category = \'{category}\' '
@@ -269,7 +275,7 @@ def get_post(request):
     else:
         return False
 
-def get_replies(post:dict, limit:str=100):
+def get_replies(post, limit:int):
     if post:
         sql_uid_list = format_for_query(str(tuple(post["reply_uids"])),
             single_quotes=True, par=True)
@@ -282,15 +288,15 @@ def get_replies(post:dict, limit:str=100):
     else:
         return False
 
-def get_post_and_replies(request, reply_limit:str):
-    """ Gets a single post and reply_limit replies and
-    returns them as a tuple, with the first item being
-    the post itself, a dictionary, and the second being
+def get_post_and_replies(request, limit:int=100):
+    """ Gets a single post and a tuple with it and
+    limit replies, with the first item being the
+    post itself, a dictionary, and the second being
     the replies, a tuple of dictionaries. """
     try:
         post = get_post(request)
         if post:
-            replies = get_replies(post, reply_limit)
+            replies = get_replies(post, limit)
         else:
             return False
         return post, replies
@@ -315,5 +321,15 @@ def superuser(fn):
     return wrap
 
 @superuser
-def remove_post(request):
-    pass
+def remove_post(request) -> bool:
+    post_type = request.form.get('post-type')
+    post_id = request.form.get('uid')
+    post, replies = get_post_and_replies(post_id)
+    print('-'*40)
+    print(post, replies)
+    print('-'*40)
+    return True
+    """ return delete({
+        'table': 'posts' if post_type == 'post' else 'replies',
+        'restriction': f"WHERE uid = '{post_id}'"
+    }) """
