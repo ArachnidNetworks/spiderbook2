@@ -2,6 +2,8 @@ from psycopg2 import connect
 from random import randint
 from hashlib import sha512
 from traceback import print_exc
+from decorator import decorator
+from typing import Literal
 import datetime
 
 def dt_now():
@@ -276,3 +278,23 @@ def get_post_and_replies(request, reply_limit):
     except:
         print_exc()
         return False
+
+def authenticate(su_type, ip):
+    print(ip, '=>', su_type)
+    return True
+
+@decorator
+def superuser(fn, su_type=None, ip=None, *args, **kwargs):
+    """ Superuser (admin/mod) decorator. Authenticates the user based 
+    on the keyword arguments su_type and ip.
+    su_type can be either administrator, admin, moderator or mod."""
+    if type(su_type) == str and type(ip) == str and authenticate(su_type, ip):
+        return fn(*args, **kwargs)
+    else:
+        return False
+
+@superuser()
+def test_function(number1, number2):
+    return 'test_function: ' + str(number1) + ' ' + str(number2)
+
+print(test_function(5, 5))
