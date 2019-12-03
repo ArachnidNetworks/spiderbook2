@@ -6,30 +6,27 @@ from decorator import decorator
 from typing import Literal
 import datetime
 
-def dt_now():
+def dt_now() -> datetime.datetime:
     datetime.datetime.utcnow()
     return datetime.datetime.utcnow().replace(microsecond=0)
 
-def dbsetup(db, user, password):
+def dbsetup(db:str, user:str, password:str):
     """ Connects to a database """
     conn = connect(f"dbname={db} user={user} password={password}")
     c = conn.cursor()
     return conn, c
 conn, c = dbsetup(db="spiderbook", user="postgres", password="postgres")
 
-def get_idns(restriction=False, arguments=()):
+def get_idns(restriction:str='', arguments=()):
     """ Returns all ID 'root' numbers with an optional
     restriction and arguments. """
     query = "SELECT idn FROM idnumbers"
-    if restriction:
-        # if a restriction is imposed, such as a WHERE clause, add it to
-        # the query, else execute it
-        query += " " + restriction
+    query += " " + restriction
     c.execute(query, arguments)
     # Return everything, in the form of a list of tuples
     return c.fetchall()
 
-def new_idn():
+def new_idn() -> int:
     """ Adds a new number to the idnumbers table and returns
     it. The new number is the last plus a random value
     between 1 and 9. """
@@ -44,14 +41,14 @@ def new_idn():
     # return the latest idn
     return new
 
-def new_uid(chars=16):
+def new_uid(chars:int=16) -> str:
     """ Returns a new hashed ID with the
     character limit being the parameter chars.
     The default value for chars is 16. """
     idn = new_idn()
     return sha512(bytes(idn)).hexdigest()[:chars]
 
-def iterable_to_s(iterable, s):
+def iterable_to_s(iterable, s:str) -> str:
     """ Returns a list of s in the format
     (%s, %s, %s, ...) with as many s's as
     items in the iterable """
@@ -60,13 +57,13 @@ def iterable_to_s(iterable, s):
         iters.append(s)
     return "(" + ", ".join(iters) + ")"
 
-def remove_last_comma(string_as_list):
+def remove_last_comma(string_as_list:list) -> list:
     if string_as_list[-2] == ',':
         # Remove last comma, if it's there
         string_as_list.pop(-2)
     return string_as_list
 
-def format_for_query(s, single_quotes=False, comma=False, par=False):
+def format_for_query(s, single_quotes:bool=False, comma:bool=False, par:bool=False) -> str:
     """ Removes, optionally, single quotes, the comma
     next to the last parenthesis, if there
     is one, and the parenthesis
@@ -83,7 +80,7 @@ def format_for_query(s, single_quotes=False, comma=False, par=False):
     s = "".join(s)
     return s
 
-def insert(data):
+def insert(data:str) -> bool:
     """ Inserts data into a PostgreSQL database.
     It's dynamic, using the 'table' key as the table
     and considering any other key:value pair a
@@ -104,7 +101,7 @@ def insert(data):
         print_exc()
         return False
 
-def update(data):
+def update(data:str) -> bool:
     try:
         table = data['table']
         data.pop('table')
@@ -123,7 +120,7 @@ def update(data):
         print_exc()
         return False
 
-def cr_to_dict(rows, cols):
+def cr_to_dict(rows:tuple, cols:tuple) -> dict:
     """ Returns a tuple of dictionaries, with
     each dictionary being a single row, having
     the columns as keys. """
@@ -132,7 +129,7 @@ def cr_to_dict(rows, cols):
         result_table += ({cols[i]: row[i] for i in range(len(cols))},)
     return result_table
 
-def select(data, restriction=''):
+def select(data:str, restriction:str=''):
     try:
         table = data['table']
         data.pop('table')
@@ -195,7 +192,7 @@ def reply(request):
         print_exc()
         return False
 
-def reply_post(request, reply_uid):
+def reply_post(request, reply_uid:str):
     """ Inserts the reply data into the database """
     data = {
         'table': 'replies',
@@ -213,7 +210,7 @@ def reply_post(request, reply_uid):
 
     insert(data)
 
-def reply_update(request, reply_uid):
+def reply_update(request, reply_uid:str):
     """ Adds the reply to the original post """
     op_type = request.form['op_type']
     if op_type == 'post':
@@ -226,7 +223,7 @@ def reply_update(request, reply_uid):
         'reply_uids': f"reply_uids || '{reply_uid}'::VARCHAR(32)"
     })
 
-def get_posts(limit=100, category='all'):
+def get_posts(limit:str=100, category:str='all'):
     try:
         if category != 'all':
             restriction = f'WHERE category = \'{category}\' '
@@ -255,7 +252,7 @@ def get_post(request):
     else:
         return False
 
-def get_replies(post, limit=100):
+def get_replies(post:dict, limit:str=100):
     if post:
         sql_uid_list = format_for_query(str(tuple(post["reply_uids"])),
             single_quotes=True, par=True)
@@ -268,7 +265,7 @@ def get_replies(post, limit=100):
     else:
         return False
 
-def get_post_and_replies(request, reply_limit):
+def get_post_and_replies(request, reply_limit:str) -> bool:
     try:
         post = get_post(request)
         if post:
@@ -279,15 +276,12 @@ def get_post_and_replies(request, reply_limit):
         print_exc()
         return False
 
-def authenticate(su_type, ip):
+def authenticate(su_type:str, ip:str) -> bool:
     print(ip, '=>', su_type)
     return True
 
 @decorator
-def superuser(fn, su_type=None, ip=None, *args, **kwargs):
-    """ Superuser (admin/mod) decorator. Authenticates the user based 
-    on the keyword arguments su_type and ip.
-    su_type can be either administrator, admin, moderator or mod."""
+def superuser(fn, su_type:Literal[None, "admin", "mod"]=None, ip:str=None, *args, **kwargs):
     if type(su_type) == str and type(ip) == str and authenticate(su_type, ip):
         return fn(*args, **kwargs)
     else:
