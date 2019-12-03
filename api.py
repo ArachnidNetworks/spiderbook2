@@ -285,17 +285,14 @@ def authenticate(su_type:str, ip:str) -> bool:
     print(ip, '=>', su_type)
     return True
 
-@decorator
-def superuser(fn, *args, **kwargs):
+def superuser(fn):
     """ Superuser (admin/mod) decorator. Authenticates the user based 
-    on the kwarg arguments with keys su_type and ip.
-    su_type can be either administrator, admin, moderator or mod,
-    and ip is any valid IPv4 address.
-    If the authentication passes, it runs the function and returns what
-    it returns, else it returns False."""
-    su_type = kwargs.get('su_type')
-    ip = kwargs.get('ip')
-    if type(su_type) == str and type(ip) == str and authenticate(su_type, ip):
-        return fn(*args, **kwargs)
-    else:
-        return False
+    on the arguments su_type and ip.
+    su_type can be either admin, or mod, and ip is any valid IPv4 address.
+    If the authentication passes, it returns the function, else it returns False."""
+    def wrap(su_type, ip, *args, **kwargs):
+        if type(su_type) == str and type(ip) == str and authenticate(su_type, ip):
+            return fn(*args, **kwargs)
+        else:
+            return False
+    return wrap
