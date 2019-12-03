@@ -120,7 +120,7 @@ def update(data:str) -> bool:
         print_exc()
         return False
 
-def cr_to_dict(rows:tuple, cols:tuple) -> dict:
+def cr_to_dict(rows:tuple, cols:tuple) -> tuple:
     """ Returns a tuple of dictionaries, with
     each dictionary being a single row, having
     the columns as keys. """
@@ -248,7 +248,7 @@ def get_post(request):
         'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'dt', 'reply_uids']
     }, restriction)
     if len(post) > 0:
-        return post
+        return post[0]
     else:
         return False
 
@@ -265,13 +265,18 @@ def get_replies(post:dict, limit:str=100):
     else:
         return False
 
-def get_post_and_replies(request, reply_limit:str) -> bool:
+def get_post_and_replies(request, reply_limit:str):
+    """ Gets a single post and reply_limit replies and
+    returns them as a tuple, with the first item being
+    the post itself, a dictionary, and the second being
+    the replies, a tuple of dictionaries. """
     try:
         post = get_post(request)
         if post:
             replies = get_replies(post, reply_limit)
         else:
             return False
+        return post, replies
     except:
         print_exc()
         return False
@@ -282,13 +287,13 @@ def authenticate(su_type:str, ip:str) -> bool:
 
 @decorator
 def superuser(fn, su_type:Literal[None, "admin", "mod"]=None, ip:str=None, *args, **kwargs):
+    """ Superuser (admin/mod) decorator. Authenticates the user based 
+    on the keyword arguments su_type and ip.
+    su_type can be either administrator, admin, moderator or mod,
+    and ip is any valid IPv4 address.
+    If the authentication passes, it runs the function and returns what
+    it returns, else it returns False."""
     if type(su_type) == str and type(ip) == str and authenticate(su_type, ip):
         return fn(*args, **kwargs)
     else:
         return False
-
-@superuser()
-def test_function(number1, number2):
-    return 'test_function: ' + str(number1) + ' ' + str(number2)
-
-print(test_function(5, 5))
