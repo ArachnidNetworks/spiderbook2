@@ -120,6 +120,23 @@ def update(data:str) -> bool:
         print_exc()
         return False
 
+def delete(data:str) -> bool:
+    try:
+        table = data['table']
+        data.pop('table')
+        restriction = data.get('restriction')
+        if restriction:
+            data.pop('restriction')
+        else:
+            restriction = ''
+        query = f'DELETE FROM {table} * {restriction}'
+        c.execute(query)
+        conn.commit()
+        return True
+    except:
+        print_exc()
+        return False
+
 def cr_to_dict(rows:tuple, cols:tuple) -> tuple:
     """ Returns a tuple of dictionaries, with
     each dictionary being a single row, having
@@ -144,7 +161,7 @@ def select(data:str, restriction:str=''):
             cols = tuple(cols)
             query += format_for_query(str(cols))
         # Add the table and restriction to the query
-        query += " FROM " + table + " " + restriction
+        query += f" FROM {table} {restriction}"
         # Execute the query and extract the rows
         c.execute(query)
         rows = c.fetchall()
@@ -296,3 +313,7 @@ def superuser(fn):
         else:
             return False
     return wrap
+
+@superuser
+def remove_post(request):
+    pass
