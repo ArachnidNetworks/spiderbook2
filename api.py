@@ -264,7 +264,7 @@ def get_posts(limit:int=100, category:str='all'):
         return False
 
 def get_post(request):
-    uid = request.args['uid']
+    uid = request.form['uid']
     restriction = f'WHERE uid = \'{uid}\''
     post = select({
         'table': 'posts',
@@ -295,10 +295,10 @@ def get_post_and_replies(request, limit:int=100):
     the replies, a tuple of dictionaries. """
     try:
         post = get_post(request)
-        if post:
+        if post["reply_uids"]:
             replies = get_replies(post, limit)
         else:
-            return False
+            replies = ();
         return post, replies
     except:
         print_exc()
@@ -322,14 +322,22 @@ def superuser(fn):
 
 @superuser
 def remove_post(request) -> bool:
-    post_type = request.form.get('post-type')
-    post_id = request.form.get('uid')
-    post, replies = get_post_and_replies(post_id)
-    print('-'*40)
-    print(post, replies)
-    print('-'*40)
-    return True
-    """ return delete({
-        'table': 'posts' if post_type == 'post' else 'replies',
-        'restriction': f"WHERE uid = '{post_id}'"
-    }) """
+    try:
+        result = get_post_and_replies(request)
+        if not result:
+            return False
+        post, replies = result
+        post_type = request.form["op_type"]
+        post_uid = request.form["uid"]
+        for reply in replies:
+            delete({
+                'table': 'replies',
+                'restriction': f"WHERE uid = '{reply['uid']}'"
+            })
+        print(delete({
+            'table': 'posts' if post_type == 'post' else 'replies',
+            'restriction': f"WHERE uid = '{post_uid}'"
+        }))
+    except:
+        print_exc()
+        return False

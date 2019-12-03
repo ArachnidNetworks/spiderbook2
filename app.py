@@ -24,3 +24,8 @@ def test_post():
 def test_reply():
     api.reply(request)
     return "Success!", 200
+
+@app.route('/test/su/remove/post', methods=['POST'])
+def remove_post():
+    api.remove_post('moderator', 'IP', request)
+    return "Success!", 200
