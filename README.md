@@ -36,6 +36,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 
 - #### Frontend:
     - home page
+    - single post page
+    - proper comment parsing (comment a bit to the right of original post)
     - (admin/moderator) moderation dashboard tab
     - (admin) administration dashboard tab
-    - complete this list
