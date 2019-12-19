@@ -341,3 +341,12 @@ def remove_post(request) -> bool:
     except:
         print_exc()
         return False
+
+@superuser
+def ban_ip(request) -> bool:
+    # get username from form argument
+    # get ip from username
+    # put ip in banned table
+
+    # if a new post has that ip, return false and set 403 forbidden code
+    pass
