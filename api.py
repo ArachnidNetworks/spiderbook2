@@ -350,4 +350,4 @@ def ban_ip(request) -> bool:
     # get ip from post with specified uid
     # put ip in banned table
 
-    # if a new post has that ip, return false and set 403 forbidden code    
+    # if a new post has that ip, make add_post return false
