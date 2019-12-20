@@ -344,9 +344,10 @@ def remove_post(request) -> bool:
 
 @superuser
 def ban_ip(request) -> bool:
-    # get username from form argument
-    # get ip from username
+    uid = get_post(request).get('uid')
+    # get post uid from form argument
+    print(uid)
+    # get ip from post with specified uid
     # put ip in banned table
 
-    # if a new post has that ip, return false and set 403 forbidden code
-    pass
+    # if a new post has that ip, return false and set 403 forbidden code    
