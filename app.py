@@ -29,3 +29,9 @@ def test_reply():
 def remove_post():
     api.remove_post('moderator', 'IP', request)
     return "Success!", 200
+
+@app.route('/test/su/ban', methods=['POST'])
+def ban_ip():
+    if api.ban_ip('moderator', 'IP', request):
+        return "Success!", 200
+    return "aaaaaaaaa", 500

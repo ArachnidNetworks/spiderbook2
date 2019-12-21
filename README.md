@@ -21,21 +21,19 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ### TODO:
 - #### API:
     - specific calls for CRUD actions
-        - (admin/moderator) ban ip (24h-2mo limit)
-        - (admin/moderator) unban ip
-        - (admin/moderator) ban category
-        - (admin/moderator) get all banned ips
-        - (admin/moderator) get all banned categories
+        - (mod/admin) ban ip (24h-2mo limit)
+        - (mod/admin) unban ip
+        - (mod/admin) ban category
+        - (mod/admin) get all banned ips
+        - (mod/admin) get all banned categories
         - (admin) add moderator
         - (admin) get all admins and moderators
         - (admin) remove moderator
-        - (admin) ban moderator
-        - (admin) unban moderator
-    - proper admin/moderator authentication
+    - proper mod/admin authentication
 
 - #### Frontend:
     - home page
     - single post page
     - proper comment parsing (comment a bit to the right of original post)
-    - (admin/moderator) moderation dashboard tab
+    - (mod) moderation dashboard tab
     - (admin) administration dashboard tab

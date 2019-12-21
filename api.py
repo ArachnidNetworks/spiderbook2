@@ -268,7 +268,7 @@ def get_post(request):
     restriction = f'WHERE uid = \'{uid}\''
     post = select({
         'table': 'posts',
-        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'dt', 'reply_uids']
+        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url', 'ip', 'dt', 'reply_uids']
     }, restriction)
     if len(post) > 0:
         return post[0]
@@ -344,10 +344,14 @@ def remove_post(request) -> bool:
 
 @superuser
 def ban_ip(request) -> bool:
-    uid = get_post(request).get('uid')
-    # get post uid from form argument
-    print(uid)
-    # get ip from post with specified uid
-    # put ip in banned table
-
-    # if a new post has that ip, make add_post return false
+    try:
+        ip = get_post(request).get('uid')
+        # get post uid from form argument
+        print(ip)
+        # get ip from post with specified uid
+        # put ip in banned table
+        # if a new post has that ip, make add_post return false
+        return True
+    except:
+        print_exc()
+        return False
