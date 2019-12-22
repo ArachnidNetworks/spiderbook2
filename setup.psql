@@ -27,7 +27,7 @@ CREATE TABLE replies (
     reply_uids VARCHAR(32)[]
 );
 
-CREATE TABLE banned (
+/*CREATE TABLE banned (*/
     
-);
+/*);*/
 
