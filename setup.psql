@@ -26,3 +26,8 @@ CREATE TABLE replies (
     dt TIMESTAMP NOT NULL,
     reply_uids VARCHAR(32)[]
 );
+
+CREATE TABLE banned (
+    
+);
+

@@ -20,6 +20,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ----    
 ### TODO:
 - #### API:
+    - proper mod/admin authentication (in progress)
     - specific calls for CRUD actions
         - (mod/admin) ban ip (24h-2mo limit)
         - (mod/admin) unban ip
@@ -29,7 +30,6 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
         - (admin) add moderator
         - (admin) get all admins and moderators
         - (admin) remove moderator
-    - proper mod/admin authentication
 
 - #### Frontend:
     - home page
