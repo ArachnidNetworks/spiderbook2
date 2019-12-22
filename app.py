@@ -22,8 +22,9 @@ def test_post():
 
 @app.route('/test/reply', methods=['POST'])
 def test_reply():
-    api.reply(request)
-    return "Success!", 200
+    if api.reply(request):
+        return "Success!", 200
+    return "aaaa", 500
 
 @app.route('/test/su/remove/post', methods=['POST'])
 def remove_post():
@@ -34,4 +35,5 @@ def remove_post():
 def ban_ip():
     if api.ban_ip('moderator', 'IP', request):
         return "Success!", 200
-    return "aaaaaaaaa", 500
+    return "aaaa", 500
+

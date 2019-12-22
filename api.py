@@ -166,7 +166,7 @@ def select(data:str, restriction:str=''):
             query += format_for_query(str(cols))
         # Add the table and restriction to the query
         query += f" FROM {table} {restriction}"
-        # Execute the query and extract the rows
+        # Execute the query an`d extract the rows
         c.execute(query)
         rows = c.fetchall()
         # Format the results into a dictionary format
@@ -345,13 +345,12 @@ def remove_post(request) -> bool:
 @superuser
 def ban_ip(request) -> bool:
     try:
-        ip = get_post(request).get('uid')
-        # get post uid from form argument
-        print(ip)
-        # get ip from post with specified uid
+        # get post ip from form argument
+        ip = get_post(request).get('ip')
         # put ip in banned table
         # if a new post has that ip, make add_post return false
         return True
     except:
         print_exc()
         return False
+
