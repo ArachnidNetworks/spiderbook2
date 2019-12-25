@@ -304,21 +304,49 @@ def get_post_and_replies(request, limit:int=100):
         print_exc()
         return False
 
-def authenticate(su_type:str, ip:str) -> bool:
-    print(ip, '=>', su_type)
-    return True
+# Superuser functions
 
 def superuser(fn):
     """ Superuser (admin/mod) decorator. Authenticates the user based 
     on the arguments su_type and ip.
     su_type can be either admin, or mod, and ip is any valid IPv4 address.
     If the authentication passes, it returns the function, else it returns False."""
-    def wrap(su_type, ip, *args, **kwargs):
-        if type(su_type) == str and type(ip) == str and authenticate(su_type, ip):
+    def wrap(*args, **kwargs):
+        if suauth(args[0]):
             return fn(*args, **kwargs)
         else:
             return False
     return wrap
+
+def suauth(request) -> bool:
+    """ Superuser authenticator. Checks, with the request object,
+    if the user's name and password are correct. """
+    return True
+
+def signup(request):
+    """ Signs up a moderator/admin. Will be pending until an administrator authorizes
+    the request with the authorize function.
+    Returns True if it's successful, False otherwise. """
+    try:
+        return True
+    except:
+        return False
+
+@superuser
+def authorize(request):
+    """ Authorizes a new moderator or administrator. Returns True if successful, False otherwise.
+    It may return False due to a bug, the request being denied or if the authorizer's rank is
+    not high enough (moderator authorizing administrator, for example). """
+
+@superuser
+def login(request):
+    """ Login function. Returns 0 if the user is an administrator, 1 if they're a
+    moderator, and False if the authentication failed or an error occured. """
+    try:
+        return 1
+    except:
+        print_exc()
+        return False
 
 @superuser
 def remove_post(request) -> bool:

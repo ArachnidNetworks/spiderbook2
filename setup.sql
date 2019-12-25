@@ -27,6 +27,11 @@ CREATE TABLE replies (
     reply_uids VARCHAR(32)[]
 );
 
+CREATE TABLE sessions (
+    su_id INTEGER NOT NULL,
+    token VARCHAR(64) NOT NULL
+);
+
 /*CREATE TABLE banned (*/
     
 /*);*/

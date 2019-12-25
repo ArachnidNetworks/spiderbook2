@@ -17,8 +17,9 @@ def root():
 
 @app.route('/test/post', methods=['POST'])
 def test_post():
-    api.add_post(request)
-    return "Success!", 200
+    if api.add_post(request):
+        return "Success!", 200
+    return "aaaa", 500
 
 @app.route('/test/reply', methods=['POST'])
 def test_reply():
@@ -26,10 +27,17 @@ def test_reply():
         return "Success!", 200
     return "aaaa", 500
 
+@app.route('/test/authenticate', methods=['POST'])
+def authenticate():
+    if api.authenticate(request):
+        return "Success!", 200
+    return "aaaa", 500
+
 @app.route('/test/su/remove/post', methods=['POST'])
 def remove_post():
-    api.remove_post('moderator', 'IP', request)
-    return "Success!", 200
+    if api.remove_post('moderator', 'IP', request):
+        return "Success!", 200
+    return "aaaa", 500
 
 @app.route('/test/su/ban', methods=['POST'])
 def ban_ip():
