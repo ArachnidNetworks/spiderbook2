@@ -182,7 +182,6 @@ def add_post(request):
     try:
         body_text = request.form.get('body_text')
         body_file = request.files.get('body_file')
-
         data = {
             'table': 'posts',
             'uid': new_uid(32),
@@ -330,13 +329,18 @@ def signup(request):
     try:
         return True
     except:
+        print_exc()
         return False
 
 @superuser
 def authorize(request):
     """ Authorizes a new moderator or administrator. Returns True if successful, False otherwise.
     It may return False due to a bug, the request being denied or if the authorizer's rank is
-    not high enough (moderator authorizing administrator, for example). """
+    not high enough (moderator attempting to authorize an administrator, for example). """
+    try:
+    except:
+        print_exc()
+        return False
 
 @superuser
 def login(request):
