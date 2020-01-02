@@ -1,3 +1,4 @@
+#!!/usr/bin/env python
 from psycopg2 import connect
 from random import randint
 from hashlib import sha512
@@ -60,6 +61,12 @@ def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
         result_table += ({cols[i]: row[i] for i in range(len(cols))},)
     return result_table
 
+def secure_hash(data: str, chars: int) -> str:
+    hashed = data
+    for _ in range(1000):
+        hashed = sha512(bytes(data)).hexdigest()
+    return hashed[:chars]
+
 # Database Interaction
 
 def get_idns(restriction: str = '', arguments=()):
@@ -91,7 +98,7 @@ def new_uid(chars: int = 16) -> str:
     character limit being the parameter chars.
     The default value for chars is 16. """
     idn = new_idn()
-    return sha512(bytes(idn)).hexdigest()[:chars]
+    return secure_hash(str(idn), chars)
 
 def insert(data:str) -> bool:
     """ Inserts data into a PostgreSQL database.
@@ -305,6 +312,9 @@ def get_post_and_replies(request, limit:int=100):
 
 # Superuser functions
 
+MOD = 1
+ADMIN = 0
+
 def superuser(fn):
     """ Superuser (admin/mod) decorator. Authenticates the user based 
     on the arguments su_type and ip.
@@ -317,37 +327,65 @@ def superuser(fn):
             return False
     return wrap
 
-def suauth(request) -> bool:
-    """ Superuser authenticator. Checks, with the request object,
-    if the user's name and password are correct. """
-    return True
-
 def signup(request):
     """ Signs up a moderator/admin. Will be pending until an administrator authorizes
     the request with the authorize function.
-    Returns True if it's successful, False otherwise. """
+    Returns True if it's successful, False otherwise.
+    Used to signup a new superuser. """
     try:
+        data = {
+            'table': 'superusers',
+            'su_id': new_uid(),
+            'su_type': MOD if request.form['type'] == 'moderator' else ADMIN,
+            'email': request.form['email'],
+            'password': secure_hash(request.form['password']),
+            'pending': True
+        }
+        insert(data)
         return True
+    except:
+        print_exc()
+        return False
+
+def suauth(request) -> bool:
+    """ Superuser authenticator. Checks, with the request object,
+    if the user's name and password are correct. Returns true and the user's rank
+    in a tuple if so, otherwise false in a 1-item tuple
+    otherwise. May also return false if an error occured.
+    Used to authenticate a superuser request and to login. """
+    try:
+        data = {
+            'table': 'superusers',
+            'cols': ['su_type']
+        }
+        email = request.form['email']
+        password = secure_hash(request.form['password'])
+        restriction = f"WHERE email = '{email}' && password = '{password}'"
+        result = select(data, restriction)
+        return True
+    except:
+        print_exc()
+        return (False,)
+
+@superuser
+def login(request):
+    """ Login function. Returns 0 if the user is an administrator, 1 if they're a
+    moderator, and False if the authentication failed or an error occured.
+    Used to display the correct dashboard and to set a username cookie. """
+    try:
+        return 0
     except:
         print_exc()
         return False
 
 @superuser
 def authorize(request):
-    """ Authorizes a new moderator or administrator. Returns True if successful, False otherwise.
+    """ Authorize function. Returns True if successful, False otherwise.
     It may return False due to a bug, the request being denied or if the authorizer's rank is
-    not high enough (moderator attempting to authorize an administrator, for example). """
+    not high enough (moderator attempting to authorize an administrator, for example).
+    Used to authorize a new moderator or administrator. """
     try:
-    except:
-        print_exc()
-        return False
-
-@superuser
-def login(request):
-    """ Login function. Returns 0 if the user is an administrator, 1 if they're a
-    moderator, and False if the authentication failed or an error occured. """
-    try:
-        return 1
+        pass
     except:
         print_exc()
         return False

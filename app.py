@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify, abort
 from flask import send_from_directory, flash
 import api
@@ -35,13 +36,17 @@ def authenticate():
 
 @app.route('/test/su/remove/post', methods=['POST'])
 def remove_post():
-    if api.remove_post('moderator', 'IP', request):
+    if api.remove_post(request):
         return "Success!", 200
     return "aaaa", 500
 
+@app.route('test/su/signup', method=['POST'])
+def signup():
+    if api.signup(request):
+
 @app.route('/test/su/ban', methods=['POST'])
 def ban_ip():
-    if api.ban_ip('moderator', 'IP', request):
+    if api.ban_ip(request):
         return "Success!", 200
     return "aaaa", 500
 
