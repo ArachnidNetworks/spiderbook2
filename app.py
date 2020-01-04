@@ -28,21 +28,15 @@ def test_reply():
         return "Success!", 200
     return "aaaa", 500
 
-@app.route('/test/authenticate', methods=['POST'])
-def authenticate():
-    if api.authenticate(request):
-        return "Success!", 200
-    return "aaaa", 500
+@app.route('/test/signup', method=['POST'])
+def signup():
+    if api.signup(request):
 
 @app.route('/test/su/remove/post', methods=['POST'])
 def remove_post():
     if api.remove_post(request):
         return "Success!", 200
     return "aaaa", 500
-
-@app.route('test/su/signup', method=['POST'])
-def signup():
-    if api.signup(request):
 
 @app.route('/test/su/ban', methods=['POST'])
 def ban_ip():
