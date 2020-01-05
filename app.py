@@ -16,31 +16,43 @@ FORBBIDEN = 403
 def root():
     return "Hello!"
 
-@app.route('/test/post', methods=['POST'])
+@app.route('/api/post', methods=['POST'])
 def test_post():
-    if api.add_post(request):
+    try:
+        api.add_post(request)
         return "Success!", 200
-    return "aaaa", 500
+    except:
+        return "aaaa", 500
 
-@app.route('/test/reply', methods=['POST'])
+@app.route('/api/reply', methods=['POST'])
 def test_reply():
-    if api.reply(request):
+    try:
+        api.reply(request)
         return "Success!", 200
-    return "aaaa", 500
+    except:
+        return "aaaa", 500
 
-@app.route('/test/signup', method=['POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
-    if api.signup(request):
+    try:
+        api.signup(request)
+        return "Success!", 200
+    except:
+        return "aaaa", 500
 
-@app.route('/test/su/remove/post', methods=['POST'])
+@app.route('/api/su/removepost', methods=['POST'])
 def remove_post():
-    if api.remove_post(request):
+    try:
+        api.remove_post(request)
         return "Success!", 200
-    return "aaaa", 500
+    except:
+        return "aaaa", 500
 
-@app.route('/test/su/ban', methods=['POST'])
+@app.route('/api/su/ban', methods=['POST'])
 def ban_ip():
-    if api.ban_ip(request):
+    try:
+        api.ban_ip(request)
         return "Success!", 200
-    return "aaaa", 500
+    except:
+        return "aaaa", 500
 

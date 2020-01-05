@@ -64,7 +64,7 @@ def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
 def secure_hash(data: str, chars: int) -> str:
     hashed = data
     for _ in range(1000):
-        hashed = sha512(bytes(data)).hexdigest()
+        hashed = sha512(hashed.encode("utf-8")).hexdigest()
     return hashed[:chars]
 
 # Database Interaction
@@ -105,121 +105,97 @@ def insert(data:str) -> bool:
     It's dynamic, using the 'table' key as the table
     and considering any other key:value pair a
     column:value pair. """
-    try:
-        table = data['table']
-        data.pop('table')
-        cols = str(tuple(data.keys()))
-        cols = format_for_query(cols, par=True)
-        value_placeholders = iterable_to_s(data.keys(), '%s')
-        values = tuple(data.values())
-        
-        query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
-        c.execute(query, values)
-        conn.commit()
-        return True
-    except:
-        print_exc()
-        return False
+    table = data['table']
+    data.pop('table')
+    cols = str(tuple(data.keys()))
+    cols = format_for_query(cols, par=True)
+    value_placeholders = iterable_to_s(data.keys(), '%s')
+    values = tuple(data.values())
+    
+    query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
+    c.execute(query, values)
+    conn.commit()
+    return True
 
 def update(data:str) -> bool:
-    try:
-        table = data['table']
-        data.pop('table')
-        restriction = data.get('restriction')
-        if restriction:
-            data.pop('restriction')
-        else:
-            restriction = ''
-        column = tuple(data.keys())[0]
-        new_value = data[column]
-        query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
-        c.execute(query)
-        conn.commit()
-        return True
-    except:
-        print_exc()
-        return False
+    table = data['table']
+    data.pop('table')
+    restriction = data.get('restriction')
+    if restriction:
+        data.pop('restriction')
+    else:
+        restriction = ''
+    column = tuple(data.keys())[0]
+    new_value = data[column]
+    query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
+    c.execute(query)
+    conn.commit()
+    return True
 
 def delete(data:str) -> bool:
-    try:
-        table = data['table']
-        data.pop('table')
-        restriction = data.get('restriction')
-        if restriction:
-            data.pop('restriction')
-        else:
-            restriction = ''
-        query = f'DELETE FROM {table} * {restriction}'
-        c.execute(query)
-        conn.commit()
-        return True
-    except:
-        print_exc()
-        return False
+    table = data['table']
+    data.pop('table')
+    restriction = data.get('restriction')
+    if restriction:
+        data.pop('restriction')
+    else:
+        restriction = ''
+    query = f'DELETE FROM {table} * {restriction}'
+    c.execute(query)
+    conn.commit()
+    return True
 
 def select(data:str, restriction:str=''):
-    try:
-        table = data['table']
-        data.pop('table')
-        # Start the query
-        query = "SELECT "
-        # If columns weren't specified, add a * to the query,
-        # else add the formatted columns
-        cols = data.get('cols')
-        if cols == None:
-            query += '*'
-        else:
-            cols = tuple(cols)
-            query += format_for_query(str(cols))
-        # Add the table and restriction to the query
-        query += f" FROM {table} {restriction}"
-        # Execute the query an`d extract the rows
-        c.execute(query)
-        rows = c.fetchall()
-        # Format the results into a dictionary format
-        return cr_to_dict(rows, cols)
-    except:
-        print_exc()
-        return False
+    table = data['table']
+    data.pop('table')
+    # Start the query
+    query = "SELECT "
+    # If columns weren't specified, add a * to the query,
+    # else add the formatted columns
+    cols = data.get('cols')
+    if cols == None:
+        query += '*'
+    else:
+        cols = tuple(cols)
+        query += format_for_query(str(cols))
+    # Add the table and restriction to the query
+    query += f" FROM {table} {restriction}"
+    # Execute the query an`d extract the rows
+    c.execute(query)
+    rows = c.fetchall()
+    # Format the results into a dictionary format
+    return cr_to_dict(rows, cols)
 
 # CRUD Actions
 
 def add_post(request):
     """ Adds a post based on the Flask request's data. """
-    try:
-        body_text = request.form.get('body_text')
-        body_file = request.files.get('body_file')
-        data = {
-            'table': 'posts',
-            'uid': new_uid(32),
-            'title': request.form['title'][:200],
-            'category': request.form['category'][:80],
-            'ip': request.environ['REMOTE_ADDR'][:45],
-            'dt': dt_now()
-        }
-        if body_text:
-            data['body_text'] = body_text[:1000]
-        elif body_file:
-            file_path = 'post_files/' + body_file.filename
-            body_file.save(file_path)
-            data['body_file_url'] = file_path
+    body_text = request.form.get('body_text')
+    body_file = request.files.get('body_file')
+    data = {
+        'table': 'posts',
+        'uid': new_uid(32),
+        'title': request.form['title'][:200],
+        'category': request.form['category'][:80],
+        'ip': request.environ['REMOTE_ADDR'][:45],
+        'dt': dt_now()
+    }
+    if body_text:
+        data['body_text'] = body_text[:1000]
+    elif body_file:
+        file_path = 'post_files/' + body_file.filename
+        body_file.save(file_path)
+        data['body_file_url'] = file_path
 
-        insert(data)
-        return True
-    except:
-        print_exc()
-        return False
+    insert(data)
+    return True
 
 def reply(request):
     """ Replies to a post """
-    try:
-        reply_uid = new_uid(32)
-        reply_post(request, reply_uid)
-        reply_update(request, reply_uid)
-        return True
-    except:
-        print_exc()
-        return False
+    reply_uid = new_uid(32)
+    reply_post(request, reply_uid)
+    reply_update(request, reply_uid)
+    return True
 
 def reply_post(request, reply_uid:str):
     """ Inserts the reply data into the database """
@@ -253,20 +229,16 @@ def reply_update(request, reply_uid:str):
     })
 
 def get_posts(limit:int=100, category:str='all'):
-    try:
-        if category != 'all':
-            restriction = f'WHERE category = \'{category}\' '
-        restriction += f'ORDER BY dt DESC LIMIT {limit}'
-        posts = select({
-            'table': 'posts',
-            'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
-        }, restriction)
-        if len(posts) > 0:
-            return posts
-        else:
-            return False
-    except:
-        print_exc()
+    if category != 'all':
+        restriction = f'WHERE category = \'{category}\' '
+    restriction += f'ORDER BY dt DESC LIMIT {limit}'
+    posts = select({
+        'table': 'posts',
+        'cols': ['uid', 'title', 'category', 'body_text', 'body_file_url']
+    }, restriction)
+    if len(posts) > 0:
+        return posts
+    else:
         return False
 
 def get_post(request):
@@ -279,6 +251,7 @@ def get_post(request):
     if len(post) > 0:
         return post[0]
     else:
+        print_exc()
         return False
 
 def get_replies(post, limit:int):
@@ -299,16 +272,12 @@ def get_post_and_replies(request, limit:int=100):
     limit replies, with the first item being the
     post itself, a dictionary, and the second being
     the replies, a tuple of dictionaries. """
-    try:
-        post = get_post(request)
-        if post["reply_uids"]:
-            replies = get_replies(post, limit)
-        else:
-            replies = ();
-        return post, replies
-    except:
-        print_exc()
-        return False
+    post = get_post(request)
+    if post["reply_uids"]:
+        replies = get_replies(post, limit)
+    else:
+        replies = ();
+    return post, replies
 
 # Superuser functions
 
@@ -321,7 +290,8 @@ def superuser(fn):
     su_type can be either admin, or mod, and ip is any valid IPv4 address.
     If the authentication passes, it returns the function, else it returns False."""
     def wrap(*args, **kwargs):
-        if suauth(args[0]):
+        #if suauth(args[0]):
+        if True:
             return fn(*args, **kwargs)
         else:
             return False
@@ -332,20 +302,16 @@ def signup(request):
     the request with the authorize function.
     Returns True if it's successful, False otherwise.
     Used to signup a new superuser. """
-    try:
-        data = {
-            'table': 'superusers',
-            'su_id': new_uid(),
-            'su_type': MOD if request.form['type'] == 'moderator' else ADMIN,
-            'email': request.form['email'],
-            'password': secure_hash(request.form['password']),
-            'pending': True
-        }
-        insert(data)
-        return True
-    except:
-        print_exc()
-        return False
+    data = {
+        'table': 'superusers',
+        'su_id': new_uid(),
+        'su_type': MOD if request.form['type'] == 'moderator' else ADMIN,
+        'email': request.form['email'],
+        'password': secure_hash(request.form['password']),
+        'pending': True
+    }
+    insert(data)
+    return True
 
 def suauth(request) -> bool:
     """ Superuser authenticator. Checks, with the request object,
@@ -353,30 +319,22 @@ def suauth(request) -> bool:
     in a tuple if so, otherwise false in a 1-item tuple
     otherwise. May also return false if an error occured.
     Used to authenticate a superuser request and to login. """
-    try:
-        data = {
-            'table': 'superusers',
-            'cols': ['su_type']
-        }
-        email = request.form['email']
-        password = secure_hash(request.form['password'])
-        restriction = f"WHERE email = '{email}' && password = '{password}'"
-        result = select(data, restriction)
-        return True
-    except:
-        print_exc()
-        return (False,)
+    data = {
+        'table': 'superusers',
+        'cols': ['su_type']
+    }
+    email = request.form['email']
+    password = secure_hash(request.form['password'])
+    restriction = f"WHERE email = '{email}' && password = '{password}'"
+    result = select(data, restriction)
+    return True
 
 @superuser
 def login(request):
     """ Login function. Returns 0 if the user is an administrator, 1 if they're a
     moderator, and False if the authentication failed or an error occured.
     Used to display the correct dashboard and to set a username cookie. """
-    try:
-        return 0
-    except:
-        print_exc()
-        return False
+    return 0
 
 @superuser
 def authorize(request):
@@ -384,43 +342,31 @@ def authorize(request):
     It may return False due to a bug, the request being denied or if the authorizer's rank is
     not high enough (moderator attempting to authorize an administrator, for example).
     Used to authorize a new moderator or administrator. """
-    try:
-        pass
-    except:
-        print_exc()
-        return False
+    pass
 
 @superuser
 def remove_post(request) -> bool:
-    try:
-        result = get_post_and_replies(request)
-        if not result:
-            return False
-        post, replies = result
-        post_type = request.form["op_type"]
-        post_uid = request.form["uid"]
-        for reply in replies:
-            delete({
-                'table': 'replies',
-                'restriction': f"WHERE uid = '{reply['uid']}'"
-            })
-        print(delete({
-            'table': 'posts' if post_type == 'post' else 'replies',
-            'restriction': f"WHERE uid = '{post_uid}'"
-        }))
-    except:
-        print_exc()
+    result = get_post_and_replies(request)
+    if not result:
         return False
+    post, replies = result
+    post_type = request.form["op_type"]
+    post_uid = request.form["uid"]
+    for reply in replies:
+        delete({
+            'table': 'replies',
+            'restriction': f"WHERE uid = '{reply['uid']}'"
+        })
+    print(delete({
+        'table': 'posts' if post_type == 'post' else 'replies',
+        'restriction': f"WHERE uid = '{post_uid}'"
+    }))
 
 @superuser
 def ban_ip(request) -> bool:
-    try:
-        # get post ip from form argument
-        ip = get_post(request).get('ip')
-        # put ip in banned table
-        # if a new post has that ip, make add_post return false
-        return True
-    except:
-        print_exc()
-        return False
+    # get post ip from form argument
+    ip = get_post(request).get('ip')
+    # put ip in banned table
+    # if a new post has that ip, make add_post return false
+    return True
 
