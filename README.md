@@ -20,16 +20,18 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ----    
 ### TODO:
 - #### API:
-    - proper mod/admin authentication (in progress)
-    - specific calls for CRUD actions
-        - (mod/admin) ban ip (24h-2mo limit)
-        - (mod/admin) unban ip
-        - (mod/admin) ban category
-        - (mod/admin) get all banned ips
-        - (mod/admin) get all banned categories
-        - (admin) add moderator
-        - (admin) get all admins and moderators
-        - (admin) remove moderator
+    - superuser signup
+    - superuser login
+    - superuser sessions
+    - polish superuser authentication
+    - (superuser) ban ip (24h-2mo limit)
+    - (superuser) unban ip
+    - (superuser) ban category
+    - (superuser) get all banned ips
+    - (superuser) get all banned categories
+    - (admin) add moderator
+    - (admin) get all admins and moderators
+    - (admin) remove moderator
 
 - #### Frontend:
     - home page
