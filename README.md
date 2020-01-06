@@ -21,7 +21,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ### TODO:
 - #### API:
     - Modify system so Flask takes care of extracting data and the API processes it (in progress)
-        **General rule**: API functions can't take *request* as an argument
+        - **General rule**: API functions can't take *request* as an argument
     - superuser login
     - superuser sessions
     - superuser authorization (accept new superusers)
