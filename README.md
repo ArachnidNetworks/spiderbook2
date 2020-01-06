@@ -20,10 +20,10 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ----    
 ### TODO:
 - #### API:
-    - superuser signup
     - superuser login
     - superuser sessions
-    - polish superuser authentication
+    - superuser authorization (accept new superusers)
+    - polish superuser system
     - (superuser) ban ip (24h-2mo limit)
     - (superuser) unban ip
     - (superuser) ban category
