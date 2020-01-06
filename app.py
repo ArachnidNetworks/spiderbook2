@@ -39,7 +39,14 @@ def signup():
         api.signup(request)
         return "Success!", 200
     except:
-        print_exc()
+        return "aaaa", 500
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    try:
+        api.login(request)
+        return "Success!", 200
+    except:
         return "aaaa", 500
 
 @app.route('/api/su/removepost', methods=['POST'])

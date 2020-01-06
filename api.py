@@ -291,7 +291,7 @@ def superuser(fn):
         if True:
             return fn(*args, **kwargs)
         else:
-            return False
+            raise Exception
     return wrap
 
 def signup(request):
