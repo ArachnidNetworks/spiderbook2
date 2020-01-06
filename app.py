@@ -2,7 +2,8 @@
 from flask import Flask, request, redirect, make_response, render_template, url_for, jsonify, abort
 from flask import send_from_directory, flash
 import api
-import os, traceback
+import os
+from traceback import print_exc
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ["SECRET"]
@@ -38,6 +39,7 @@ def signup():
         api.signup(request)
         return "Success!", 200
     except:
+        print_exc()
         return "aaaa", 500
 
 @app.route('/api/su/removepost', methods=['POST'])

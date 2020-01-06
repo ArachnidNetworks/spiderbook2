@@ -28,8 +28,8 @@ CREATE TABLE replies (
 );
 
 CREATE TABLE superusers (
-    su_id INTEGER NOT NULL,
-    su_type INTEGER NOT NULL,
+    su_id VARCHAR(32) NOT NULL,
+    su_type VARCHAR(3) NOT NULL,
     email VARCHAR(600) NOT NULL,
     password VARCHAR(256) NOT NULL
 );

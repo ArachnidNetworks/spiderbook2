@@ -1,10 +1,10 @@
-#!!/usr/bin/env python
+#!/usr/bin/env python
 from psycopg2 import connect
 from random import randint
 from hashlib import sha512
-from traceback import print_exc
 from decorator import decorator
 from typing import Literal
+from re import match
 import datetime
 
 def dbsetup(db:str, user:str, password:str):
@@ -61,7 +61,7 @@ def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
         result_table += ({cols[i]: row[i] for i in range(len(cols))},)
     return result_table
 
-def secure_hash(data: str, chars: int) -> str:
+def secure_hash(data: str, chars: int=16) -> str:
     hashed = data
     for _ in range(1000):
         hashed = sha512(hashed.encode("utf-8")).hexdigest()
@@ -281,9 +281,6 @@ def get_post_and_replies(request, limit:int=100):
 
 # Superuser functions
 
-MOD = 1
-ADMIN = 0
-
 def superuser(fn):
     """ Superuser (admin/mod) decorator. Authenticates the user based 
     on the arguments su_type and ip.
@@ -302,16 +299,25 @@ def signup(request):
     the request with the authorize function.
     Returns True if it's successful, False otherwise.
     Used to signup a new superuser. """
-    data = {
-        'table': 'superusers',
-        'su_id': new_uid(),
-        'su_type': MOD if request.form['type'] == 'moderator' else ADMIN,
-        'email': request.form['email'],
-        'password': secure_hash(request.form['password']),
-        'pending': True
-    }
-    insert(data)
-    return True
+    su_type = request.form['type']
+    if su_type == 'mod' or su_type == 'moderator':
+        su_type = 'MOD'
+    elif su_type == 'admin' or su_type == 'administrator':
+        su_type = 'ADM'
+    else:
+        raise Exception
+    email = request.form['email']
+    if match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", email):
+        data = { 'table': 'superusers',
+            'su_id': new_uid(32),
+            'su_type': su_type,
+            'email': request.form['email'],
+            'password': secure_hash(request.form['password']),
+            'pending': True
+        }
+        insert(data)
+        return True
+    raise Exception
 
 def suauth(request) -> bool:
     """ Superuser authenticator. Checks, with the request object,
