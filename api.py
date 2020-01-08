@@ -251,7 +251,6 @@ def get_post(request):
     if len(post) > 0:
         return post[0]
     else:
-        print_exc()
         return False
 
 def get_replies(post, limit:int):
@@ -363,10 +362,10 @@ def remove_post(request) -> bool:
             'table': 'replies',
             'restriction': f"WHERE uid = '{reply['uid']}'"
         })
-    print(delete({
+    delete({
         'table': 'posts' if post_type == 'post' else 'replies',
         'restriction': f"WHERE uid = '{post_uid}'"
-    }))
+    })
 
 @superuser
 def ban_ip(request) -> bool:
