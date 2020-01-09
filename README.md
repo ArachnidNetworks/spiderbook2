@@ -20,7 +20,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ----    
 ### TODO:
 - #### API:
-    - superuser login
+    - superuser login (in progress)
     - superuser sessions
     - superuser authorization (accept new superusers)
     - polish superuser system
