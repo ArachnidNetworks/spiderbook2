@@ -12,7 +12,7 @@ def dbsetup(db:str, user:str, password:str):
     conn = connect(f"dbname={db} user={user} password={password}")
     c = conn.cursor()
     return conn, c
-conn, c = dbsetup(db="spiderbook", user="postgres", password="postgres")
+    conn, c = dbsetup(db="spiderbook", user="postgres", password="postgres")
 
 # Utility Functions
 
@@ -280,19 +280,6 @@ def get_post_and_replies(request, limit:int=100):
 
 # Superuser functions
 
-def superuser(fn):
-    """ Superuser (admin/mod) decorator. Authenticates the user based 
-    on the arguments su_type and ip.
-    su_type can be either admin, or mod, and ip is any valid IPv4 address.
-    If the authentication passes, it returns the function, else it returns False."""
-    def wrap(*args, **kwargs):
-        #if suauth(args[0]):
-        if True:
-            return fn(*args, **kwargs)
-        else:
-            raise Exception
-    return wrap
-
 def signup(request):
     """ Signs up a moderator/admin. Will be pending until an administrator authorizes
     the request with the authorize function.
@@ -318,12 +305,23 @@ def signup(request):
         return True
     raise Exception
 
-def suauth(request) -> bool:
-    """ Superuser authenticator. Checks, with the request object,
-    if the user's name and password are correct. Returns true and the user's rank
-    in a tuple if so, otherwise false in a 1-item tuple
-    otherwise. May also return false if an error occured.
-    Used to authenticate a superuser request and to login. """
+def superuser(fn):
+    """ Superuser (admin/mod) decorator. Authenticates the user based 
+    on the arguments su_type and ip.
+    su_type can be either admin, or mod, and ip is any valid IPv4 address.
+    If the authentication passes, it returns the function, else it returns False."""
+    def wrap(*args, **kwargs):
+        #if suauth(args[0]):
+        if True:
+            return fn(*args, **kwargs)
+        else:
+            raise Exception
+    return wrap
+
+@superuser
+def suauth(request) - bool:
+    """ Authentication function. Returns the user's rank if succeessful.
+    Used to login and to verify superuser requests. """
     data = {
         'table': 'superusers',
         'cols': ['su_type']
@@ -332,20 +330,14 @@ def suauth(request) -> bool:
     password = secure_hash(request.form['password'])
     restriction = f"WHERE email = '{email}' && password = '{password}'"
     result = select(data, restriction)
+    print(result)
     return True
 
 @superuser
-def login(request):
-    """ Login function. Returns 0 if the user is an administrator, 1 if they're a
-    moderator, and False if the authentication failed or an error occured.
-    Used to display the correct dashboard and to set a username cookie. """
-    return 0
-
-@superuser
 def authorize(request):
-    """ Authorize function. Returns True if successful, False otherwise.
-    It may return False due to a bug, the request being denied or if the authorizer's rank is
-    not high enough (moderator attempting to authorize an administrator, for example).
+    """ Authorize function. Returns True if successful, and False if
+    the request was denied or if the authorizer's rank is not high enough
+    (moderator attempting to authorize an administrator, for example).
     Used to authorize a new moderator or administrator. """
     pass
 
