@@ -1,29 +1,31 @@
 #!/usr/bin/env python
-from psycopg2 import connect
-from random import randint
-from hashlib import sha512
-from decorator import decorator
-from typing import Literal
-from re import match
-import datetime
+import dbint
 
-def dbsetup(db:str, user:str, password:str):
-    """ Connects to a database """
-    conn = connect(f"dbname={db} user={user} password={password}")
-    c = conn.cursor()
-    return conn, c
-    conn, c = dbsetup(db="spiderbook", user="postgres", password="postgres")
+# General data extractor
 
-def dt_now() -> datetime.datetime:
-    datetime.datetime.utcnow()
-    return datetime.datetime.utcnow().replace(microsecond=0)
+def get_data(request, extra: dict, required: list):
+    data = dict()
 
-def iterable_to_s(iterable, s:str) -> str:
-    """ Returns a list of s in the format
-    (%s, %s, %s, ...) with as many s's as
-    items in the iterable """
-    iters = []
-    for _ in iterable:
-        iters.append(s)
-    return "(" + ", ".join(iters) + ")"
+    # Add new keys
+    for new_key, new_value in extra.items():
+        data[new_key] = new_value
+
+    # Extract required keys
+    for required_key in required:
+        required_value = request.form[required_key]
+        data[required_key] = required_value
+
+    return data
+
+# Connnect to database
+db = dbint.DBInterface("spiderbook", "postgres", "postgres")
+
+def add_post(request):
+    """ Adds a post """
+    extra = {'table': 'posts', 'uid': db.new_uid(32), 'ip': request.environ['REMOTE_ADDR'][:45], 'dt': dbint.dt_now()}
+    required = ['body_text', 'body_file', 'title', 'category']
+    get_data(request, extra, required)
+    if required.get('body_text'):
+        required['body_text'] = required['body_text'][:1000]
+    print(get_data)
 
