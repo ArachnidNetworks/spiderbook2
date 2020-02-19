@@ -14,7 +14,7 @@ class DBInterface:
 
     def setup(self, db:str, user:str, password:str):
         """ Connects to a database """
-        self.conn = psycopg2.connect(f"dbname={db} user={user} password={password}")
+        self.conn = connect(f"dbname={db} user={user} password={password}")
         self.c = self.conn.cursor()
 
     def get_idns(self, restriction: str = '', arguments=()):
@@ -29,7 +29,7 @@ class DBInterface:
         """ Adds a new number to the idnumbers table and returns it.
         The new number is the last plus a random value between 1 and 9. """
         # get the latest (biggest) id number
-        last_id = get_idns(restriction="ORDER BY idn DESC")[0][0]
+        last_id = self.get_idns(restriction="ORDER BY idn DESC")[0][0]
         # add a random value between 1 and 10 to it
         new = last_id + randint(1, 10)
         query = "INSERT INTO idnumbers (idn) VALUES (%s)"
@@ -42,7 +42,7 @@ class DBInterface:
     def new_uid(self, chars: int = 16) -> str:
         """ Returns a new hashed ID with the character limit being the parameter chars.
         The default value for chars is 16. """
-        idn = new_idn()
+        idn = self.new_idn()
         return secure_hash(str(idn), chars)
 
     def insert(self, data:str) -> bool:
