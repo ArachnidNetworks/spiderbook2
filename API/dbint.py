@@ -2,17 +2,16 @@
 from psycopg2 import connect
 from random import randint
 from hashlib import sha512
-from typing import Literal
-from re import match
 import datetime
 
 # Raw database functions
 
+
 class DBInterface:
-    def __init__(self, db:str, user:str, password:str):
+    def __init__(self, db: str, user: str, password: str):
         self.setup(db, user, password)
 
-    def setup(self, db:str, user:str, password:str):
+    def setup(self, db: str, user: str, password: str):
         """ Connects to a database """
         self.conn = connect(f"dbname={db} user={user} password={password}")
         self.c = self.conn.cursor()
@@ -45,7 +44,7 @@ class DBInterface:
         idn = self.new_idn()
         return secure_hash(str(idn), chars)
 
-    def insert(self, data:str) -> bool:
+    def insert(self, data: dict) -> bool:
         """ Inserts data into a PostgreSQL database.
         It's dynamic, using the 'table' key as the table
         and considering any other key:value pair a
@@ -56,13 +55,13 @@ class DBInterface:
         cols = format_for_query(cols, par=True)
         value_placeholders = iterable_to_s(data.keys(), '%s')
         values = tuple(data.values())
-        
+
         query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
         self.c.execute(query, values)
         self.conn.commit()
         return True
 
-    def update(self, data:str) -> bool:
+    def update(self, data: str) -> bool:
         """ Updates a PostgreSQL database."""
         table = data['table']
         data.pop('table')
@@ -78,7 +77,7 @@ class DBInterface:
         self.conn.commit()
         return True
 
-    def delete(self, data:str) -> bool:
+    def delete(self, data: str) -> bool:
         """ Deletes a row from a PostgreSQL database """
         table = data['table']
         data.pop('table')
@@ -92,7 +91,7 @@ class DBInterface:
         self.conn.commit()
         return True
 
-    def select(self, data:str, restriction:str='') -> dict:
+    def select(self, data: str, restriction: str = '') -> dict:
         """ Selects rows from a PostgreSQL database """
         table = data['table']
         data.pop('table')
@@ -101,7 +100,7 @@ class DBInterface:
         # If columns weren't specified, add a * to the query,
         # else add the formatted columns
         cols = data.get('cols')
-        if cols == None:
+        if cols is None:
             query += '*'
         else:
             cols = tuple(cols)
@@ -116,11 +115,13 @@ class DBInterface:
 
 # Utility
 
+
 def dt_now() -> datetime.datetime:
     datetime.datetime.utcnow()
     return datetime.datetime.utcnow().replace(microsecond=0)
 
-def iterable_to_s(iterable, s:str) -> str:
+
+def iterable_to_s(iterable, s: str) -> str:
     """ Returns a list of s in the format
     (%s, %s, %s, ...) with as many s's as
     items in the iterable """
@@ -129,13 +130,15 @@ def iterable_to_s(iterable, s:str) -> str:
         iters.append(s)
     return "(" + ", ".join(iters) + ")"
 
-def remove_last_comma(string_as_list:list) -> list:
+
+def remove_last_comma(string_as_list: list) -> list:
     if string_as_list[-2] == ',':
         # Remove last comma, if it's there
         string_as_list.pop(-2)
     return string_as_list
 
-def format_for_query(s, single_quotes:bool=False, comma:bool=False, par:bool=False) -> str:
+
+def format_for_query(s, single_quotes: bool = False, comma: bool = False, par: bool = False) -> str:
     """ Removes, optionally, single quotes, the comma
     next to the last parenthesis, if there
     is one, and the parenthesis
@@ -152,6 +155,7 @@ def format_for_query(s, single_quotes:bool=False, comma:bool=False, par:bool=Fal
     s = "".join(s)
     return s
 
+
 def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
     """ Returns a tuple of dictionaries, with
     each dictionary being a single row, having
@@ -161,9 +165,9 @@ def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
         result_table += ({cols[i]: row[i] for i in range(len(cols))},)
     return result_table
 
-def secure_hash(data: str, chars: int=16) -> str:
+
+def secure_hash(data: str, chars: int = 16) -> str:
     hashed = data
     for _ in range(1000):
         hashed = sha512(hashed.encode("utf-8")).hexdigest()
     return hashed[:chars]
-
