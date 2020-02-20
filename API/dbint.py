@@ -73,6 +73,7 @@ class DBInterface:
         column = tuple(data.keys())[0]
         new_value = data[column]
         query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
+        print(query)
         self.c.execute(query)
         self.conn.commit()
         return True
