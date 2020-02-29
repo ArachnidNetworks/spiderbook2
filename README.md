@@ -33,8 +33,8 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (done) escape SQL data to prevent SQLi attacks
     - (done) superuser signup
     - (done) accept superuser application
-    - (in progress) superuser request verification (name/password on each superuser action)
-    - escape remaining SQL data
+    - (done) superuser request verification (name/password on each superuser action)
+    - (in progress) escape remaining SQL data
     - (superuser) ban ip (arbitrary hour limit)
     - (superuser) unban ip
     - (superuser) ban category
