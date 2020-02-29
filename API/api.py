@@ -56,17 +56,17 @@ class APImgr:
             "body": "'" + new_body + "'"
             })
 
-    def get(self, uid, dtype) -> dict:
+    def get(self, uid: str, dtype: str) -> dict:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
         }, f"WHERE uid = '{uid}'")
 
-    def getn(self, n, dtype) -> tuple:
+    def getn(self, n: int, dtype: str) -> tuple:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
         }, f"ORDER BY dt DESC LIMIT {n}")
 
-    def getn_by_parent(self, n, dtype, parent) -> tuple:
+    def getn_by_parent(self, n: int, dtype: str, parent: str) -> tuple:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
         }, f"WHERE parent = '{parent}' ORDER BY dt DESC LIMIT {n}")
@@ -82,19 +82,26 @@ class APImgr:
         su_type = None
         if data['su_type'] == 'ADMIN':
             su_type = SUPERUSER_ADM
-        elif data['su_type'] == 'MODERATOR':
+        elif data['su_type'][:3] == 'MOD':
             su_type = SUPERUSER_MOD
         if su_type is not None:
             return self.db.insert({
-                'uid': self.db.new_uid(32),
+                'table': 'superusers',
+                'su_id': self.db.new_uid(32),
                 'su_type': su_type,
                 'email': data['email'],
-                'password': dbint.secure_hash(data['password'], 32)
+                'password': dbint.secure_hash(data['password'], 32),
+                'accepted': False
             })
         return False
 
-    def superuser_accept(self, uid: str) -> bool:
-        pass
+    def superuser_accept(self, su_id: str) -> bool:
+        return self.db.update({
+            "table": "superusers",
+            "accepted": True,
+            "restriction": f"WHERE su_id = '{su_id}'"
+        })
+        return False
 
     def superuser_verify(self, email: str, password: str) -> bool:
         pass
@@ -105,6 +112,8 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
+    su_data = {"su_type": "MOD", "email": "user@service.example", "password": "hello123"}
+    api.superuser_accept("702ea3318163c0cfaa3c89da2820bade")
     # uid = ""
     # form_data = {"title": "; DELETE FROM posts *", "parent": "example_category", "body": "example_body"}
     # api.add(form_data, 'example_ip_address', 'category')
