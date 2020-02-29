@@ -57,8 +57,6 @@ class DBInterface:
         values = tuple(data.values())
 
         query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
-        print(query)
-        print(values)
         self.c.execute(query, values)
         self.conn.commit()
         return True

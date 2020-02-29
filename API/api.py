@@ -21,7 +21,7 @@ class APImgr:
             self.db.update({
                 "table": table,
                 "restriction": f"WHERE uid = '{uid}'",
-                "reply_uids": f"reply_uids || '{reply_uid}'::VARCHAR(32)"
+                "reply_uids": f"reply_uids || '{self.esc(reply_uid)}'::VARCHAR(32)"
             })
         except IndexError:
             return False
@@ -41,25 +41,25 @@ class APImgr:
             data["table"] = "posts"
         elif parent_type == "post" or parent_type == "reply":
             data["table"] = "replies"
-            return self.__add_reply(data['parent'], uid, parent_type)
+            return self.__add_reply(data['parent'], uid, self.esc(parent_type))
         else:
             return False
         return self.db.insert(data)
 
     def delete(self, uid: str, dtype: str) -> bool:
-        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{uid}'"})
+        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{self.esc(uid)}'"})
 
     def edit(self, uid: str, dtype: str, new_body: str) -> bool:
         return self.db.update({
             "table": self.__get_correct_table(dtype),
-            "restriction": f"WHERE uid = '{uid}'",
-            "body": "'" + new_body + "'"
+            "restriction": f"WHERE uid = '{self.esc(uid)}'",
+            "body": "'" + self.esc(new_body) + "'"
             })
 
     def get(self, uid: str, dtype: str) -> dict:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE uid = '{uid}'")[0]
+        }, f"WHERE uid = '{self.esc(uid)}'")[0]
 
     def getn(self, n: int, dtype: str) -> tuple:
         return self.db.select({
@@ -69,7 +69,7 @@ class APImgr:
     def getn_by_parent(self, n: int, dtype: str, parent: str) -> tuple:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE parent = '{parent}' ORDER BY dt DESC LIMIT {n}")
+        }, f"WHERE parent = '{self.esc(parent)}' ORDER BY dt DESC LIMIT {n}")
 
     def __get_correct_table(self, dtype: str) -> str:
         if dtype == "post":
@@ -99,7 +99,7 @@ class APImgr:
         return self.db.update({
             "table": "superusers",
             "accepted": True,
-            "restriction": f"WHERE su_id = '{su_id}'"
+            "restriction": f"WHERE su_id = '{self.esc(su_id)}'"
         })
         return False
 
@@ -108,9 +108,21 @@ class APImgr:
         if len(self.db.select({
             "table": "superusers",
             "cols": ["su_id"]
-        }, f"WHERE email = '{data['email']}' AND password = '{password}'")) > 0:
+        }, f"WHERE email = '{self.esc(data['email'])}' AND password = '{self.esc(password)}'")) > 0:
             return True
         return False
+
+    def esc(self, s: str) -> str:
+        escaped = repr(s)
+        if isinstance(s, str):
+            assert escaped[:1] == 'u'
+            escaped = escaped[1:]
+        if escaped[:1] == '"':
+            escaped = escaped.replace("'", "\\'")
+        elif escaped[:1] != "'":
+            raise AssertionError("unexpected repr: %s", escaped)
+        return "E'%s'" % (escaped[1:-1],)
+
 
 if __name__ == '__main__':
     # Connnect to database
