@@ -73,7 +73,6 @@ class DBInterface:
         column = tuple(data.keys())[0]
         new_value = data[column]
         query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
-        print(query)
         self.c.execute(query)
         self.conn.commit()
         return True
@@ -110,9 +109,10 @@ class DBInterface:
         query += f" FROM {table} {restriction}"
         # Execute the query an`d extract the rows
         self.c.execute(query)
-        rows = self.c.fetchall()
+        rownames = self.c.fetchall()
+        colnames = list(map(lambda column: column[0], self.c.description))
         # Format the results into a dictionary format
-        return cr_to_dict(rows, cols)
+        return cr_to_dict(rownames, colnames)
 
 # Utility
 

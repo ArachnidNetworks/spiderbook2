@@ -3,7 +3,8 @@ import dbint
 
 
 def pd(d: dict):
-    print('{\n  ' + str(d).replace("', '", "',\n  '")[1:][:-1] + '\n}')
+    for k, v in d.items():
+        print(str(k) + ": " + str(v))
 
 
 class APImgr:
@@ -19,14 +20,13 @@ class APImgr:
                 "restriction": f"WHERE uid = '{uid}'",
                 "reply_uids": f"reply_uids || '{reply_uid}'::VARCHAR(32)"
             })
-            print(uid, ":", reply_uid)
         except IndexError:
             return False
         return True
 
-    def add(self, form_data: dict, parent_type: str) -> bool:
+    def add(self, form_data: dict, ip: str, parent_type: str) -> bool:
         uid = db.new_uid(32)
-        data = {"uid": uid, "ip": "example_ip_address", "dt": dbint.dt_now(), "reply_uids": []}
+        data = {"uid": uid, "ip": ip, "dt": dbint.dt_now(), "reply_uids": []}
         # Set correct title size
         if form_data.get("title"):
             data["title"] = form_data["title"][:200]
@@ -44,28 +44,32 @@ class APImgr:
         return self.db.insert(data)
 
     def delete(self, uid: str, dtype: str) -> None:
+        self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{uid}'"})
+
+    def edit(self, uid, new_content) -> None:
+        pass
+
+    def get(self, uid, dtype) -> dict:
+        return self.db.select({
+            'table': self.__get_correct_table(dtype)
+        }, f"WHERE uid = '{uid}'")
+
+    def getn(self, n, dtype) -> tuple:
+        return self.db.select({
+            'table': self.__get_correct_table(dtype)
+        }, f"ORDER BY dt DESC LIMIT {n}")
+
+    def getn_by_parent(self, n, parent) -> tuple:
+        pass
+
+    def __get_correct_table(self, dtype: str) -> str:
         if dtype == "post":
             table = "posts"
         elif dtype == "reply":
             table = "replies"
         elif dtype == "superuser":
             table = "superusers"
-        self.db.delete({"table": table, "restriction": f"WHERE uid = '{uid}'"})
-
-    def edit(self, uid, new_content) -> None:
-        pass
-
-    def get(self, uid) -> dict:
-        pass
-
-    def getn(self, n) -> tuple:
-        pass
-
-    def getn_by_parent(self, n, parent) -> tuple:
-        pass
-
-    def add_reply(self, original_uid, reply_uid) -> tuple:
-        pass
+        return table
 
 
 if __name__ == '__main__':
@@ -73,12 +77,17 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    form_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
-    api.add(form_data, 'category')
-    post_uid = "19807548e119cb1ad2ca34aeb731bbe5"
-    form_data = {"parent": post_uid, "body": "example_body"}
-    post_uid = "14c4f11412d95be4aa44597ceb462a81"
-    form_data = {"parent": post_uid, "body": "example_body"}
-    api.add(form_data, 'reply')
+    uid = "6b93ea6dba952725a35ba2f2e27cf493"
+    result = api.getn(2, 'post')
+    print('-'*40)
+    for row in result:
+        pd(row)
+        print('-'*40)
+    # form_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
+    # api.add(form_data, 'example_ip_address', 'category')
+    # if uid and len(uid) > 0:
+    #     form_data = {"parent": uid, "body": "example_body"}
+    #     api.add(form_data, 'example_ip_address', 'post')
+    #     api.add(form_data, 'example_ip_address', 'reply')
 
 # IP: request.environ['REMOTE_ADDR'][:45]
