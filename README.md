@@ -20,7 +20,15 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ----    
 ### TODO:
 - #### API:
-    - refactor API (it's bad)
+    - raw database interactions (done)
+    - add post (done)
+    - add reply (done)
+    - add reply to post reply list (done)
+    - delete post or reply (done)
+    - get post or reply (done)
+    - get n posts or replies (done)
+    - get n posts or replies based on parent (done)
+    - edit post or reply body (in progress)
     - superuser login
     - superuser sessions
     - superuser authorization (accept new superusers)
