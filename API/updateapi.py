@@ -59,8 +59,10 @@ class APImgr:
             'table': self.__get_correct_table(dtype)
         }, f"ORDER BY dt DESC LIMIT {n}")
 
-    def getn_by_parent(self, n, parent) -> tuple:
-        pass
+    def getn_by_parent(self, n, dtype, parent) -> tuple:
+        return self.db.select({
+            'table': self.__get_correct_table(dtype)
+        }, f"WHERE parent = '{parent}' ORDER BY dt DESC LIMIT {n}")
 
     def __get_correct_table(self, dtype: str) -> str:
         if dtype == "post":
@@ -77,8 +79,7 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    uid = "6b93ea6dba952725a35ba2f2e27cf493"
-    result = api.getn(2, 'post')
+    result = api.getn_by_parent(3, 'reply', 'd7aa542ac972cedee86d45e13b5366d2')
     print('-'*40)
     for row in result:
         pd(row)
