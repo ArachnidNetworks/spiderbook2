@@ -32,7 +32,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (done) edit post or reply body
     - (done) escape SQL data to prevent SQLi attacks
     - (in progress) superuser signup
-    - superuser authorization (superuser sets application to accepted)
+    - accept superuser application
     - superuser request verification (name/password on each superuser action)
     - (superuser) ban ip (arbitrary hour limit)
     - (superuser) unban ip

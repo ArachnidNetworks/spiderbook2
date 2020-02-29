@@ -31,10 +31,11 @@ CREATE TABLE superusers (
     su_id VARCHAR(32) NOT NULL,
     su_type VARCHAR(3) NOT NULL,
     email VARCHAR(600) NOT NULL,
-    password VARCHAR(256) NOT NULL
+    password VARCHAR(256) NOT NULL,
+    accepted BOOLEAN NOT NULL
 );
 
-/*CREATE TABLE banned (*/
+-- CREATE TABLE banned (
     
-/*);*/
+-- );
 

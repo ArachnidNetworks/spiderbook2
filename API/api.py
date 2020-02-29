@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import dbint
 
+SUPERUSER_ADM = 1
+SUPERUSER_MOD = 2
+
 
 def pd(d: dict):
     for k, v in d.items():
@@ -25,7 +28,7 @@ class APImgr:
         return True
 
     def add(self, form_data: dict, ip: str, parent_type: str) -> bool:
-        uid = db.new_uid(32)
+        uid = self.db.new_uid(32)
         data = {"uid": uid, "ip": ip, "dt": dbint.dt_now(), "reply_uids": []}
         # Set correct title size
         if form_data.get("title"):
@@ -73,9 +76,28 @@ class APImgr:
             table = "posts"
         elif dtype == "reply":
             table = "replies"
-        elif dtype == "superuser":
-            table = "superusers"
         return table
+
+    def superuser_add(self, data: dict) -> bool:
+        su_type = None
+        if data['su_type'] == 'ADMIN':
+            su_type = SUPERUSER_ADM
+        elif data['su_type'] == 'MODERATOR':
+            su_type = SUPERUSER_MOD
+        if su_type is not None:
+            return self.db.insert({
+                'uid': self.db.new_uid(32),
+                'su_type': su_type,
+                'email': data['email'],
+                'password': dbint.secure_hash(data['password'], 32)
+            })
+        return False
+
+    def superuser_accept(self, uid: str) -> bool:
+        pass
+
+    def superuser_verify(self, email: str, password: str) -> bool:
+        pass
 
 
 if __name__ == '__main__':
@@ -83,16 +105,16 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    uid = ""
-    form_data = {"title": "; DELETE FROM posts *", "parent": "example_category", "body": "example_body"}
-    api.add(form_data, 'example_ip_address', 'category')
-    if uid and len(uid) > 0:
-        form_data = {"parent": uid, "body": "example_body"}
-        api.add(form_data, 'example_ip_address', 'post')
-        api.add(form_data, 'example_ip_address', 'reply')
+    # uid = ""
+    # form_data = {"title": "; DELETE FROM posts *", "parent": "example_category", "body": "example_body"}
+    # api.add(form_data, 'example_ip_address', 'category')
+    # if uid and len(uid) > 0:
+    #     form_data = {"parent": uid, "body": "example_body"}
+    #     api.add(form_data, 'example_ip_address', 'post')
+    #     api.add(form_data, 'example_ip_address', 'reply')
     # print('-'*40)
     # for row in result:
-        # pd(row)
-        # print('-'*40)
+    #     pd(row)
+    #     print('-'*40)
 
 # IP: request.environ['REMOTE_ADDR'][:45]
