@@ -57,6 +57,8 @@ class DBInterface:
         values = tuple(data.values())
 
         query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
+        print(query)
+        print(values)
         self.c.execute(query, values)
         self.conn.commit()
         return True
@@ -72,8 +74,10 @@ class DBInterface:
             restriction = ''
         column = tuple(data.keys())[0]
         new_value = data[column]
-        query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
-        self.c.execute(query)
+        query = f'UPDATE {table} SET {column} = %s {restriction}'
+        print(query)
+        print((new_value,))
+        self.c.execute(query, (new_value,))
         self.conn.commit()
         return True
 

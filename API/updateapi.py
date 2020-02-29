@@ -50,7 +50,7 @@ class APImgr:
         return self.db.update({
             "table": self.__get_correct_table(dtype),
             "restriction": f"WHERE uid = '{uid}'",
-            "body": "'" + self.__sql_escape(new_body) + "'"
+            "body": "'" + new_body + "'"
             })
 
     def get(self, uid, dtype) -> dict:
@@ -77,28 +77,22 @@ class APImgr:
             table = "superusers"
         return table
 
-    def __sql_escape(self, text: str) -> str:
-        escaped = text
-        return escaped
-
 
 if __name__ == '__main__':
     # Connnect to database
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    uid = "ddaaba41176c18e6c32d6d928fd542fd"
-    result = api.edit(uid, "post", "edited body")
-    print(result)
+    uid = ""
+    form_data = {"title": "; DELETE FROM posts *", "parent": "example_category", "body": "example_body"}
+    api.add(form_data, 'example_ip_address', 'category')
+    if uid and len(uid) > 0:
+        form_data = {"parent": uid, "body": "example_body"}
+        api.add(form_data, 'example_ip_address', 'post')
+        api.add(form_data, 'example_ip_address', 'reply')
     # print('-'*40)
     # for row in result:
         # pd(row)
         # print('-'*40)
-    # form_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
-    # api.add(form_data, 'example_ip_address', 'category')
-    # if uid and len(uid) > 0:
-    #     form_data = {"parent": uid, "body": "example_body"}
-    #     api.add(form_data, 'example_ip_address', 'post')
-    #     api.add(form_data, 'example_ip_address', 'reply')
 
 # IP: request.environ['REMOTE_ADDR'][:45]

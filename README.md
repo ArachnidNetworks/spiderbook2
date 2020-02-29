@@ -30,12 +30,13 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - get n posts or replies (done)
     - get n posts or replies based on parent (done)
     - edit post or reply body (done)
-    - escape SQL data to prevent SQLi attacks (in progress)
-    - superuser login
+    - escape SQL data to prevent SQLi attacks (done)
+    - superuser signup (in progress)
+    - superuser authorization
+    - suoeruser login 
     - superuser sessions
-    - superuser authorization (accept new superusers)
-    - polish superuser system
-    - (superuser) ban ip (24h-2mo limit)
+    - prevent faking superuser identity
+    - (superuser) ban ip (arbitrary hour limit)
     - (superuser) unban ip
     - (superuser) ban category
     - (superuser) get all banned ips
