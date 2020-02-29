@@ -173,6 +173,6 @@ def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
 
 def secure_hash(data: str, chars: int = 16) -> str:
     hashed = data
-    for _ in range(1000):
+    for _ in range(500):
         hashed = sha512(hashed.encode("utf-8")).hexdigest()
     return hashed[:chars]

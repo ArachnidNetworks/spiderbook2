@@ -21,21 +21,19 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 ----    
 ## TODO:
 - **API**:
-    - raw database interactions (done)
-    - add post (done)
-    - add reply (done)
-    - add reply to post reply list (done)
-    - delete post or reply (done)
-    - get post or reply (done)
-    - get n posts or replies (done)
-    - get n posts or replies based on parent (done)
-    - edit post or reply body (done)
-    - escape SQL data to prevent SQLi attacks (done)
-    - superuser signup (in progress)
-    - superuser authorization
-    - suoeruser login 
-    - superuser sessions
-    - prevent faking superuser identity
+    - (done) raw database interactions
+    - (done) add post
+    - (done) add reply
+    - (done) add reply to post reply list
+    - (done) delete post or reply
+    - (done) get post or reply
+    - (done) get n posts or replies
+    - (done) get n posts or replies based on parent
+    - (done) edit post or reply body
+    - (done) escape SQL data to prevent SQLi attacks
+    - (in progress) superuser signup
+    - superuser authorization (superuser sets application to accepted)
+    - superuser request verification (name/password on each superuser action)
     - (superuser) ban ip (arbitrary hour limit)
     - (superuser) unban ip
     - (superuser) ban category
