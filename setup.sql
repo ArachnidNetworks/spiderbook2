@@ -35,7 +35,8 @@ CREATE TABLE superusers (
     accepted BOOLEAN NOT NULL
 );
 
--- CREATE TABLE banned (
-    
--- );
+CREATE TABLE banned (
+    ip VARCHAR(45) NOT NULL,
+    dt TIMESTAMP NOT NULL
+);
 

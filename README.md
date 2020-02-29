@@ -13,10 +13,10 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 > The backend is being made with Python, with Flask taking care of requests. The Database is going to be made with PostgreSQL with a file named 'setup.psql' containing all the necessary code to set it up on your machine.
 
 ### How long do you think this will take?
-> I do not know. It should be done by May of 2020.
+> It should be done by May of 2020.
 
 ### Why do you just not work every few weeks?
-> I do not know. I try my best.
+> I don't know. I try my best.
 
 ----    
 ## TODO:
@@ -34,19 +34,21 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (done) superuser signup
     - (done) accept superuser application
     - (done) superuser request verification (name/password on each superuser action)
-    - (in progress) escape remaining SQL data
-    - (superuser) ban ip (arbitrary hour limit)
-    - (superuser) unban ip
-    - (superuser) ban category
-    - (superuser) get all banned ips
-    - (superuser) get all banned categories
-    - (admin) add moderator
-    - (admin) get all admins and moderators
-    - (admin) remove moderator
+    - (done) escape remaining SQL data
+    - (in progress) [mod] ban ip (hourly limit)
+    - fix delete function to delete all replies and remove self from parent's reply list
+    - [mod] unban ip
+    - [mod] ban category
+    - [mod] get all banned ips
+    - [mod] get all banned categories
+    - [admin] add moderator
+    - [admin] get all admins and moderators
+    - [admin] remove moderator
 
 - **Frontend**:
     - home page
     - single post page
     - proper comment parsing (comment a bit to the right of original post)
-    - (mod) moderation dashboard tab
-    - (admin) administration dashboard tab
+    - [mod] moderation dashboard tab
+    - [admin] administration dashboard tab
+

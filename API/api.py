@@ -14,52 +14,56 @@ class APImgr:
     def __init__(self, db: dbint.DBInterface):
         self.db = db
 
+    def add(self, form_data: dict, ip: str, parent_type: str) -> bool:
+        uid = self.db.new_uid(32)
+        if not self.__check_banned(ip):
+            data = {"uid": uid, "ip": ip, "dt": dbint.dt_now(), "reply_uids": []}
+            # Set correct title size
+            if form_data.get("title"):
+                data["title"] = form_data["title"][:200]
+            # Set correct parent and body size
+            data["parent"] = form_data["parent"][:1000]
+            data["body"] = form_data["body"][:1000]
+            # Get correct table and run required adjustments
+            if parent_type == "category":
+                data["table"] = "posts"
+            elif parent_type == "post" or parent_type == "reply":
+                data["table"] = "replies"
+                return self.__add_reply(data['parent'], uid, self.__esc(parent_type))
+            else:
+                return False
+            return self.db.insert(data)
+        return False
+
     def __add_reply(self, uid: str, reply_uid: str, parent_type: str) -> bool:
-        table = "posts" if parent_type == "post" else "replies"
         try:
             # Update table with new reply_uid
             self.db.update({
-                "table": table,
+                "table": self.__get_correct_table(parent_type),
                 "restriction": f"WHERE uid = '{uid}'",
-                "reply_uids": f"reply_uids || '{self.esc(reply_uid)}'::VARCHAR(32)"
+                "reply_uids": f"reply_uids || '{self.__esc(reply_uid)}'::VARCHAR(32)"
             })
         except IndexError:
             return False
         return True
 
-    def add(self, form_data: dict, ip: str, parent_type: str) -> bool:
-        uid = self.db.new_uid(32)
-        data = {"uid": uid, "ip": ip, "dt": dbint.dt_now(), "reply_uids": []}
-        # Set correct title size
-        if form_data.get("title"):
-            data["title"] = form_data["title"][:200]
-        # Set correct parent and body size
-        data["parent"] = form_data["parent"][:1000]
-        data["body"] = form_data["body"][:1000]
-        # Get correct table and run required adjustments
-        if parent_type == "category":
-            data["table"] = "posts"
-        elif parent_type == "post" or parent_type == "reply":
-            data["table"] = "replies"
-            return self.__add_reply(data['parent'], uid, self.esc(parent_type))
-        else:
-            return False
-        return self.db.insert(data)
+    def __check_banned(self, ip: str) -> bool:
+        return len(self.db.select({'table': 'banned'}, f"WHERE ip = '{ip}'")) > 0
 
     def delete(self, uid: str, dtype: str) -> bool:
-        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{self.esc(uid)}'"})
+        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{self.__esc(uid)}'"})
 
     def edit(self, uid: str, dtype: str, new_body: str) -> bool:
         return self.db.update({
             "table": self.__get_correct_table(dtype),
-            "restriction": f"WHERE uid = '{self.esc(uid)}'",
-            "body": "'" + self.esc(new_body) + "'"
+            "restriction": f"WHERE uid = '{self.__esc(uid)}'",
+            "body": "'" + self.__esc(new_body) + "'"
             })
 
     def get(self, uid: str, dtype: str) -> dict:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE uid = '{self.esc(uid)}'")[0]
+        }, f"WHERE uid = '{self.__esc(uid)}'")[0]
 
     def getn(self, n: int, dtype: str) -> tuple:
         return self.db.select({
@@ -69,7 +73,7 @@ class APImgr:
     def getn_by_parent(self, n: int, dtype: str, parent: str) -> tuple:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE parent = '{self.esc(parent)}' ORDER BY dt DESC LIMIT {n}")
+        }, f"WHERE parent = '{self.__esc(parent)}' ORDER BY dt DESC LIMIT {n}")
 
     def __get_correct_table(self, dtype: str) -> str:
         if dtype == "post":
@@ -99,7 +103,7 @@ class APImgr:
         return self.db.update({
             "table": "superusers",
             "accepted": True,
-            "restriction": f"WHERE su_id = '{self.esc(su_id)}'"
+            "restriction": f"WHERE su_id = '{self.__esc(su_id)}'"
         })
         return False
 
@@ -108,11 +112,14 @@ class APImgr:
         if len(self.db.select({
             "table": "superusers",
             "cols": ["su_id"]
-        }, f"WHERE email = '{self.esc(data['email'])}' AND password = '{self.esc(password)}'")) > 0:
+        }, f"WHERE email = '{self.__esc(data['email'])}' AND password = '{self.esc(password)}'")) > 0:
             return True
         return False
 
-    def esc(self, s: str) -> str:
+    def superuser_banip(self, ip: str) -> bool:
+        return self.db.insert({'table': 'banned', 'ip': ip, 'dt': dbint.dt_now()})
+
+    def __esc(self, s: str) -> str:
         escaped = repr(s)
         if isinstance(s, str):
             assert escaped[:1] == 'u'
@@ -129,17 +136,12 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    su_data = {"su_type": "MOD", "email": "mod@service.example", "password": "hello123"}
-    result = api.superuser_verify({"email": "mod@service.example", "password": "hello123"})
-    if len(result) == 1:
-        print("Found", result[0])
-    # uid = ""
-    # form_data = {"title": "; DELETE FROM posts *", "parent": "example_category", "body": "example_body"}
-    # api.add(form_data, 'example_ip_address', 'category')
-    # if uid and len(uid) > 0:
-    #     form_data = {"parent": uid, "body": "example_body"}
-    #     api.add(form_data, 'example_ip_address', 'post')
-    #     api.add(form_data, 'example_ip_address', 'reply')
+    form_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
+    api.add(form_data, 'example_ip_address', 'category')
+    api.superuser_banip('banned_ip_address')
+    api.add(form_data, 'banned_ip_address', 'category')
+    # su_data = {"su_type": "MOD", "email": "mod@service.example", "password": "hello123"}
+    # result = api.superuser_verify({"email": "mod@service.example", "password": "hello123"})
     # print('-'*40)
     # for row in result:
     #     pd(row)
