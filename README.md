@@ -17,9 +17,10 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 
 ### Why do you just not work every few weeks?
 > I do not know. I try my best.
+
 ----    
-### TODO:
-- #### API:
+## TODO:
+- **API**:
     - raw database interactions (done)
     - add post (done)
     - add reply (done)
@@ -28,7 +29,8 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - get post or reply (done)
     - get n posts or replies (done)
     - get n posts or replies based on parent (done)
-    - edit post or reply body (in progress)
+    - edit post or reply body (done)
+    - escape SQL data to prevent SQLi attacks (in progress)
     - superuser login
     - superuser sessions
     - superuser authorization (accept new superusers)
@@ -42,7 +44,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (admin) get all admins and moderators
     - (admin) remove moderator
 
-- #### Frontend:
+- **Frontend**:
     - home page
     - single post page
     - proper comment parsing (comment a bit to the right of original post)

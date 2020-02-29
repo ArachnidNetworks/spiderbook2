@@ -38,16 +38,20 @@ class APImgr:
             data["table"] = "posts"
         elif parent_type == "post" or parent_type == "reply":
             data["table"] = "replies"
-            self.__add_reply(data['parent'], uid, parent_type)
+            return self.__add_reply(data['parent'], uid, parent_type)
         else:
             return False
         return self.db.insert(data)
 
-    def delete(self, uid: str, dtype: str) -> None:
-        self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{uid}'"})
+    def delete(self, uid: str, dtype: str) -> bool:
+        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{uid}'"})
 
-    def edit(self, uid, new_content) -> None:
-        pass
+    def edit(self, uid: str, dtype: str, new_body: str) -> bool:
+        return self.db.update({
+            "table": self.__get_correct_table(dtype),
+            "restriction": f"WHERE uid = '{uid}'",
+            "body": "'" + self.__sql_escape(new_body) + "'"
+            })
 
     def get(self, uid, dtype) -> dict:
         return self.db.select({
@@ -73,17 +77,23 @@ class APImgr:
             table = "superusers"
         return table
 
+    def __sql_escape(self, text: str) -> str:
+        escaped = text
+        return escaped
+
 
 if __name__ == '__main__':
     # Connnect to database
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    result = api.getn_by_parent(3, 'reply', 'd7aa542ac972cedee86d45e13b5366d2')
-    print('-'*40)
-    for row in result:
-        pd(row)
-        print('-'*40)
+    uid = "ddaaba41176c18e6c32d6d928fd542fd"
+    result = api.edit(uid, "post", "edited body")
+    print(result)
+    # print('-'*40)
+    # for row in result:
+        # pd(row)
+        # print('-'*40)
     # form_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
     # api.add(form_data, 'example_ip_address', 'category')
     # if uid and len(uid) > 0:
