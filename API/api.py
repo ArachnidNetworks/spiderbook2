@@ -59,7 +59,7 @@ class APImgr:
     def get(self, uid: str, dtype: str) -> dict:
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE uid = '{uid}'")
+        }, f"WHERE uid = '{uid}'")[0]
 
     def getn(self, n: int, dtype: str) -> tuple:
         return self.db.select({
@@ -103,17 +103,24 @@ class APImgr:
         })
         return False
 
-    def superuser_verify(self, email: str, password: str) -> bool:
-        pass
-
+    def superuser_verify(self, data: dict) -> bool:
+        password = dbint.secure_hash(data['password'], 32)
+        if len(self.db.select({
+            "table": "superusers",
+            "cols": ["su_id"]
+        }, f"WHERE email = '{data['email']}' AND password = '{password}'")) > 0:
+            return True
+        return False
 
 if __name__ == '__main__':
     # Connnect to database
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    su_data = {"su_type": "MOD", "email": "user@service.example", "password": "hello123"}
-    api.superuser_accept("702ea3318163c0cfaa3c89da2820bade")
+    su_data = {"su_type": "MOD", "email": "mod@service.example", "password": "hello123"}
+    result = api.superuser_verify({"email": "mod@service.example", "password": "hello123"})
+    if len(result) == 1:
+        print("Found", result[0])
     # uid = ""
     # form_data = {"title": "; DELETE FROM posts *", "parent": "example_category", "body": "example_body"}
     # api.add(form_data, 'example_ip_address', 'category')
