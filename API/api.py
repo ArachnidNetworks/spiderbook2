@@ -48,10 +48,29 @@ class APImgr:
         return True
 
     def __check_banned(self, ip: str) -> bool:
-        return len(self.db.select({'table': 'banned'}, f"WHERE ip = '{ip}'")) > 0
+        sel = self.db.select({'table': 'banned'}, f"WHERE ip = '{ip}'")
+        if len(sel) == 1 and sel[0]['dt'] < dbint.dt_now():
+            self.db.delete({
+                'table': 'banned',
+                'restriction': f'WHERE ip = \'{ip}\' AND dt = \'{sel[0]["dt"]}\''
+            })
+            return False
+        return len(sel) > 0
 
     def delete(self, uid: str, dtype: str) -> bool:
-        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{self.__esc(uid)}'"})
+        # removes self from parent's reply list if it's a reply
+        if dtype == "reply":
+            parent_uid = self.db.select({'table': self.__get_correct_table(dtype), 'cols': ['parent']}, f"WHERE uid = '{uid}'")[0]['parent']
+            # parent is on posts (?)
+            parent = self.__find_by_uid(parent_uid)
+            puid = parent['uid']
+            preplies = parent['reply_uids']
+            ptype = parent['dtype']
+        replies = self.db.select({'table': self.__get_correct_table(dtype), 'cols': ['reply_uids']}, f"WHERE uid = '{uid}'")
+        print("Parent:", puid, preplies, ptype, '\nReplies:', replies)
+        # delete self
+        return None
+        # return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{self.__esc(uid)}'"})
 
     def edit(self, uid: str, dtype: str, new_body: str) -> bool:
         return self.db.update({
@@ -76,11 +95,20 @@ class APImgr:
         }, f"WHERE parent = '{self.__esc(parent)}' ORDER BY dt DESC LIMIT {n}")
 
     def __get_correct_table(self, dtype: str) -> str:
-        if dtype == "post":
-            table = "posts"
-        elif dtype == "reply":
-            table = "replies"
-        return table
+        # Returns correct table name based on 'dtype'.
+        # On caller functions, 'dtype' means the current data's
+        # type, and 'parent_type' means the parent's type
+        return "posts" if dtype == "post" else "replies"
+
+    def __find_by_uid(self, uid: str) -> dict:
+        dtype = 'post'
+        result = self.db.select({'table': 'posts', 'cols': ['uid', 'reply_uids']}, f"WHERE uid = '{uid}'")
+        if not result:
+            dtype = 'reply'
+            result = self.db.select({'table': 'replies', 'cols': ['uid', 'reply_uids']}, f"WHERE uid = '{uid}'")
+        as_dict = result[0]
+        as_dict['dtype'] = dtype
+        return as_dict
 
     def superuser_add(self, data: dict) -> bool:
         su_type = None
@@ -116,8 +144,9 @@ class APImgr:
             return True
         return False
 
-    def superuser_banip(self, ip: str) -> bool:
-        return self.db.insert({'table': 'banned', 'ip': ip, 'dt': dbint.dt_now()})
+    def superuser_banip(self, ip: str, hours: int) -> bool:
+        if not self.__check_banned(ip):
+            return self.db.insert({'table': 'banned', 'ip': ip, 'dt': dbint.dt_plus_hour(hours)})
 
     def __esc(self, s: str) -> str:
         escaped = repr(s)
@@ -137,10 +166,8 @@ if __name__ == '__main__':
 
     api = APImgr(db)
     form_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
-    api.add(form_data, 'example_ip_address', 'category')
-    api.superuser_banip('banned_ip_address')
-    api.add(form_data, 'banned_ip_address', 'category')
-    # su_data = {"su_type": "MOD", "email": "mod@service.example", "password": "hello123"}
+    api.delete("cd04687b0bfcb8a8468e0dcb1d01ff30", "reply")
+    # api.delete("d7aa542ac972cedee86d45e13b5366d2", "reply")
     # result = api.superuser_verify({"email": "mod@service.example", "password": "hello123"})
     # print('-'*40)
     # for row in result:

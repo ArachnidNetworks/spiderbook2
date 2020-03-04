@@ -93,7 +93,7 @@ class DBInterface:
         self.conn.commit()
         return True
 
-    def select(self, data: str, restriction: str = '') -> dict:
+    def select(self, data: str, restriction: str = '') -> tuple:
         """ Selects rows from a PostgreSQL database """
         table = data['table']
         data.pop('table')
@@ -113,15 +113,19 @@ class DBInterface:
         self.c.execute(query)
         rownames = self.c.fetchall()
         colnames = list(map(lambda column: column[0], self.c.description))
-        # Format the results into a dictionary format
-        return cr_to_dict(rownames, colnames)
+        # Format the results into a dictionary format and put them in a tuple
+        result = cr_to_dict(rownames, colnames)
+        return result if len(result) > 0 else False
 
 # Utility
 
 
 def dt_now() -> datetime.datetime:
-    datetime.datetime.utcnow()
     return datetime.datetime.utcnow().replace(microsecond=0)
+
+
+def dt_plus_hour(hours: int):
+    return dt_now() + datetime.timedelta(hours=hours)
 
 
 def iterable_to_s(iterable, s: str) -> str:
