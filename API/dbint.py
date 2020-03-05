@@ -12,12 +12,12 @@ class DBInterface:
         self.setup(db, user, password)
 
     def setup(self, db: str, user: str, password: str):
-        """ Connects to a database """
+        """Connects to a database"""
         self.conn = connect(f"dbname={db} user={user} password={password}")
         self.c = self.conn.cursor()
 
     def get_idns(self, restriction: str = '', arguments=()):
-        """ Returns all ID 'root' numbers with an optional restriction and arguments. """
+        """Returns all ID 'root' numbers with an optional restriction and arguments."""
         query = "SELECT idn FROM idnumbers"
         query += " " + restriction
         self.c.execute(query, arguments)
@@ -25,8 +25,8 @@ class DBInterface:
         return self.c.fetchall()
 
     def new_idn(self) -> int:
-        """ Adds a new number to the idnumbers table and returns it.
-        The new number is the last plus a random value between 1 and 9. """
+        """Adds a new number to the idnumbers table and returns it.
+        The new number is the last plus a random value between 1 and 9."""
         # get the latest (biggest) id number
         last_id = self.get_idns(restriction="ORDER BY idn DESC")[0][0]
         # add a random value between 1 and 10 to it
@@ -39,16 +39,16 @@ class DBInterface:
         return new
 
     def new_uid(self, chars: int = 16) -> str:
-        """ Returns a new hashed ID with the character limit being the parameter chars.
-        The default value for chars is 16. """
+        """Returns a new hashed ID with the character limit being the parameter chars.
+        The default value for chars is 16."""
         idn = self.new_idn()
         return secure_hash(str(idn), chars)
 
     def insert(self, data: dict) -> bool:
-        """ Inserts data into a PostgreSQL database.
+        """Inserts data into a PostgreSQL database.
         It's dynamic, using the 'table' key as the table
         and considering any other key:value pair a
-        column:value pair. """
+        column:value pair."""
         table = data['table']
         data.pop('table')
         cols = str(tuple(data.keys()))
@@ -62,7 +62,7 @@ class DBInterface:
         return True
 
     def update(self, data: str) -> bool:
-        """ Updates a PostgreSQL database."""
+        """Updates a PostgreSQL database."""
         table = data['table']
         data.pop('table')
         restriction = data.get('restriction')
@@ -80,7 +80,7 @@ class DBInterface:
         return True
 
     def delete(self, data: str) -> bool:
-        """ Deletes a row from a PostgreSQL database """
+        """Deletes a row from a PostgreSQL database"""
         table = data['table']
         data.pop('table')
         restriction = data.get('restriction')
@@ -94,7 +94,7 @@ class DBInterface:
         return True
 
     def select(self, data: str, restriction: str = '') -> tuple:
-        """ Selects rows from a PostgreSQL database """
+        """Selects rows from a PostgreSQL database"""
         table = data['table']
         data.pop('table')
         # Start the query
@@ -129,9 +129,9 @@ def dt_plus_hour(hours: int):
 
 
 def iterable_to_s(iterable, s: str) -> str:
-    """ Returns a list of s in the format
+    """Returns a list of s in the format
     (%s, %s, %s, ...) with as many s's as
-    items in the iterable """
+    items in the iterable"""
     iters = []
     for _ in iterable:
         iters.append(s)
@@ -146,10 +146,10 @@ def remove_last_comma(string_as_list: list) -> list:
 
 
 def format_for_query(s, single_quotes: bool = False, comma: bool = False, par: bool = False) -> str:
-    """ Removes, optionally, single quotes, the comma
+    """Removes, optionally, single quotes, the comma
     next to the last parenthesis, if there
     is one, and the parenthesis
-    themselves. """
+    themselves."""
     if not single_quotes:
         s = s.replace("'", '')
     s = list(s)
@@ -164,9 +164,9 @@ def format_for_query(s, single_quotes: bool = False, comma: bool = False, par: b
 
 
 def cr_to_dict(rows: tuple, cols: tuple) -> tuple:
-    """ Returns a tuple of dictionaries, with
+    """Returns a tuple of dictionaries, with
     each dictionary being a single row, having
-    the columns as keys. """
+    the columns as keys."""
     result_table = ()
     for row in rows:
         result_table += ({cols[i]: row[i] for i in range(len(cols))},)
