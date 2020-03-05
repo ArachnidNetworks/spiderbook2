@@ -72,10 +72,8 @@ class DBInterface:
             restriction = ''
         column = tuple(data.keys())[0]
         new_value = data[column]
-        query = f'UPDATE {table} SET {column} = %s {restriction}'
-        print(query)
-        print((new_value,))
-        self.c.execute(query, (new_value,))
+        query = f'UPDATE {table} SET {column} = {new_value} {restriction}'
+        self.c.execute(query)
         self.conn.commit()
         return True
 
@@ -116,6 +114,15 @@ class DBInterface:
         # Format the results into a dictionary format and put them in a tuple
         result = cr_to_dict(rownames, colnames)
         return result if len(result) > 0 else False
+
+    def escape(self, s: str) -> str:
+        """Escapes a string into SQLi-friendly format
+        :param s: string to escape
+        :returns: escaped string"""
+        esc = repr(self.c.mogrify("%s", (s,)))[3:][:-2]
+        print(esc)
+        return esc
+
 
 # Utility
 

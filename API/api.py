@@ -35,7 +35,7 @@ class APImgr:
                 data["table"] = "posts"
             elif parent_type == "post" or parent_type == "reply":
                 data["table"] = "replies"
-                return self.__add_reply(data['parent'], uid, self.__esc(parent_type))
+                self.__add_reply(data['parent'], uid, parent_type)
             else:
                 return False
             return self.db.insert(data)
@@ -49,10 +49,11 @@ class APImgr:
         :returns: booln determining if the operation succeeded"""
         try:
             # Update table with new reply_uid
+            print(parent_type, uid, reply_uid)
             self.db.update({
                 "table": self.__get_correct_table(parent_type),
                 "restriction": f"WHERE uid = '{uid}'",
-                "reply_uids": f"reply_uids || '{self.__esc(reply_uid)}'::VARCHAR(32)"
+                "reply_uids": f"reply_uids || '{reply_uid}'::VARCHAR(32)"
             })
         except IndexError:
             return False
@@ -64,12 +65,11 @@ class APImgr:
         :returns: bool indicating if the operation succeeded"""
         sel = self.db.select({'table': 'banned'}, f"WHERE ip = '{ip}'")
         if sel and sel[0]['dt'] < dbint.dt_now():
-            self.db.delete({
+            return self.db.delete({
                 'table': 'banned',
                 'restriction': f'WHERE ip = \'{ip}\' AND dt = \'{sel[0]["dt"]}\''
             })
-            return False
-        return len(sel) > 0
+        return False
 
     def delete(self, uid: str, dtype: str) -> bool:
         """Deletes a post or reply
@@ -93,8 +93,8 @@ class APImgr:
         :returns: bool indicating if the operation succeeded"""
         return self.db.update({
             "table": self.__get_correct_table(dtype),
-            "restriction": f"WHERE uid = '{self.__esc(uid)}'",
-            "body": "'" + self.__esc(new_body) + "'"
+            "restriction": f"WHERE uid = '{uid}'",
+            "body": "'" + self.db.escape(new_body) + "'"
             })
 
     def get(self, uid: str, dtype: str) -> dict:
@@ -104,7 +104,7 @@ class APImgr:
         :returns: the selected row"""
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE uid = '{self.__esc(uid)}'")[0]
+        }, f"WHERE uid = '{uid}'")[0]
 
     def getn(self, n: int, dtype: str) -> tuple:
         """Selects n rows of a certain type, ordered by newest first
@@ -123,7 +123,7 @@ class APImgr:
         :returns: tuple containing each row as a dictionary"""
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE parent = '{self.__esc(parent)}' ORDER BY dt DESC LIMIT {n}")
+        }, f"WHERE parent = '{self.db.escape(parent)}' ORDER BY dt DESC LIMIT {n}")
 
     def __get_correct_table(self, dtype: str) -> str:
         """Selects the correct table name based on dtype. I'm not really sure why this exists, but it's nice, I guess.
@@ -188,7 +188,7 @@ class APImgr:
         return self.db.update({
             "table": "superusers",
             "accepted": True,
-            "restriction": f"WHERE su_id = '{self.__esc(su_id)}'"
+            "restriction": f"WHERE su_id = '{su_id}'"
         })
         return False
 
@@ -200,7 +200,7 @@ class APImgr:
         if len(self.db.select({
             "table": "superusers",
             "cols": ["su_id"]
-        }, f"WHERE email = '{self.__esc(data['email'])}' AND password = '{self.esc(password)}'")) > 0:
+        }, f"WHERE email = '{self.db.escape(data['email'])}' AND password = '{password}'")) > 0:
             return True
         return False
 
@@ -210,20 +210,6 @@ class APImgr:
         :returns: bool indicating if the operation succeeded"""
         if not self.__check_banned(ip):
             return self.db.insert({'table': 'banned', 'ip': ip, 'dt': dbint.dt_plus_hour(hours)})
-
-    def __esc(self, s: str) -> str:
-        """Escapes a string to SQL-friendly format
-        :param s: string to escape
-        :returns: escaped string"""
-        escaped = repr(s)
-        if isinstance(s, str):
-            assert escaped[:1] == 'u'
-            escaped = escaped[1:]
-        if escaped[:1] == '"':
-            escaped = escaped.replace("'", "\\'")
-        elif escaped[:1] != "'":
-            raise AssertionError("unexpected repr: %s", escaped)
-        return "E'%s'" % (escaped[1:-1],)
 
 
 def remove_all(l: list, to_remove) -> list:
@@ -238,13 +224,10 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    form_data = {"body": "example_body", "parent": "example_category"}
-    api.add(form_data, 'example_ip_address', 'category')
-    # api.delete("188474a66bc02a41b9fef51dc56e9bd9", "reply")
-    # result = api.superuser_verify({"email": "mod@service.example", "password": "hello123"})
-    # print('-'*40)
-    # for row in result:
-    #     pd(row)
-    #     print('-'*40)
+    # post_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
+    # reply_data = {"parent": "fb0a6d619ef5b8c17994c6c0f009fa64", "body": "example_body"}
+    # api.add(reply_data, "example_ip_address", "post")
+    api.superuser_banip('test', 1)
+    print(api.superuser_add({'su_type': 'MOD', 'email': '; DELETE FROM banned *', 'password': 'abc'}))
 
 # IP: request.environ['REMOTE_ADDR'][:45]
