@@ -17,7 +17,8 @@ class DBInterface:
         self.c = self.conn.cursor()
 
     def get_idns(self, restriction: str = '', arguments=()):
-        """Returns all ID 'root' numbers with an optional restriction and arguments."""
+        """Returns all ID 'root' numbers with an optional restriction and
+        arguments."""
         query = "SELECT idn FROM idnumbers"
         query += " " + restriction
         self.c.execute(query, arguments)
@@ -39,7 +40,8 @@ class DBInterface:
         return new
 
     def new_uid(self, chars: int = 16) -> str:
-        """Returns a new hashed ID with the character limit being the parameter chars.
+        """Returns a new hashed ID with the character limit being the
+        parameter chars.
         The default value for chars is 16."""
         idn = self.new_idn()
         return secure_hash(str(idn), chars)
@@ -56,7 +58,8 @@ class DBInterface:
         value_placeholders = iterable_to_s(data.keys(), '%s')
         values = tuple(data.values())
 
-        query = "INSERT INTO " + table + " " + cols + " VALUES " + value_placeholders
+        query = "INSERT INTO " + table + " " + cols + " VALUES " + \
+                value_placeholders
         self.c.execute(query, values)
         self.conn.commit()
         return True
@@ -152,7 +155,8 @@ def remove_last_comma(string_as_list: list) -> list:
     return string_as_list
 
 
-def format_for_query(s, single_quotes: bool = False, comma: bool = False, par: bool = False) -> str:
+def format_for_query(s, single_quotes: bool = False, comma: bool = False,
+                     par: bool = False) -> str:
     """Removes, optionally, single quotes, the comma
     next to the last parenthesis, if there
     is one, and the parenthesis

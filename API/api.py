@@ -16,14 +16,16 @@ class APImgr:
 
     def add(self, form_data: dict, ip: str, parent_type: str) -> bool:
         """Adds a new row to a specified table.
-        :param form_data: data in dictionary format, with each key being a column
+        :param form_data: data in dictionary format, with each key being a
+        column
         :param ip: OP's IP address.
         :param dtype: post's type (determines the table)
         :returns: boolean determining if the operation succeeded of failed"""
 
         uid = self.db.new_uid(32)
         if not self.__check_banned(ip):
-            data = {"uid": uid, "ip": ip, "dt": dbint.dt_now(), "reply_uids": []}
+            data = {"uid": uid, "ip": ip, "dt": dbint.dt_now(), "reply_uids":
+                    []}
             # Set correct title size
             if form_data.get("title"):
                 data["title"] = form_data["title"][:200]
@@ -60,16 +62,18 @@ class APImgr:
         return True
 
     def __check_banned(self, ip: str) -> bool:
-        """Checks if an IP address is banned. Removes from banned table if past expiry date
+        """Checks if an IP address is banned. Removes from banned table if
+        past expiry date
         :param ip: IP address to check
         :returns: bool indicating if the operation succeeded"""
         sel = self.db.select({'table': 'banned'}, f"WHERE ip = '{ip}'")
         if sel and sel[0]['dt'] < dbint.dt_now():
             return self.db.delete({
                 'table': 'banned',
-                'restriction': f'WHERE ip = \'{ip}\' AND dt = \'{sel[0]["dt"]}\''
+                'restriction': f'WHERE ip = \'{ip}\' AND dt = \
+                \'{sel[0]["dt"]}\''
             })
-        return False
+        return type(sel) != bool
 
     def delete(self, uid: str, dtype: str) -> bool:
         """Deletes a post or reply
@@ -80,10 +84,13 @@ class APImgr:
         if dtype == "reply":
             self.__delete_from_parent(uid, dtype)
         # delete self replies
-        for ruid in self.db.select({'table': self.__get_correct_table(dtype), 'cols': ['reply_uids']}, f"WHERE uid = '{uid}'")[0]['reply_uids']:
+        for ruid in self.db.select({'table': self.__get_correct_table(dtype),
+                                    'cols': ['reply_uids']}, f"WHERE uid = \
+                                    '{uid}'")[0]['reply_uids']:
             self.delete(ruid, 'reply')
         # delete self
-        return self.db.delete({"table": self.__get_correct_table(dtype), "restriction": f"WHERE uid = '{uid}'"})
+        return self.db.delete({"table": self.__get_correct_table(dtype),
+                               "restriction": f"WHERE uid = '{uid}'"})
 
     def edit(self, uid: str, dtype: str, new_body: str) -> bool:
         """Edits a row's data, setting the body to  new_body
@@ -123,11 +130,14 @@ class APImgr:
         :returns: tuple containing each row as a dictionary"""
         return self.db.select({
             'table': self.__get_correct_table(dtype)
-        }, f"WHERE parent = '{self.db.escape(parent)}' ORDER BY dt DESC LIMIT {n}")
+        }, f"WHERE parent = '{self.db.escape(parent)}' ORDER BY dt DESC LIMIT\
+            {n}")
 
     def __get_correct_table(self, dtype: str) -> str:
-        """Selects the correct table name based on dtype. I'm not really sure why this exists, but it's nice, I guess.
-        :param dtype: type to convert to table name, can be either 'post' or 'reply'
+        """Selects the correct table name based on dtype. I'm not really sure \
+        why this exists, but it's nice, I guess.
+        :param dtype: type to convert to table name, can be either 'post' or \
+        'reply'
         :returns: appropriate table name"""
         # Returns correct table name based on 'dtype'.
         # On caller functions, 'dtype' means the current data's
@@ -138,7 +148,9 @@ class APImgr:
         """Removes a certain UID from the parent's reply_uid array.
         :param uid: UID to remove
         :param dtype: row's type"""
-        parent_uid = self.db.select({'table': self.__get_correct_table(dtype), 'cols': ['parent']}, f"WHERE uid = '{uid}'")[0]['parent']
+        parent_uid = self.db.select({'table': self.__get_correct_table(dtype),
+                                     'cols': ['parent']}, f"WHERE uid = \
+                                     '{uid}'")[0]['parent']
         print(uid, parent_uid)
         # parent is on posts (?)
         parent = self.__find_by_uid(parent_uid)
@@ -153,17 +165,22 @@ class APImgr:
         """Finds a row based on a UID
         :param uid: row's UID"""
         dtype = 'post'
-        result = self.db.select({'table': 'posts', 'cols': ['uid', 'reply_uids']}, f"WHERE uid = '{uid}'")
+        result = self.db.select({'table': 'posts', 'cols':
+                                 ['uid', 'reply_uids']}, f"WHERE uid = \
+                                '{uid}'")
         if not result:
             dtype = 'reply'
-            result = self.db.select({'table': 'replies', 'cols': ['uid', 'reply_uids']}, f"WHERE uid = '{uid}'")
+            result = self.db.select({'table': 'replies', 'cols':
+                                     ['uid', 'reply_uids']}, f"WHERE uid = \
+                                    '{uid}'")
         as_dict = result[0]
         as_dict['dtype'] = dtype
         return as_dict
 
     def superuser_add(self, data: dict) -> bool:
         """Adds a new superuser
-        :param data: dictionary containing a key 'su_type' with value 'ADMIN' or 'MOD' and an email/password combination
+        :param data: dictionary containing a key 'su_type' with value 'ADMIN' \
+            or 'MOD' and an email/password combination
         :returns: bool indicating if the operation succeeded"""
         su_type = None
         if data['su_type'] == 'ADMIN':
@@ -200,7 +217,8 @@ class APImgr:
         if len(self.db.select({
             "table": "superusers",
             "cols": ["su_id"]
-        }, f"WHERE email = '{self.db.escape(data['email'])}' AND password = '{password}'")) > 0:
+        }, f"WHERE email = '{self.db.escape(data['email'])}' AND password = \
+                '{password}'")) > 0:
             return True
         return False
 
@@ -209,7 +227,16 @@ class APImgr:
         :param hours: hours to ban IP address for
         :returns: bool indicating if the operation succeeded"""
         if not self.__check_banned(ip):
-            return self.db.insert({'table': 'banned', 'ip': ip, 'dt': dbint.dt_plus_hour(hours)})
+            return self.db.insert({'table': 'banned', 'ip': ip, 'dt':
+                                   dbint.dt_plus_hour(hours)})
+
+    def superuser_unban(self, ip: str) -> bool:
+        """Unbans an IP address.
+        :param ip: IP address to unban
+        :returns: bool indicating if the operation succeeded"""
+        if self.__check_banned(ip):
+            return self.db.delete({'table': 'banned', 'restriction':
+                                   f"WHERE ip = '{ip}'"})
 
 
 def remove_all(l: list, to_remove) -> list:
@@ -224,10 +251,11 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    # post_data = {"title": "example_title", "parent": "example_category", "body": "example_body"}
-    # reply_data = {"parent": "fb0a6d619ef5b8c17994c6c0f009fa64", "body": "example_body"}
+    api.superuser_unban('ban_example')
+    # post_data = {"title": "example_title", "parent": "example_category",
+    # "body": "example_body"}
+    # reply_data = {"parent": "fb0a6d619ef5b8c17994c6c0f009fa64", "body":
+    # "example_body"}
     # api.add(reply_data, "example_ip_address", "post")
-    api.superuser_banip('test', 1)
-    print(api.superuser_add({'su_type': 'MOD', 'email': '; DELETE FROM banned *', 'password': 'abc'}))
 
 # IP: request.environ['REMOTE_ADDR'][:45]
