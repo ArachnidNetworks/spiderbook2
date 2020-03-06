@@ -222,6 +222,22 @@ class APImgr:
             return True
         return False
 
+    def superuser_remove(self, uid: str) -> bool:
+        """Removes a superuser.
+        :param uid: UID of superuser to remove
+        :returns: bool indicating if the operation succeeded"""
+        if self.superuser_exists(uid):
+            return self.db.delete({'table': 'superusers', 'restriction':
+                                   f"WHERE su_id = '{uid}'"})
+        return False
+
+    def superuser_exists(self, uid: str) -> bool:
+        """Checks if a superuser exists.
+        :param uid: UID of superuser to check
+        :returns: bool indicating if the superuser exists"""
+        return self.db.select({'table': 'superusers'},
+                              f"WHERE su_id = '{uid}' AND accepted")
+
     def superuser_banip(self, ip: str, hours: int) -> bool:
         """Bans an IP address for a specific amount of hours
         :param hours: hours to ban IP address for
@@ -229,6 +245,7 @@ class APImgr:
         if not self.__check_banned(ip):
             return self.db.insert({'table': 'banned', 'ip': ip, 'dt':
                                    dbint.dt_plus_hour(hours)})
+        return False
 
     def superuser_unban(self, ip: str) -> bool:
         """Unbans an IP address.
@@ -237,6 +254,7 @@ class APImgr:
         if self.__check_banned(ip):
             return self.db.delete({'table': 'banned', 'restriction':
                                    f"WHERE ip = '{ip}'"})
+        return False
 
     def getn_banned(self, n: int) -> bool:
         """Gets  n  banned IP addresses, orderer by newest to oldest
@@ -259,12 +277,7 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    for n in range(10):
-        api.superuser_banip('ban%d' % n, 1)
-    for result in api.getn_banned(5):
-        print('-'*40)
-        pd(result)
-    print('-'*40)
+    api.superuser_remove('702ea3318163c0cfaa3c89da2820bade')
     # post_data = {"title": "example_title", "parent": "example_category",
     # "body": "example_body"}
     # reply_data = {"parent": "fb0a6d619ef5b8c17994c6c0f009fa64", "body":

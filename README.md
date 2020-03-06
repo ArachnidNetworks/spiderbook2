@@ -39,8 +39,8 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (done) fix delete function to delete all replies and remove self from parent's reply list
     - (done) [mod] unban ip
     - (done) [mod] get all banned ips
-    - (in progress) [admin] get all admins and moderators
-    - [admin] remove moderator
+    - (done) [admin] get all admins and moderators
+    - (done) [admin] remove moderator
 
 - **Frontend**:
     - home page
