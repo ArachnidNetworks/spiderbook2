@@ -238,6 +238,14 @@ class APImgr:
             return self.db.delete({'table': 'banned', 'restriction':
                                    f"WHERE ip = '{ip}'"})
 
+    def getn_banned(self, n: int) -> bool:
+        """Gets  n  banned IP addresses, orderer by newest to oldest
+        :param n: number of IP addresses to get
+        :returns: bool indicating if the operation succeeded"""
+        return self.db.select({
+            'table': 'banned',
+        }, f"ORDER BY dt DESC LIMIT {n}")
+
 
 def remove_all(l: list, to_remove) -> list:
     """Removes all instances of  to_remove  from  l
@@ -251,7 +259,12 @@ if __name__ == '__main__':
     db = dbint.DBInterface("spiderbook", "postgres", "postgres")
 
     api = APImgr(db)
-    api.superuser_unban('ban_example')
+    for n in range(10):
+        api.superuser_banip('ban%d' % n, 1)
+    for result in api.getn_banned(5):
+        print('-'*40)
+        pd(result)
+    print('-'*40)
     # post_data = {"title": "example_title", "parent": "example_category",
     # "body": "example_body"}
     # reply_data = {"parent": "fb0a6d619ef5b8c17994c6c0f009fa64", "body":
