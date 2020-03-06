@@ -16,7 +16,7 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
 > It should be done by May of 2020.
 
 ### Why do you just not work every few weeks?
-> I don't know. I try my best.
+> Either because of school or family.
 
 ----    
 ## TODO:
@@ -35,14 +35,11 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (done) accept superuser application
     - (done) superuser request verification (name/password on each superuser action)
     - (done) escape remaining SQL data
-    - (in progress) [mod] ban ip (hourly limit)
-    - fix delete function to delete all replies and remove self from parent's reply list
-    - [mod] unban ip
-    - [mod] ban category
-    - [mod] get all banned ips
-    - [mod] get all banned categories
-    - [admin] add moderator
-    - [admin] get all admins and moderators
+    - (done) [mod] ban ip (hourly limit)
+    - (done) fix delete function to delete all replies and remove self from parent's reply list
+    - (done) [mod] unban ip
+    - (done) [mod] get all banned ips
+    - (in progress) [admin] get all admins and moderators
     - [admin] remove moderator
 
 - **Frontend**:
