@@ -42,6 +42,23 @@ Website made for the Arachnid network. All users are anonymous, but their IP's w
     - (done) [admin] get all admins and moderators
     - (done) [admin] remove moderator
 
+- **View Functions**:
+    - (in progress) add post
+    - add reply
+    - delete post
+    - delete reply
+    - get post and all of it's replies
+    - get n posts based on category
+    - edit post
+    - edit reply
+    - superuser signup
+    - [mod] ban ip address for x hours
+    - [mod] unban ip address
+    - [mod] get all banned ip addresses
+    - [admin] accept superuser
+    - [admin] get all admins and moderators
+    - [admin] remove moderator
+
 - **Frontend**:
     - home page
     - single post page
